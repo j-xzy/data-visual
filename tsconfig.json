@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.promise"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["./FrontEnd/components/*"]
+    }
+  }
+}
