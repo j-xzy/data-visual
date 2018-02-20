@@ -1,11 +1,13 @@
 const webpack = require('webpack');
 const path = require('path');
 const lazyBundle = require('./webpack.bundle');
+const tsImportPluginFactory = require('ts-import-plugin');
 const tscompilerOptions = require('../tsconfig.json').compilerOptions;
 
 const frontPath = path.join(__dirname, '../FrontEnd');
 const baseUrl = path.join('../', tscompilerOptions.baseUrl);
 const tsPaths = tscompilerOptions.paths;
+
 
 let alias = {};
 for (let key in tsPaths) {
@@ -25,15 +27,29 @@ var baseConfig = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['.js', '.json', '.tsx', '.ts'],
+    extensions: ['.js', '.json', '.tsx', '.ts', '.styl'],
     alias: alias
   },
   module: {
     rules: [{
       test: /\.tsx?$/,
-      loader: 'awesome-typescript-loader',
+      loader: 'ts-loader',
       include: [frontPath],
-      enforce: "pre"
+      exclude: /node_modules/,
+      enforce: "pre",
+      options: {
+        transpileOnly: true,
+        getCustomTransformers: () => ({
+          before: [tsImportPluginFactory({
+            libraryName: 'antd',
+            libraryDirectory: 'es',
+            style: 'css'
+          })]
+        }),
+        compilerOptions: {
+          module: 'es2015'
+        }
+      }
     }, {
       test: /\.(png|svg|jpg|gif|woff2?|eot|ttf|otf)$/,
       use: {
