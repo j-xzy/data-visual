@@ -1,13 +1,20 @@
 import * as React from 'react';
+import './style';
 
-export default class Sidebar extends React.Component {
+interface PanelProps {
+  title?: string;
+}
+
+class Panel extends React.Component<PanelProps, undefined> {
   render() {
-    return <Panel/>;
+    return <div>this is panel</div>;
   }
 }
 
-class Panel extends React.Component {
+export default class Sidebar extends React.Component {
+  static Panel = Panel;
   render() {
-    return <div>this is panel</div>;
+    console.log('123');
+    return <div></div>;
   }
 }
