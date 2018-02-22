@@ -27,7 +27,7 @@ var baseConfig = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['.js', '.json', '.tsx', '.ts', '.styl'],
+    extensions: ['.js', '.json', '.tsx', '.ts'],
     alias: alias
   },
   module: {
@@ -51,13 +51,23 @@ var baseConfig = {
         }
       }
     }, {
-      test: /\.(png|svg|jpg|gif|woff2?|eot|ttf|otf)$/,
+      test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
       use: {
         loader: 'url-loader',
         options: {
-          limit: 8192
+          limit: 8192,
+          name: 'static/img/[name].[hash:7].[ext]'
         }
-      }
+      },
+    },{
+      test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+      use: {
+        loader: 'url-loader',
+        options: {
+          limit: 8192,
+          name: 'static/fonts/[name].[hash:7].[ext]'
+        }
+      },
     }
     ]
   }

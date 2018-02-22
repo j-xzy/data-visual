@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Studio from '@page/studio';
+import './assets/icon/style.css';
 
 const style = {
   margin: 0,
