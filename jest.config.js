@@ -9,6 +9,9 @@ for (let key in paths) {
 }
 
 module.exports =  merge({
+  setupFiles: [
+    './FrontEnd/test/setup.js',
+  ],
   transform: {
     "^.+\\.tsx?$": "ts-jest"
   },

@@ -2,9 +2,29 @@
   position: relative
   display: flex
   flex-direction: row
+  background: yellow
+  .collapse
+    display: none
+    width: 0
+  .bright
+    background: blue
   .sidebar_bar
-    width: 30px
-    background: yellow
+    background: #001529
+    width: 35px
+    min-width: 35px
+    ul
+      margin: 0
+      padding: 0
+      width: 100%
+      list-style: none
+      li
+        width: 100%
+        text-align: center
+        margin: 10px 0
+        cursor: pointer
+        span
+          color: rgba(255, 255, 255, 0.65)
+          font-size: 23px
+          writing-mode: vertical-lr
   .sidebar_panels
     width: 100%
-    background: red

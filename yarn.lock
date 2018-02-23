@@ -20,6 +20,10 @@
   version "0.22.7"
   resolved "http://registry.npm.taobao.org/@types/cheerio/download/@types/cheerio-0.22.7.tgz#4a92eafedfb2b9f4437d3a4410006d81114c66ce"
 
+"@types/classnames@^2.2.3":
+  version "2.2.3"
+  resolved "http://registry.npm.taobao.org/@types/classnames/download/@types/classnames-2.2.3.tgz#3f0ff6873da793870e20a260cada55982f38a9e5"
+
 "@types/enzyme-adapter-react-16@^1.0.2":
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/@types/enzyme-adapter-react-16/download/@types/enzyme-adapter-react-16-1.0.2.tgz#15ae37c64d6221a6f4b3a4aacc357cf773859de4"
@@ -40,6 +44,10 @@
 "@types/node@*":
   version "9.4.5"
   resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-9.4.5.tgz#d2a90c634208173d1b1a0a6ba9f1df3de62edcf5"
+
+"@types/prop-types@^15.5.2":
+  version "15.5.2"
+  resolved "http://registry.npm.taobao.org/@types/prop-types/download/@types/prop-types-15.5.2.tgz#3c6b8dceb2906cc87fe4358e809f9d20c8d59be1"
 
 "@types/react-dom@^16.0.4":
   version "16.0.4"
