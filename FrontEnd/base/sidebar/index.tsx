@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { Panel, PanelProps } from './panel';
 import * as classNames from 'classnames';
 import './style.styl';
@@ -29,36 +28,28 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 
   static Panel = Panel;
 
-  static childContextTypes = {
-    collapse: PropTypes.func
-  };
-
   private barNode: HTMLDivElement;
 
-  private barWidth: string;
-
-  getChildContext() {
-    return { collapse: this.collapsePanel };
-  }
+  public barWidth: string;
 
   renderIconBar(c: React.ReactElement<PanelProps>, i: number) {
     const { icon, title } = c.props;
     return (
-      <li key={i} className={classNames({ bright: this.state.selectKey === i })}
+      <li key={i} className={classNames({ bright: !this.state.isCollapsed && this.state.selectKey === i })}
         onClick={() => this.setState({ selectKey: i, isCollapsed: false })}>
         <span className={icon}>{typeof (icon) === 'undefined' && title}</span>
       </li>
     );
   }
 
-  collapsePanel() {
+  collapsePanel(event: React.MouseEvent<HTMLElement>) {
     this.setState({ isCollapsed: true });
   }
 
   renderPanel(c: React.ReactElement<PanelProps>, i: number) {
     if (i !== this.state.selectKey)
       return null;
-    return c;
+    return React.cloneElement(c, { collapse: this.collapsePanel, isLeft: this.props.isLeft } as PanelProps);
   }
 
   componentDidMount() {
@@ -71,7 +62,7 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
     const width = this.state.isCollapsed ? this.barWidth : this.props.width;
     const flexDirection = isLeft ? 'row' : 'row-reverse';
     return (
-      <div style={{ width: width, height: height, flexDirection }} className='sidebar_container'>
+      <div style={{ width: width, minWidth: width, height: height, flexDirection }} className='sidebar_container'>
         <div className='sidebar_bar' ref={(node) => this.barNode = node}>
           <ul>
             {React.Children.map(children, this.renderIconBar)}

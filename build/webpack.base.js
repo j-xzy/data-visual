@@ -46,6 +46,7 @@ var baseConfig = {
             style: 'css'
           })]
         }),
+        configFile: path.join(__dirname, '..', 'tsconfig.json'),
         compilerOptions: {
           module: 'es2015'
         }
@@ -59,7 +60,7 @@ var baseConfig = {
           name: 'static/img/[name].[hash:7].[ext]'
         }
       },
-    },{
+    }, {
       test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
       use: {
         loader: 'url-loader',

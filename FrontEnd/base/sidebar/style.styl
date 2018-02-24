@@ -1,17 +1,19 @@
 .sidebar_container
   position: relative
+  box-sizing: border-box
   display: flex
   flex-direction: row
-  background: yellow
+  background: rgba(0, 0, 0, 0.7)
+  transition: all 0.3s
   .collapse
-    display: none
-    width: 0
+    opacity 0
+    width: 0 !important
   .bright
-    background: blue
+    color: rgb(255, 255, 255)
   .sidebar_bar
-    background: #001529
-    width: 35px
-    min-width: 35px
+    width: 25px
+    min-width: 25px
+    color: rgba(255, 255, 255, 0.65)
     ul
       margin: 0
       padding: 0
@@ -23,8 +25,36 @@
         margin: 10px 0
         cursor: pointer
         span
-          color: rgba(255, 255, 255, 0.65)
-          font-size: 23px
-          writing-mode: vertical-lr
+          font-size: 15px
   .sidebar_panels
     width: 100%
+    .panel
+      height: 100%
+      overflow: hidden
+      .head
+        position relative
+        color: #ffffff
+        .arrow
+          position absolute
+          top: 5px
+          width: 15px
+          height: 15px
+          cursor pointer
+        .arrow-left      
+          transform: rotate(0deg)
+          right: 5px
+        .arrow-right
+          transform: rotate(180deg)
+          left: 10px
+        .title
+          margin: 3px 0 0 0
+          text-align: center 
+          padding: 0
+          font-size: 18px
+          font-weight: 300
+          color: #ffffff
+      .content
+        margin: 0 4px
+        height: 100%
+        background: #000
+        border-radius: 3px
