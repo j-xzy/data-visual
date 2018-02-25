@@ -24,10 +24,11 @@
 | width | 侧边栏的宽度 |　string　| '300px' | '100%' |
 | height | 侧边栏的高度　|　string | '100%' | '100%' |
 | mode | 分布方式:左侧、右侧 |　string:'left' 'right'　| 'right' | 'left' |
-
+| className | 样式选择器 |　string　|  |  |
 ### Sidebar.Panel
 
 |　参数　|　说明　|　类型　| 示例　|　默认值　|
 | ---  | --- | --- | --- | --- |
 | title | 面板名称 |　string　| '名称１' | |
 | icon |　代替面板名称的图标字体 |　string | 'icon_pan' | |
+| className | 样式选择器 |　string　|  |  |

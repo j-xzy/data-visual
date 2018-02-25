@@ -9,6 +9,7 @@ interface SidebarProps {
   width?: string;
   height?: string;
   mode?: SidebarMode;
+  className?: string;
 }
 
 interface SidebarState {
@@ -67,9 +68,9 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
   }
 
   render() {
-    const { height, children, mode } = this.props;
+    const { height, children, mode, className } = this.props;
     const width = this.state.isCollapsed ? this.barWidth : this.props.width;
-    const sidebarCls = classNames('sidebar_container', {
+    const sidebarCls = classNames('sidebar_container', className, {
       'sidebar_container_right': this.props.mode === 'right'
     });
     return (

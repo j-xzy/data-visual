@@ -1,12 +1,12 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import Studio from '../index';
+import Leftbar from '../index';
 import Sidebar from '@base/sidebar';
 
-describe('<Studio />', () => {
+describe('<Leftbar />', () => {
   test('<Sidebar/> can only contain <Sidebar.Panel/> ', () => {
-    const studio = Enzyme.shallow(<Studio />);
-    const sidebar = studio.find(Sidebar);
+    const leftbar = Enzyme.shallow(<Leftbar />);
+    const sidebar = leftbar.find(Sidebar);
     sidebar.children().forEach((child) => {
       expect(child.type()).toEqual(Sidebar.Panel);
     });

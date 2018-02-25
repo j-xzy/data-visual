@@ -5,12 +5,13 @@ export interface PanelProps {
   icon?: string;
   children?: React.ReactNode;
   collapse?: React.MouseEventHandler<HTMLElement>;
+  className?: string;
 }
 
 export class Panel extends React.Component<PanelProps, undefined> {
   render() {
     return (
-      <div className='panel'>
+      <div className={classNames('panel', this.props.className)}>
         <div className='head'>
           <h3 className='title'>{this.props.title}</h3>
           <span className='arrow' onClick={this.props.collapse}>

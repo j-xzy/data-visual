@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Studio from '@page/studio';
+import Studio from '@pages/studio';
 
 const style = {
   margin: 0,
