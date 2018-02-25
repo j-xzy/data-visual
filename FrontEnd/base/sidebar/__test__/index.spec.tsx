@@ -5,7 +5,7 @@ import Sidebar from '../index';
 describe('<Sidebar />', () => {
   test('highlight and switch', () => {
     const wrapper = mount(
-      <Sidebar isLeft={true} width='350px' height='100%'>
+      <Sidebar>
         <Sidebar.Panel title='panel1'>
           <div>panel1</div>
         </Sidebar.Panel>
@@ -28,29 +28,25 @@ describe('<Sidebar />', () => {
 
   test('side', () => {
     const wrapper_left = mount(
-      <Sidebar isLeft={true} width='350px' height='100%'>
+      <Sidebar mode='left'>
         <Sidebar.Panel title='panel1'>
         </Sidebar.Panel>
       </Sidebar>);
-    expect(wrapper_left.props().isLeft).toBe(true);
-    expect(wrapper_left.find('.arrow').hasClass('arrow-left')).toBe(true);
-    expect(wrapper_left.find('.arrow').hasClass('arrow-right')).toBe(false);
-    expect(wrapper_left.find('.sidebar_container').prop('style').flexDirection).toBe('row');
+    expect(wrapper_left.props().mode).toBe('left');
+    expect(wrapper_left.find('.sidebar_container').hasClass('sidebar_container_right')).toBe(false);
 
     const wrapper_right = mount(
-      <Sidebar isLeft={false} width='350px' height='100%'>
+      <Sidebar mode='right'>
         <Sidebar.Panel title='panel1'>
         </Sidebar.Panel>
       </Sidebar>);
-    expect(wrapper_right.props().isLeft).toBe(false);
-    expect(wrapper_right.find('.arrow').hasClass('arrow-left')).toBe(false);
-    expect(wrapper_right.find('.arrow').hasClass('arrow-right')).toBe(true);
-    expect(wrapper_right.find('.sidebar_container').prop('style').flexDirection).toBe('row-reverse');
+    expect(wrapper_right.props().mode).toBe('right');
+    expect(wrapper_right.find('.sidebar_container').hasClass('sidebar_container_right')).toBe(true);
   });
 
   test('collapse', () => {
     const wrapper = mount(
-      <Sidebar isLeft={true} width='350px' height='100%'>
+      <Sidebar>
         <Sidebar.Panel title='panel1'>
           <div>panel1</div>
         </Sidebar.Panel>

@@ -3,10 +3,12 @@ import { Panel, PanelProps } from './panel';
 import * as classNames from 'classnames';
 import './style.styl';
 
+type SidebarMode = 'left' | 'right';
+
 interface SidebarProps {
-  width: string;
-  height: string;
-  isLeft: boolean;
+  width?: string;
+  height?: string;
+  mode?: SidebarMode;
 }
 
 interface SidebarState {
@@ -26,6 +28,12 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
     };
   }
 
+  static defaultProps = {
+    mode: 'left',
+    width: '100%',
+    height: '100%'
+  };
+
   static Panel = Panel;
 
   private barNode: HTMLDivElement;
@@ -35,7 +43,8 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
   renderIconBar(c: React.ReactElement<PanelProps>, i: number) {
     const { icon, title } = c.props;
     return (
-      <li key={i} className={classNames({ bright: !this.state.isCollapsed && this.state.selectKey === i })}
+      <li key={i} className={classNames(
+        { bright: !this.state.isCollapsed && this.state.selectKey === i })}
         onClick={() => this.setState({ selectKey: i, isCollapsed: false })}>
         <span className={icon}>{typeof (icon) === 'undefined' && title}</span>
       </li>
@@ -49,7 +58,7 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
   renderPanel(c: React.ReactElement<PanelProps>, i: number) {
     if (i !== this.state.selectKey)
       return null;
-    return React.cloneElement(c, { collapse: this.collapsePanel, isLeft: this.props.isLeft } as PanelProps);
+    return React.cloneElement(c, { collapse: this.collapsePanel } as PanelProps);
   }
 
   componentDidMount() {
@@ -58,11 +67,13 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
   }
 
   render() {
-    const { height, children, isLeft } = this.props;
+    const { height, children, mode } = this.props;
     const width = this.state.isCollapsed ? this.barWidth : this.props.width;
-    const flexDirection = isLeft ? 'row' : 'row-reverse';
+    const sidebarCls = classNames('sidebar_container', {
+      'sidebar_container_right': this.props.mode === 'right'
+    });
     return (
-      <div style={{ width: width, minWidth: width, height: height, flexDirection }} className='sidebar_container'>
+      <div style={{ width: width, minWidth: width, height: height }} className={sidebarCls}>
         <div className='sidebar_bar' ref={(node) => this.barNode = node}>
           <ul>
             {React.Children.map(children, this.renderIconBar)}

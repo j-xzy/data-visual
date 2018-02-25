@@ -14,7 +14,7 @@ export default class Studio extends React.Component {
   render() {
     return (
       <div className='studio'>
-        <Sidebar isLeft={true} width='270px' height='100%'>
+        <Sidebar mode='left' width='250px' height='100%'>
           <Sidebar.Panel title='组件'>
             <Collapse bordered={false}>
               <Panel header='饼状图' key='1' style={panelStyle}>
@@ -33,8 +33,11 @@ export default class Studio extends React.Component {
           </Sidebar.Panel>
         </Sidebar>
         <div className='st_content'></div>
-        <div className='st_right_side'>
-        </div>
+        <Sidebar mode='right' width='270px' height='100%'>
+          <Sidebar.Panel title='设置'>
+            <div>this is settings</div>
+          </Sidebar.Panel>
+        </Sidebar>
       </div>
     );
   }
