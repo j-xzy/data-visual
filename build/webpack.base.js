@@ -38,7 +38,7 @@ var baseConfig = {
       exclude: /node_modules/,
       enforce: "pre",
       options: {
-        transpileOnly: true,
+        // transpileOnly: true,
         getCustomTransformers: () => ({
           before: [tsImportPluginFactory({
             libraryName: 'antd',

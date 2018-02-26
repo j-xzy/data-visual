@@ -57,9 +57,11 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
   }
 
   renderPanel(c: React.ReactElement<PanelProps>, i: number) {
-    if (i !== this.state.selectKey)
-      return null;
-    return React.cloneElement(c, { collapse: this.collapsePanel } as PanelProps);
+    let newProps = {
+      collapse: this.collapsePanel,
+      isShow: i === this.state.selectKey
+    };
+    return React.cloneElement(c, newProps as PanelProps);
   }
 
   componentDidMount() {

@@ -6,24 +6,24 @@ describe('<Sidebar />', () => {
   test('highlight and switch', () => {
     const wrapper = mount(
       <Sidebar>
-        <Sidebar.Panel title='panel1'>
+        <Sidebar.Panel className='p1' title='panel1'>
           <div>panel1</div>
         </Sidebar.Panel>
-        <Sidebar.Panel title='panel2'>
+        <Sidebar.Panel className='p2' title='panel2'>
           <div>panel2</div>
         </Sidebar.Panel>
       </Sidebar>);
     expect(wrapper.find('ul li').at(0).hasClass('bright')).toBe(true);
     expect(wrapper.find('ul li').at(1).hasClass('bright')).toBe(false);
-    expect(wrapper.find('.sidebar_panels').contains(<div>panel1</div>)).toBe(true);
-    expect(wrapper.find('.sidebar_panels').contains(<div>panel2</div>)).toBe(false);
+    expect(wrapper.find('.p1').at(1).prop('style').display).toBe('block');
+    expect(wrapper.find('.p2').at(1).prop('style').display).toBe('none');
 
     wrapper.find('ul li').at(1).simulate('click');
 
     expect(wrapper.find('ul li').at(0).hasClass('bright')).toBe(false);
     expect(wrapper.find('ul li').at(1).hasClass('bright')).toBe(true);
-    expect(wrapper.find('.sidebar_panels').contains(<div>panel1</div>)).toBe(false);
-    expect(wrapper.find('.sidebar_panels').contains(<div>panel2</div>)).toBe(true);
+    expect(wrapper.find('.p1').at(1).prop('style').display).toBe('none');
+    expect(wrapper.find('.p2').at(1).prop('style').display).toBe('block');
   });
 
   test('side', () => {

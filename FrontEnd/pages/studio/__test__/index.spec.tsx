@@ -7,9 +7,9 @@ import Canvas from '@components/canvas';
 
 describe('<Studio />', () => {
   test('<Sidebar/> contains <Leftbar/> <Setting/>  <Canvas/>', () => {
-    const studio = Enzyme.shallow(<Studio />);
+    const studio = Enzyme.mount(<Studio />);
     expect(studio.containsAllMatchingElements(
-      [<Leftbar />, <Setting />, <Canvas />])
+      [<Leftbar />, <Setting />, <Canvas width='1024px' height='800px' />])
     ).toBe(true);
   });
 });
