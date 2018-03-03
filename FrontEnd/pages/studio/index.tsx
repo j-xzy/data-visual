@@ -24,17 +24,18 @@ export default class Studio extends React.Component<undefined, StudioState> {
   constructor() {
     super(undefined);
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
-    this.state = {
-      canvasSize: {
-        width: '1024px',
-        height: '800px'
-      },
-      canvasPos: {
-        paddingLeft: '0px',
-        paddingTop: '0px'
-      }
-    };
   }
+
+  state = {
+    canvasSize: {
+      width: '1024px',
+      height: '800px'
+    },
+    canvasPos: {
+      paddingLeft: '0px',
+      paddingTop: '0px'
+    }
+  };
 
   private contentNode: HTMLElement;
 
