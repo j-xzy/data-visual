@@ -9,6 +9,14 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = merge(baseConfig, {
+  mode: 'production',
+  optimization: {
+    splitChunks:{
+      chunks: 'all' ,
+      name: false
+    },
+    runtimeChunk: true
+  },
   module: {
     rules: [{
         test: /\.css$/,
@@ -33,9 +41,6 @@ module.exports = merge(baseConfig, {
     chunkFilename: 'js/[name].[chunkhash].js',
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    }),
     new UglifyJSPlugin({
       sourceMap: true
     }),
@@ -61,23 +66,6 @@ module.exports = merge(baseConfig, {
         minifyCSS: true,
         minifyJS: true
       }
-    }),
-    new webpack.HashedModuleIdsPlugin(),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: function (module, count) {
-        // 提取 node_modules 到 vendor
-        return (
-          module.resource &&
-          /\.js$/.test(module.resource) &&
-          module.resource.indexOf(
-            path.join(__dirname, '../node_modules')
-          ) === 0
-        )
-      }
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest'
     })
   ]
 });

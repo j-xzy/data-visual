@@ -11,10 +11,10 @@ let compiler = webpack(config);
 
 // 代码更新后刷新页面
 io.on('connection', function (socket) {
-  if (compiler._plugins['done'].length > 1) {
-    delete compiler._plugins['done'].pop();
+  if (compiler.hooks.done.taps.length > 1) {
+    delete compiler.hooks.done.taps.pop();
   }
-  compiler.plugin('done', function () {
+  compiler.hooks.done.tap('reload', function () {
     socket.emit('reload');
   }.bind(this));
 });

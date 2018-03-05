@@ -9,6 +9,7 @@ baseConfig.entry.app = [path.join(__dirname, 'auto-reload.js')]
 
 module.exports = merge(baseConfig, {
   devtool: 'cheap-module-source-map',
+  mode: 'development',
   module: {
     rules: [{
       test: /\.tsx$/,
