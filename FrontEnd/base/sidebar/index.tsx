@@ -7,6 +7,8 @@ type SidebarMode = 'left' | 'right';
 
 type OpenState = 'open' | 'close';
 
+type RenderReason = 'other' | 'open' | 'close';
+
 interface IOnOpenChange {
   (state?: OpenState): void;
 }
@@ -16,7 +18,7 @@ interface ISidebarProps {
   height?: string;
   mode?: SidebarMode;
   className?: string;
-  onOpenChange?: IOnOpenChange;
+  onOpenChangeBefore?: IOnOpenChange;
   onOpenChangeAfter?: IOnOpenChange;
 }
 
@@ -24,6 +26,10 @@ interface ISidebarState {
   selectKey: number;
   isCollapsed: boolean;
 }
+
+const ANIMATION_TIME = 300;
+const INITIAL_START_TIME = -1;
+let startTime: number = INITIAL_START_TIME;
 
 export default class Sidebar extends React.Component<ISidebarProps, ISidebarState> {
   constructor(props: ISidebarProps) {
@@ -47,7 +53,7 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
 
   static Panel = Panel;
 
-  private isRenderByOpenChange = false;
+  private renderReason: RenderReason = 'other';
 
   private barNode: HTMLDivElement;
 
@@ -55,8 +61,8 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
 
   handleIconClick(idx: number) {
     if (this.state.isCollapsed) {
-      this.props.onOpenChange && this.props.onOpenChange('open');
-      this.isRenderByOpenChange = true;
+      this.props.onOpenChangeBefore && this.props.onOpenChangeBefore('open');
+      this.renderReason = 'open';
     }
 
     this.setState({ selectKey: idx, isCollapsed: false });
@@ -74,9 +80,9 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
   }
 
   collapsePanel(event: React.MouseEvent<HTMLElement>) {
-    this.setState({ isCollapsed: true }, () => {
-      this.props.onOpenChange && this.props.onOpenChange('close');
-    });
+    this.props.onOpenChangeBefore && this.props.onOpenChangeBefore('close');
+    this.renderReason = 'close';
+    this.setState({ isCollapsed: true });
   }
 
   renderPanel(c: React.ReactElement<IPanelProps>, i: number) {
@@ -87,12 +93,29 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
     return React.cloneElement(c, newProps as IPanelProps);
   }
 
+  afterAnimation(timeStamp: number) {
+    if (startTime === INITIAL_START_TIME) {
+      startTime = timeStamp;
+    }
+    if (timeStamp - startTime > ANIMATION_TIME) {
+      this.props.onOpenChangeAfter(this.renderReason as OpenState);
+      this.renderReason = 'other';
+      startTime = INITIAL_START_TIME;
+    } else {
+      window.requestAnimationFrame(this.afterAnimation.bind(this));
+    }
+  }
+
   componentDidMount() {
     const style = document.defaultView.getComputedStyle(this.barNode, null);
     this.barWidth = style.width;
   }
 
   componentDidUpdate() {
+    const onOpenChangeAfter = this.props.onOpenChangeAfter;
+    if (this.renderReason !== 'other' && onOpenChangeAfter) {
+      window.requestAnimationFrame(this.afterAnimation.bind(this));
+    }
   }
 
   render() {

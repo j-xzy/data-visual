@@ -20,12 +20,11 @@ interface IStudioState {
   canvasSize: CanvasSize;
 }
 
-export const Context  = React.createContext();
+export const Context = React.createContext();
 
 export class Studio extends React.Component<undefined, IStudioState> {
   constructor() {
     super(undefined);
-    this.updateCanvasPos = this.updateCanvasPos.bind(this);
   }
 
   state = {
@@ -40,6 +39,12 @@ export class Studio extends React.Component<undefined, IStudioState> {
   };
 
   private contentNode: HTMLElement;
+
+  private contextValue = {
+    updateCanvasPos: this.updateCanvasPos.bind(this),
+    changeCanvasSize: this.changeCanvasSize.bind(this),
+    defaultCanvasSize: Object.assign({}, this.state.canvasSize)
+  };
 
   updateCanvasPos() {
     let { width, height } = document.defaultView.getComputedStyle(this.contentNode, null);
@@ -56,6 +61,15 @@ export class Studio extends React.Component<undefined, IStudioState> {
     });
   }
 
+  changeCanvasSize(width: string, height: string) {
+    this.setState({
+      canvasSize: {
+        width: width,
+        height: height
+      }
+    });
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.updateCanvasPos);
     this.updateCanvasPos();
@@ -68,18 +82,18 @@ export class Studio extends React.Component<undefined, IStudioState> {
   render() {
     const { canvasSize, canvasPos } = this.state;
     return (
-      <Context.Provider value={this.updateCanvasPos}>
-      <div className='studio'>
-        <div className='leftbar_container'>
-          <Leftbar />
+      <Context.Provider value={this.contextValue}>
+        <div className='studio'>
+          <div className='leftbar_container'>
+            <Leftbar />
+          </div>
+          <div ref={(node) => this.contentNode = node} className='st_content' style={{ ...canvasPos }}>
+            <Canvas width={canvasSize.width} height={canvasSize.height} />
+          </div>
+          <div className='setting_container'>
+            <Setting />
+          </div>
         </div>
-        <div ref={(node) => this.contentNode = node} className='st_content' style={{ ...canvasPos }}>
-          <Canvas width={canvasSize.width} height={canvasSize.height} />
-        </div>
-        <div className='setting_container'>
-          <Setting />
-        </div>
-      </div>
       </Context.Provider>
     );
   }

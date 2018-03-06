@@ -25,6 +25,8 @@
 | height | 侧边栏的高度　|　string | '100%' | '100%' |
 | mode | 分布方式:左侧、右侧 |　string:'left' 'right'　| 'right' | 'left' |
 | className | 样式选择器 |　string　|  |  |
+| onOpenChangeBefore | 侧边栏收缩展开事件(动效开始前触发) | ('close' or 'open')=>void
+| onOpenChangeAfter | 侧边栏收缩展开事件(动效结束后触发) | ('close' or 'open')=>void
 ### Sidebar.Panel
 
 |　参数　|　说明　|　类型　| 示例　|　默认值　|

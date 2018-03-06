@@ -20,8 +20,8 @@ export default class LeftBar extends React.Component {
   render() {
     return (
       <StudioContext.Consumer>
-        {(updateCanvasPos: any) => (
-          <Sidebar onOpenChange={() => updateCanvasPos()} className='leftbar' mode='left' width='250px' height='100%'>
+        {({ updateCanvasPos }: any) => (
+          <Sidebar onOpenChangeAfter={() => updateCanvasPos()} className='leftbar' mode='left' width='250px' height='100%'>
             <Sidebar.Panel className='component_panel' title='组件'>
               <Collapse bordered={false}>
                 <Panel header='饼状图' key='1' style={panelStyle}>

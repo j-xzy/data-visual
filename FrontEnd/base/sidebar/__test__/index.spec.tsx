@@ -47,7 +47,7 @@ describe('<Sidebar />', () => {
   test('collapse', () => {
     const onOpenChange = jest.fn();
     const wrapper = mount(
-      <Sidebar onOpenChange={onOpenChange}>
+      <Sidebar onOpenChangeAfter={onOpenChange}>
         <Sidebar.Panel title='panel1'>
           <div>panel1</div>
         </Sidebar.Panel>
@@ -57,20 +57,5 @@ describe('<Sidebar />', () => {
     wrapper.find('.arrow').simulate('click');
     expect(wrapper.find('.sidebar_panels').hasClass('collapse')).toBe(true);
     expect(wrapper.state('isCollapsed')).toBe(true);
-  });
-
-  test('onOpenChange', () => {
-    const onOpenChange = jest.fn();
-    const wrapper = mount(
-      <Sidebar onOpenChange={onOpenChange}>
-        <Sidebar.Panel title='panel1'>
-          <div>panel1</div>
-        </Sidebar.Panel>
-      </Sidebar>);
-
-    wrapper.find('.arrow').simulate('click');
-    expect(onOpenChange.mock.calls[0][0]).toBe('close');
-    wrapper.find('ul li').at(0).simulate('click');
-    expect(onOpenChange.mock.calls[1][0]).toBe('open');
   });
 });
