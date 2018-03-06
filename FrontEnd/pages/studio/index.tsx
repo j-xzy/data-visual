@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Leftbar from '@components/leftbar';
 import Setting from '@components/setting';
-import Canvas from '@components/canvas';
+import { Canvas } from '@components/canvas';
 
 import './style.styl';
 
@@ -15,12 +15,14 @@ type CanvasSize = {
   height: string
 };
 
-interface StudioState {
+interface IStudioState {
   canvasPos: CanvasPos;
   canvasSize: CanvasSize;
 }
 
-export default class Studio extends React.Component<undefined, StudioState> {
+export const Context  = React.createContext();
+
+export class Studio extends React.Component<undefined, IStudioState> {
   constructor() {
     super(undefined);
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
@@ -28,8 +30,8 @@ export default class Studio extends React.Component<undefined, StudioState> {
 
   state = {
     canvasSize: {
-      width: '1024px',
-      height: '800px'
+      width: '800px',
+      height: '600px'
     },
     canvasPos: {
       paddingLeft: '0px',
@@ -66,6 +68,7 @@ export default class Studio extends React.Component<undefined, StudioState> {
   render() {
     const { canvasSize, canvasPos } = this.state;
     return (
+      <Context.Provider value={this.updateCanvasPos}>
       <div className='studio'>
         <div className='leftbar_container'>
           <Leftbar />
@@ -77,6 +80,7 @@ export default class Studio extends React.Component<undefined, StudioState> {
           <Setting />
         </div>
       </div>
+      </Context.Provider>
     );
   }
 }

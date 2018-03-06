@@ -2,16 +2,16 @@ import * as React from 'react';
 
 import './style.styl';
 
-interface CanvasProps {
+export interface ICanvasProps {
   width: string;
   height: string;
 }
 
-interface CanvasState {
+export interface ICanvasState {
 }
 
-export default class Canvas extends React.Component<CanvasProps, CanvasState> {
-  constructor(props: CanvasProps) {
+export class Canvas extends React.Component<ICanvasProps, ICanvasState> {
+  constructor(props: ICanvasProps) {
     super(props);
   }
   render() {

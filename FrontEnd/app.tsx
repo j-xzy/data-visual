@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Studio from '@pages/studio';
+import { Studio } from '@pages/studio';
 
 const style = {
   margin: 0,
@@ -11,9 +11,7 @@ const style = {
 export default class App extends React.Component {
   render() {
     return (
-      <div style={style}>
-        <Studio />
-      </div>
+      <Studio />
     );
   }
 }

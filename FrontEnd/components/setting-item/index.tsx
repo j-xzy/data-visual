@@ -2,11 +2,11 @@ import * as React from 'react';
 
 import './style.styl';
 
-interface ItemProps {
+interface IItemProps {
   name: string;
 }
 
-export default class Item extends React.Component<ItemProps, undefined> {
+export default class Item extends React.Component<IItemProps, undefined> {
   render() {
     return (
       <div className='setting-item'>

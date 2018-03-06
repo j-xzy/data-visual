@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-export interface PanelProps {
+export interface IPanelProps {
   title: string;
   icon?: string;
   children?: React.ReactNode;
@@ -9,7 +9,7 @@ export interface PanelProps {
   isShow?: boolean;
 }
 
-export class Panel extends React.Component<PanelProps, undefined> {
+export class Panel extends React.Component<IPanelProps, undefined> {
   render() {
     const { className, title, collapse, children, isShow } = this.props;
     const display = isShow ? 'block' : 'none';

@@ -1,15 +1,16 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import Studio from '../index';
+import { Studio } from '../index';
 import Leftbar from '@components/leftbar';
 import Setting from '@components/setting';
-import Canvas from '@components/canvas';
+import { Canvas, ICanvasProps } from '@components/canvas';
 
 describe('<Studio />', () => {
   test('<Sidebar/> contains <Leftbar/> <Setting/>  <Canvas/>', () => {
     const studio = Enzyme.mount(<Studio />);
+    let canvasProps: ICanvasProps;
     expect(studio.containsAllMatchingElements(
-      [<Leftbar />, <Setting />, <Canvas width='1024px' height='800px' />])
+      [<Leftbar />, <Setting />, <Canvas {...canvasProps} />])
     ).toBe(true);
   });
 });
