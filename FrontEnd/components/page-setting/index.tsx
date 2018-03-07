@@ -6,13 +6,13 @@ import PageSize from './size';
 export default class PageSetting extends React.Component {
   render() {
     return (
-      <StudioContext>
-        {({ changeCanvasSize, defaultCanvasSize }: any) => ([
+      <StudioContext.Consumer>
+        {({ changeCanvasSize, defaultCanvasSize}) => ([
           <Item name='屏幕大小' key='pageSize'>
             <PageSize changeCanvasSize={changeCanvasSize} defaultCanvasSize={defaultCanvasSize} />
           </Item>
         ])}
-      </StudioContext>
+      </StudioContext.Consumer>
     );
   }
 }

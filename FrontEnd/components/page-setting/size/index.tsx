@@ -1,16 +1,11 @@
 import * as React from 'react';
 import { InputNumber } from 'antd';
-
+import { CanvasSize, IChangeCanvasSize } from '@pages/studio';
 import './style.styl';
 
 interface IProps {
-  changeCanvasSize: Function;
-  defaultCanvasSize: any;
-}
-
-interface ISize {
-  width?: number;
-  height?: number;
+  changeCanvasSize: IChangeCanvasSize;
+  defaultCanvasSize: CanvasSize;
 }
 
 export default class PageSize extends React.Component<IProps, undefined> {
@@ -19,30 +14,28 @@ export default class PageSize extends React.Component<IProps, undefined> {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  private defaultSize: any;
-
-  componentWillMount() {
-    this.defaultSize = this.props.defaultCanvasSize;
+  shouldComponentUpdate() {
+    return false;
   }
 
-  handleChange({ width, height }: ISize) {
-    const { changeCanvasSize, defaultCanvasSize } = this.props;
-    if (typeof width === 'undefined') {
-      changeCanvasSize(defaultCanvasSize.width + 'px', height + 'px');
-    } else {
-      changeCanvasSize(width + 'px', defaultCanvasSize.height + 'px');
-    }
+  private canvasSize = this.props.defaultCanvasSize;
+
+  handleChange(width: number, height: number) {
+    this.props.changeCanvasSize(width + 'px', height + 'px');
   }
 
   render() {
+    const { width, height } = this.canvasSize;
     return (
       <div className='number-container'>
         <div className='number'>
-          <InputNumber defaultValue={parseInt(this.defaultSize.width)} onChange={(width: number) => this.handleChange({ width })} />
+          <InputNumber defaultValue={parseInt(width)}
+            onChange={(value: number) => this.handleChange(value, parseInt(height))} />
           <div>宽度</div>
         </div>
         <div className='number'>
-          <InputNumber defaultValue={parseInt(this.defaultSize.height)} onChange={(height: number) => this.handleChange({ height })} />
+          <InputNumber defaultValue={parseInt(height)}
+            onChange={(value: number) => this.handleChange(parseInt(width), value)} />
           <div>高度</div>
         </div>
       </div>

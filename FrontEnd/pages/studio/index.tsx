@@ -5,60 +5,72 @@ import { Canvas } from '@components/canvas';
 
 import './style.styl';
 
-type CanvasPos = {
+export type CanvasPos = {
   paddingLeft: string,
   paddingTop: string
 };
 
-type CanvasSize = {
+export type CanvasSize = {
   width: string,
   height: string
 };
 
-interface IStudioState {
-  canvasPos: CanvasPos;
+export interface IStudioState {
   canvasSize: CanvasSize;
 }
 
-export const Context = React.createContext();
+export interface IChangeCanvasSize {
+  (width: string, height: string): void;
+}
+
+export interface IContextValue {
+  defaultCanvasSize: CanvasSize;
+  updateCanvasPos: () => void;
+  changeCanvasSize: IChangeCanvasSize;
+}
+
+const DEFAULT_CANVASSIZE: CanvasSize = {
+  width: '800px',
+  height: '600px'
+};
+
+export const Context: React.Context<IContextValue> = React.createContext();
 
 export class Studio extends React.Component<undefined, IStudioState> {
   constructor() {
     super(undefined);
+    this.updateCanvasPos = this.updateCanvasPos.bind(this);
+    this.changeCanvasSize = this.changeCanvasSize.bind(this);
   }
 
   state = {
-    canvasSize: {
-      width: '800px',
-      height: '600px'
-    },
-    canvasPos: {
-      paddingLeft: '0px',
-      paddingTop: '0px'
-    }
+    canvasSize: DEFAULT_CANVASSIZE
+  };
+
+  private canvasPos = {
+    paddingLeft: '0px',
+    paddingTop: '0px'
   };
 
   private contentNode: HTMLElement;
 
-  private contextValue = {
+  private contextValue: IContextValue = {
+    defaultCanvasSize: DEFAULT_CANVASSIZE,
     updateCanvasPos: this.updateCanvasPos.bind(this),
-    changeCanvasSize: this.changeCanvasSize.bind(this),
-    defaultCanvasSize: Object.assign({}, this.state.canvasSize)
+    changeCanvasSize: this.changeCanvasSize.bind(this)
   };
 
   updateCanvasPos() {
-    let { width, height } = document.defaultView.getComputedStyle(this.contentNode, null);
-    this.setState((preState) => {
-      let canvasWidth = preState.canvasSize.width,
-        canvasHeight = preState.canvasSize.height,
-        paddingLeft = (parseFloat(width) - parseFloat(canvasWidth)) / 2 + 'px',
-        paddingTop = (parseFloat(height) - parseFloat(canvasHeight)) / 2 + 'px';
-      paddingLeft = parseFloat(paddingLeft) < 0 ? '50px' : paddingLeft;
-      paddingTop = parseFloat(paddingTop) < 0 ? '50px' : paddingTop;
-      return {
-        canvasPos: { paddingLeft, paddingTop }
-      };
-    });
+    const { width, height } = document.defaultView.getComputedStyle(this.contentNode, null);
+    const { canvasSize } = this.state;
+    let canvasWidth = canvasSize.width,
+      canvasHeight = canvasSize.height,
+      paddingLeft = (parseFloat(width) - parseFloat(canvasWidth)) / 2 + 'px',
+      paddingTop = (parseFloat(height) - parseFloat(canvasHeight)) / 2 + 'px';
+    paddingLeft = parseFloat(paddingLeft) < 0 ? '50px' : paddingLeft;
+    paddingTop = parseFloat(paddingTop) < 0 ? '50px' : paddingTop;
+    this.contentNode.style.paddingLeft = paddingLeft;
+    this.contentNode.style.paddingTop = paddingTop;
   }
 
   changeCanvasSize(width: string, height: string) {
@@ -79,15 +91,20 @@ export class Studio extends React.Component<undefined, IStudioState> {
     window.removeEventListener('resize', this.updateCanvasPos);
   }
 
+  componentDidUpdate() {
+    this.updateCanvasPos();
+  }
+
   render() {
-    const { canvasSize, canvasPos } = this.state;
+    const { canvasSize } = this.state;
+
     return (
       <Context.Provider value={this.contextValue}>
         <div className='studio'>
           <div className='leftbar_container'>
             <Leftbar />
           </div>
-          <div ref={(node) => this.contentNode = node} className='st_content' style={{ ...canvasPos }}>
+          <div ref={(node) => this.contentNode = node} className='st_content'>
             <Canvas width={canvasSize.width} height={canvasSize.height} />
           </div>
           <div className='setting_container'>
