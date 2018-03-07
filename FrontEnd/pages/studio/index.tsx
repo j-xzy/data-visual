@@ -2,6 +2,7 @@ import * as React from 'react';
 import Leftbar from '@components/leftbar';
 import Setting from '@components/setting';
 import { Canvas } from '@components/canvas';
+import { ScaleScroller } from '@components/scale-scroller';
 
 import './style.styl';
 
@@ -17,6 +18,7 @@ export type CanvasSize = {
 
 export interface IStudioState {
   canvasSize: CanvasSize;
+  canvasScale: number;
 }
 
 export interface IChangeCanvasSize {
@@ -33,6 +35,7 @@ const DEFAULT_CANVASSIZE: CanvasSize = {
   width: '800px',
   height: '600px'
 };
+const DEFAULT_CANVASSCALE = 1;
 
 export const Context: React.Context<IContextValue> = React.createContext();
 
@@ -41,10 +44,12 @@ export class Studio extends React.Component<undefined, IStudioState> {
     super(undefined);
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
     this.changeCanvasSize = this.changeCanvasSize.bind(this);
+    this.changeCanvasScale = this.changeCanvasScale.bind(this);
   }
 
   state = {
-    canvasSize: DEFAULT_CANVASSIZE
+    canvasSize: DEFAULT_CANVASSIZE,
+    canvasScale: DEFAULT_CANVASSCALE
   };
 
   private canvasPos = {
@@ -82,6 +87,10 @@ export class Studio extends React.Component<undefined, IStudioState> {
     });
   }
 
+  changeCanvasScale(scale: number) {
+    this.setState({ canvasScale: scale });
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.updateCanvasPos);
     this.updateCanvasPos();
@@ -96,7 +105,7 @@ export class Studio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize } = this.state;
+    const { canvasSize, canvasScale } = this.state;
 
     return (
       <Context.Provider value={this.contextValue}>
@@ -104,8 +113,15 @@ export class Studio extends React.Component<undefined, IStudioState> {
           <div className='leftbar_container'>
             <Leftbar />
           </div>
-          <div ref={(node) => this.contentNode = node} className='st_content'>
-            <Canvas width={canvasSize.width} height={canvasSize.height} />
+          <div className='st_content'>
+            <div ref={(node) => this.contentNode = node} className='canvas_wrapper'>
+              <Canvas canvasScale={canvasScale} width={canvasSize.width} height={canvasSize.height} />
+            </div>
+            <div className='scroll-wrapper' >
+              <div className='scroll-postion'>
+                <ScaleScroller onChange={this.changeCanvasScale} />
+              </div>
+            </div>
           </div>
           <div className='setting_container'>
             <Setting />

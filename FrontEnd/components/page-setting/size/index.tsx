@@ -11,31 +11,44 @@ interface IProps {
 export default class PageSize extends React.Component<IProps, undefined> {
   constructor(props: IProps) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
+    this.changewidth = this.changewidth.bind(this);
+    this.changeHeight = this.changeHeight.bind(this);
+  }
+  private canvasSize = this.props.defaultCanvasSize;
+
+  changewidth(width: number) {
+    this.canvasSize.width = width + 'px';
+    this.props.changeCanvasSize(width + 'px', this.canvasSize.height + 'px');
+  }
+
+  changeHeight(height: number) {
+    this.canvasSize.height = height + 'px';
+    this.props.changeCanvasSize(this.canvasSize.width + 'px', height + 'px');
+  }
+
+  handleChange(width: number, height: number) {
+    this.canvasSize = {
+      width: width + 'px',
+      height: height + 'px'
+    };
+    this.props.changeCanvasSize(width + 'px', height + 'px');
   }
 
   shouldComponentUpdate() {
     return false;
   }
 
-  private canvasSize = this.props.defaultCanvasSize;
-
-  handleChange(width: number, height: number) {
-    this.props.changeCanvasSize(width + 'px', height + 'px');
-  }
-
   render() {
-    const { width, height } = this.canvasSize;
     return (
       <div className='number-container'>
         <div className='number'>
-          <InputNumber defaultValue={parseInt(width)}
-            onChange={(value: number) => this.handleChange(value, parseInt(height))} />
+          <InputNumber defaultValue={parseInt('800px')}
+            onChange={(value: number) => this.changewidth(value)} />
           <div>宽度</div>
         </div>
         <div className='number'>
-          <InputNumber defaultValue={parseInt(height)}
-            onChange={(value: number) => this.handleChange(parseInt(width), value)} />
+          <InputNumber defaultValue={parseInt('600px')}
+            onChange={(value: number) => this.changeHeight(value)} />
           <div>高度</div>
         </div>
       </div>
