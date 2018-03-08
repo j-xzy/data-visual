@@ -67,11 +67,11 @@ export class Studio extends React.Component<undefined, IStudioState> {
 
   updateCanvasPos() {
     const { width, height } = document.defaultView.getComputedStyle(this.contentNode, null);
-    const { canvasSize } = this.state;
-    let canvasWidth = canvasSize.width,
-      canvasHeight = canvasSize.height,
-      paddingLeft = (parseFloat(width) - parseFloat(canvasWidth)) / 2 + 'px',
-      paddingTop = (parseFloat(height) - parseFloat(canvasHeight)) / 2 + 'px';
+    const { canvasSize, canvasScale } = this.state;
+    let canvasWidth = parseFloat(canvasSize.width) * canvasScale,
+      canvasHeight = parseFloat(canvasSize.height) * canvasScale,
+      paddingLeft = (parseFloat(width) - canvasWidth) / 2 + 'px',
+      paddingTop = (parseFloat(height) - canvasHeight) / 2 + 'px';
     paddingLeft = parseFloat(paddingLeft) < 0 ? '50px' : paddingLeft;
     paddingTop = parseFloat(paddingTop) < 0 ? '50px' : paddingTop;
     this.contentNode.style.paddingLeft = paddingLeft;
@@ -119,7 +119,7 @@ export class Studio extends React.Component<undefined, IStudioState> {
             </div>
             <div className='scroll-wrapper' >
               <div className='scroll-postion'>
-                <ScaleScroller onChange={this.changeCanvasScale} />
+                <ScaleScroller defaultValue={DEFAULT_CANVASSCALE} onChange={this.changeCanvasScale} />
               </div>
             </div>
           </div>
