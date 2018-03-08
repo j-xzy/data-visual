@@ -52,11 +52,6 @@ export class Studio extends React.Component<undefined, IStudioState> {
     canvasScale: DEFAULT_CANVASSCALE
   };
 
-  private canvasPos = {
-    paddingLeft: '0px',
-    paddingTop: '0px'
-  };
-
   private contentNode: HTMLElement;
 
   private contextValue: IContextValue = {

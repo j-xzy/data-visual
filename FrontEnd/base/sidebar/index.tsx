@@ -122,7 +122,7 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
     const { height, children, mode, className } = this.props;
     const width = this.state.isCollapsed ? this.barWidth : this.props.width;
     const sidebarCls = classNames('sidebar_container', className, {
-      'sidebar_container_right': this.props.mode === 'right'
+      'sidebar_container_right': mode === 'right'
     });
 
     return (

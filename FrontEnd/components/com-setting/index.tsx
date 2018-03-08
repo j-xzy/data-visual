@@ -1,5 +1,4 @@
 import * as  React from 'react';
-import Sidebar from '@base/sidebar';
 import Item from '@components/setting-item';
 
 export default class ComSetting extends React.Component {

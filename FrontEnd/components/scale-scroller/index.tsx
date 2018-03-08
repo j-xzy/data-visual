@@ -55,7 +55,7 @@ export class ScaleScroller extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { onChange, defaultValue } = this.props;
+    const { defaultValue } = this.props;
     const { inputValue } = this.state;
     return (
       <div className='scale-scroller-containr'>

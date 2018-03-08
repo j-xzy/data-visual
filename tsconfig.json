@@ -15,7 +15,8 @@
     "paths": {
       "@base/*": ["./FrontEnd/base/*"],
       "@pages/*": ["./FrontEnd/pages/*"],
-      "@components/*": ["./FrontEnd/components/*"]
+      "@components/*": ["./FrontEnd/components/*"],
+      "@charts/*": ["./FrontEnd/charts/*"]
     }
   }
 }
