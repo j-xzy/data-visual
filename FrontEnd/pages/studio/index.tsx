@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import Leftbar from '@components/leftbar';
 import Setting from '@components/setting';
 import { Canvas } from '@components/canvas';
@@ -39,7 +41,7 @@ const DEFAULT_CANVASSCALE = 1;
 
 export const Context: React.Context<IContextValue> = React.createContext();
 
-export class Studio extends React.Component<undefined, IStudioState> {
+class RawStudio extends React.Component<undefined, IStudioState> {
   constructor() {
     super(undefined);
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
@@ -126,3 +128,5 @@ export class Studio extends React.Component<undefined, IStudioState> {
     );
   }
 }
+
+export const Studio = DragDropContext(HTML5Backend)(RawStudio);

@@ -6,6 +6,7 @@
     "module": "es2015",
     "moduleResolution": "node",
     "target": "es6",
+    "experimentalDecorators": true,
     "lib": [
       "dom",
       "es7"
@@ -16,7 +17,8 @@
       "@base/*": ["./FrontEnd/base/*"],
       "@pages/*": ["./FrontEnd/pages/*"],
       "@components/*": ["./FrontEnd/components/*"],
-      "@charts/*": ["./FrontEnd/charts/*"]
+      "@charts/*": ["./FrontEnd/charts/*"],
+      "@lib/*": ["./FrontEnd/lib/*"]
     }
   }
 }

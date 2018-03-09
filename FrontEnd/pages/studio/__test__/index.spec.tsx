@@ -18,4 +18,8 @@ describe('<Studio />', () => {
   test('change canvas size', () => {
     expect(1).toBe(1);
   });
+
+  test('drag preview_chart', () => {
+    expect(1).toBe(1);
+  });
 });

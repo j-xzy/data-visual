@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PreviewContainer from '@charts/preview-container';
+import PreviewContainer from '@charts/preview';
 
 const preview = require('./preview.png');
 

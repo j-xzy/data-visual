@@ -1,0 +1,1 @@
+export const PREVIEW_CHART = 'preview_chart'; 
