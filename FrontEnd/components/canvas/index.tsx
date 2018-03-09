@@ -31,7 +31,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 const boxTarget = {
   drop(pros: ICanvasProps, monitor: DropTargetMonitor) {
     const item: any = monitor.getItem();
-    console.log(item.name);
+    console.log(monitor.getSourceClientOffset());
   }
 };
 

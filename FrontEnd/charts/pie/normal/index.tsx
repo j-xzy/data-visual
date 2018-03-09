@@ -1,3 +1,5 @@
 import Preview from './preview';
 
-export { Preview };
+const name = '普通饼图';
+
+export { Preview, name };
