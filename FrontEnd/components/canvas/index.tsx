@@ -2,7 +2,6 @@ import * as React from 'react';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
 import './style.styl';
-import { IconProps } from 'antd/lib/icon';
 
 export interface ICanvasProps {
   width: string;
@@ -11,27 +10,37 @@ export interface ICanvasProps {
   connectDropTarget?: ConnectDropTarget;
 }
 
-export interface ICanvasState {
+ interface ICanvasState {
+  charts: any[];
 }
 
 export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   constructor(props: ICanvasProps) {
     super(props);
+    this.state = {
+      charts: []
+    };
   }
+
+  async renderCharts() {
+  }
+
   render() {
     const { width, height, canvasScale, connectDropTarget } = this.props;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}>
-        <div className='canvas'></div>
+        <div className='canvas'>
+          {/* {this.renderCharts()} */}
+        </div>
       </div>
     );
   }
 }
 
 const boxTarget = {
-  drop(pros: ICanvasProps, monitor: DropTargetMonitor) {
-    const item: any = monitor.getItem();
-    console.log(monitor.getSourceClientOffset());
+  drop(pros: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
+    const item = monitor.getItem();
+    component.renderCharts();
   }
 };
 

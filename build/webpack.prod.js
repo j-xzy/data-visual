@@ -11,27 +11,26 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 module.exports = merge(baseConfig, {
   mode: 'production',
   optimization: {
-    splitChunks:{
-      chunks: 'all' ,
-      name: false
+    splitChunks: {
+      chunks: 'all',
     },
     runtimeChunk: true
   },
   module: {
     rules: [{
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: "css-loader"
-        })
-      },
-      {
-        test: /\.styl$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: ["css-loader", 'stylus-loader']
-        })
-      }
+      test: /\.css$/,
+      use: ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: "css-loader"
+      })
+    },
+    {
+      test: /\.styl$/,
+      use: ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: ["css-loader", 'stylus-loader']
+      })
+    }
     ]
   },
   devtool: 'source-map',

@@ -47,12 +47,11 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
     this.changeCanvasSize = this.changeCanvasSize.bind(this);
     this.changeCanvasScale = this.changeCanvasScale.bind(this);
+    this.state = {
+      canvasSize: DEFAULT_CANVASSIZE,
+      canvasScale: DEFAULT_CANVASSCALE
+    };
   }
-
-  state = {
-    canvasSize: DEFAULT_CANVASSIZE,
-    canvasScale: DEFAULT_CANVASSCALE
-  };
 
   private contentNode: HTMLElement;
 

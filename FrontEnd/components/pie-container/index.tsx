@@ -1,13 +1,16 @@
 import * as React from 'react';
-import { Preview as NormalPie } from '@charts/pie/normal';
+import Preivew from '@components/chart-preview';
+import { pieList } from '@lib/chart';
 
 export default class PieContainer extends React.Component {
   render() {
     return (
       <ul>
-        <li>
-          <NormalPie />
-        </li>
+        {
+          pieList.map(({ name, imgSrc, path }) => {
+            return <li><Preivew imgSrc={imgSrc} path={path} name={name} /></li>;
+          })
+        }
       </ul>
     );
   }

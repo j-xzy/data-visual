@@ -17,11 +17,10 @@ export class ScaleScroller extends React.Component<IProps, IState> {
     this.handlePlusClick = this.handlePlusClick.bind(this);
     this.handleMinusClick = this.handleMinusClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.state = {
+      inputValue: this.props.defaultValue
+    };
   }
-
-  state = {
-    inputValue: this.props.defaultValue
-  };
 
   handleInputChange(value: number) {
     this.setState({

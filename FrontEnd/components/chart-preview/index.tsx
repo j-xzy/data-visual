@@ -2,11 +2,11 @@ import * as React from 'react';
 import { DragSource, DragSourceConnector, DragSourceMonitor, ConnectDragSource, ConnectDragPreview } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
 import './style.styl';
-import { IconProps } from 'antd/lib/icon';
 
 interface IProps {
   imgSrc: string;
   name: string;
+  path: string;
   connectDragSource?: ConnectDragSource;
   connectDragPreview?: ConnectDragPreview;
 }
@@ -36,7 +36,7 @@ class RawPreviewContainer extends React.Component<IProps, undefined> {
 const source = {
   beginDrag(props: IProps) {
     return {
-      name: props.name
+      path: props.path
     };
   }
 };
@@ -48,6 +48,4 @@ function collect(connect: DragSourceConnector, monitor: DragSourceMonitor) {
   };
 }
 
-const PreviewContainer = DragSource<IProps>(PREVIEW_CHART, source, collect)(RawPreviewContainer);
-
-export default PreviewContainer;
+export default DragSource<IProps>(PREVIEW_CHART, source, collect)(RawPreviewContainer);

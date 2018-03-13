@@ -38,12 +38,11 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
     this.renderPanel = this.renderPanel.bind(this);
     this.collapsePanel = this.collapsePanel.bind(this);
     this.handleIconClick = this.handleIconClick.bind(this);
+    this.state = {
+      selectKey: 0,
+      isCollapsed: false
+    };
   }
-
-  state = {
-    selectKey: 0,
-    isCollapsed: false
-  };
 
   static defaultProps = {
     mode: 'left',

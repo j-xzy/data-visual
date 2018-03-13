@@ -46,10 +46,7 @@ var baseConfig = {
             style: 'css'
           })]
         }),
-        configFile: path.join(__dirname, '..', 'tsconfig.json'),
-        compilerOptions: {
-          module: 'es2015'
-        }
+        configFile: path.join(__dirname, '..', 'tsconfig.json')
       }
     }, {
       test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
