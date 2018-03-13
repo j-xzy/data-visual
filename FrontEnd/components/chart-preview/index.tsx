@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { DragSource, DragSourceConnector, DragSourceMonitor, ConnectDragSource, ConnectDragPreview } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
+import { IChartPreview } from '@lib/chart';
 import './style.styl';
 
-interface IProps {
-  imgSrc: string;
-  name: string;
-  path: string;
+interface IProps extends IChartPreview {
   connectDragSource?: ConnectDragSource;
   connectDragPreview?: ConnectDragPreview;
 }
@@ -36,7 +34,9 @@ class RawPreviewContainer extends React.Component<IProps, undefined> {
 const source = {
   beginDrag(props: IProps) {
     return {
-      path: props.path
+      path: props.path,
+      name: props.name,
+      imgSrc: props.imgSrc
     };
   }
 };

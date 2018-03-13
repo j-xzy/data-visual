@@ -8,7 +8,7 @@ export default class PieContainer extends React.Component {
       <ul>
         {
           pieList.map(({ name, imgSrc, path }) => {
-            return <li><Preivew imgSrc={imgSrc} path={path} name={name} /></li>;
+            return <li key={name}><Preivew imgSrc={imgSrc} path={path} name={name} /></li>;
           })
         }
       </ul>
