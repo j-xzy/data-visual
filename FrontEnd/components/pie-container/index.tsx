@@ -7,8 +7,8 @@ export default class PieContainer extends React.Component {
     return (
       <ul>
         {
-          pieList.map(({ name, imgSrc, getChartAsync }) => {
-            return <li key={name}><Preivew imgSrc={imgSrc} getChartAsync={getChartAsync} name={name} /></li>;
+          pieList.map(({ name, imgSrc, option }) => {
+            return <li key={name}><Preivew imgSrc={imgSrc} option={option} name={name} /></li>;
           })
         }
       </ul>

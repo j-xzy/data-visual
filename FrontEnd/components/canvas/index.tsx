@@ -2,7 +2,7 @@ import * as React from 'react';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
 import { IChartPreview, pieList } from '@lib/chart';
-import ChartContainer from '@components/chart-container';
+import { IChartProps } from '@components/chart';
 import './style.styl';
 
 export interface ICanvasProps {
@@ -16,6 +16,9 @@ interface ICanvasState {
   charts: any[];
 }
 
+const DEFAULT_WIDTH = '300px';
+const DEFAULT_HEIGHT = '300px';
+
 export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   constructor(props: ICanvasProps) {
     super(props);
@@ -24,35 +27,34 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     };
   }
 
-  async appendChart(getChart: () => Promise<any>) {
-    const { default: Chart } = await getChart();
-    const component = (
-      <ChartContainer>
-        <Chart />
-      </ChartContainer>
-    );
-    this.setState((preState) => {
+  canvasDiv: HTMLDivElement;
+  chartUid = 0;
+
+  async appendChart(option: object, left: string, top: string) {
+    this.chartUid++;
+
+    const { Chart } = await import('@components/chart');
+    let props: IChartProps = {
+      option,
+      left,
+      top,
+      key: this.chartUid,
+      height: DEFAULT_HEIGHT,
+      width: DEFAULT_WIDTH
+    };
+    this.setState(({ charts }) => {
       return {
-        charts: [...preState.charts, component]
+        charts: [...charts, React.createElement(Chart, props)]
       };
     });
-  }
-
-  renderCharts() {
-    const charts = this.state.charts;
-    const els: any[] = [];
-    charts.forEach((Chart, idx) => {
-      els.push(Chart);
-    });
-    return els;
   }
 
   render() {
     const { width, height, canvasScale, connectDropTarget } = this.props;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}>
-        <div className='canvas'>
-          {this.renderCharts()}
+        <div className='canvas' ref={(e) => this.canvasDiv = e}>
+          {[...this.state.charts]}
         </div>
       </div>
     );
@@ -62,7 +64,10 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 const boxTarget = {
   drop(pros: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
     const item = monitor.getItem() as IChartPreview;
-    component.appendChart(item.getChartAsync);
+    const { x, y } = monitor.getClientOffset();
+    let { left, top } = component.canvasDiv.getBoundingClientRect();
+    left = x - left, top = y - top;
+    component.appendChart(item.option, left + 'px', top + 'px');
   }
 };
 
