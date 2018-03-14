@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
-import { IChartPreview } from '@lib/chart';
+import { IChartPreview, pieList } from '@lib/chart';
+import ChartContainer from '@components/chart-container';
 import './style.styl';
-
-import * as s from '@charts/pie/normal'
 
 export interface ICanvasProps {
   width: string;
@@ -14,7 +13,7 @@ export interface ICanvasProps {
 }
 
 interface ICanvasState {
-  charts: any;
+  charts: any[];
 }
 
 export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
@@ -25,13 +24,27 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     };
   }
 
-  renderCharts(path: string) {
-    import('@charts/pie/normal').then((c) => {
-      console.log(c);
-      this.setState({
-        charts: <c.default />
-      });
+  async appendChart(getChart: () => Promise<any>) {
+    const { default: Chart } = await getChart();
+    const component = (
+      <ChartContainer>
+        <Chart />
+      </ChartContainer>
+    );
+    this.setState((preState) => {
+      return {
+        charts: [...preState.charts, component]
+      };
     });
+  }
+
+  renderCharts() {
+    const charts = this.state.charts;
+    const els: any[] = [];
+    charts.forEach((Chart, idx) => {
+      els.push(Chart);
+    });
+    return els;
   }
 
   render() {
@@ -39,7 +52,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}>
         <div className='canvas'>
-          {this.state.charts}
+          {this.renderCharts()}
         </div>
       </div>
     );
@@ -49,10 +62,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 const boxTarget = {
   drop(pros: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
     const item = monitor.getItem() as IChartPreview;
-    component.renderCharts(item.path);
-    // component.setState({
-    //   charts: [item.path]
-    // });
+    component.appendChart(item.getChartAsync);
   }
 };
 

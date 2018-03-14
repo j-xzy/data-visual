@@ -32,9 +32,9 @@ class RawPreviewContainer extends React.Component<IProps, undefined> {
 }
 
 const source = {
-  beginDrag(props: IProps) {
+  beginDrag(props: IProps): IChartPreview {
     return {
-      path: props.path,
+      getChartAsync: props.getChartAsync,
       name: props.name,
       imgSrc: props.imgSrc
     };

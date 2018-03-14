@@ -2,20 +2,22 @@ import * as React from 'react';
 import * as echarts from 'echarts';
 
 let option = {
-  series: [
-    {
-      type: 'pie',
-      radius: '55%',
-      data: [
-        { value: 235, name: '视频' },
-        { value: 274, name: '联盟' },
-        { value: 310, name: '邮件' }
-      ]
-    }
-  ]
+  tooltip: {},
+  legend: {
+    data: ['销量']
+  },
+  xAxis: {
+    data: ['衬衫', '羊毛衫', '雪纺衫']
+  },
+  yAxis: {},
+  series: [{
+    name: '销量',
+    type: 'bar',
+    data: [5, 20, 36]
+  }]
 };
 
-export default class NormalPie extends React.Component {
+export default class NormalBar extends React.Component {
   private chartEle: HTMLDivElement;
   private chart: echarts.ECharts;
 

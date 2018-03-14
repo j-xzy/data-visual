@@ -3,6 +3,7 @@ import { Collapse } from 'antd';
 import Sidebar from '@base/sidebar';
 import Layer from '@components/layer';
 import PieContainer from '@components/pie-container';
+import BarContainer from '@components/bar-container';
 import { Context as StudioContext } from '@pages/studio';
 
 import './style.styl';
@@ -30,7 +31,7 @@ export default class LeftBar extends React.Component {
                   <PieContainer />
                 </Panel>
                 <Panel header='柱状图' key='2' style={panelStyle}>
-                  <div>这是柱状图</div>
+                  <BarContainer />
                 </Panel>
                 <Panel header='地图' key='3' style={panelStyle}>
                   <div>这是地图</div>
