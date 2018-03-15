@@ -1,8 +1,4 @@
-export interface IChartPreview {
-  name: string;
-  imgSrc: string;
-  option: object;
-}
+import {IChartPreview} from '@components/chart-preview';
 
 export type ChartPreviewList = IChartPreview[];
 

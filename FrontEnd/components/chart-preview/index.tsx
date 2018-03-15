@@ -1,28 +1,20 @@
 import * as React from 'react';
-import { DragSource, DragSourceConnector, DragSourceMonitor, ConnectDragSource, ConnectDragPreview } from 'react-dnd';
-import { PREVIEW_CHART } from '@lib/dragtype';
-import { IChartPreview } from '@lib/chart';
 import './style.styl';
 
-interface IProps extends IChartPreview {
-  connectDragSource?: ConnectDragSource;
-  connectDragPreview?: ConnectDragPreview;
+export interface IChartPreview {
+  name: string;
+  imgSrc: string;
+  option: object;
 }
 
-class RawPreviewContainer extends React.Component<IProps, undefined> {
-  constructor(props: IProps) {
+export class ChartPreview extends React.Component<IChartPreview, undefined> {
+  constructor(props: IChartPreview) {
     super(props);
   }
 
-  componentDidMount() {
-    const img: any = new Image();
-    img.src = this.props.imgSrc;
-    img.onload = () => this.props.connectDragPreview(img);
-  }
-
   render() {
-    const { connectDragSource, imgSrc, name } = this.props;
-    return connectDragSource(
+    const { imgSrc, name } = this.props;
+    return (
       <div className='preview-container'>
         <img src={imgSrc} />
         <span >{name}</span>
@@ -30,22 +22,3 @@ class RawPreviewContainer extends React.Component<IProps, undefined> {
     );
   }
 }
-
-const source = {
-  beginDrag(props: IProps): IChartPreview {
-    return {
-      option: props.option,
-      name: props.name,
-      imgSrc: props.imgSrc
-    };
-  }
-};
-
-function collect(connect: DragSourceConnector, monitor: DragSourceMonitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview()
-  };
-}
-
-export default DragSource<IProps>(PREVIEW_CHART, source, collect)(RawPreviewContainer);

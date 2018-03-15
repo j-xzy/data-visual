@@ -15,15 +15,15 @@ describe('<Sidebar />', () => {
       </Sidebar>);
     expect(wrapper.find('ul li').at(0).hasClass('bright')).toBe(true);
     expect(wrapper.find('ul li').at(1).hasClass('bright')).toBe(false);
-    expect(wrapper.find('.p1').at(1).prop('style').display).toBe('block');
-    expect(wrapper.find('.p2').at(1).prop('style').display).toBe('none');
+    expect(wrapper.find('.p1').at(1).prop('hidden')).toBe(false);
+    expect(wrapper.find('.p2').at(1).prop('hidden')).toBe(true);
 
     wrapper.find('ul li').at(1).simulate('click');
 
     expect(wrapper.find('ul li').at(0).hasClass('bright')).toBe(false);
     expect(wrapper.find('ul li').at(1).hasClass('bright')).toBe(true);
-    expect(wrapper.find('.p1').at(1).prop('style').display).toBe('none');
-    expect(wrapper.find('.p2').at(1).prop('style').display).toBe('block');
+    expect(wrapper.find('.p1').at(1).prop('hidden')).toBe(true);
+    expect(wrapper.find('.p2').at(1).prop('hidden')).toBe(false);
   });
 
   test('side', () => {

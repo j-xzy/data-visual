@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Preivew from '@components/chart-preview';
+import { DragableChartPreview } from '@components/draggable-chart-preview';
 import { pieList } from '@lib/chart';
 
 export default class PieContainer extends React.Component {
@@ -8,7 +8,7 @@ export default class PieContainer extends React.Component {
       <ul>
         {
           pieList.map(({ name, imgSrc, option }) => {
-            return <li key={name}><Preivew imgSrc={imgSrc} option={option} name={name} /></li>;
+            return <li key={name}><DragableChartPreview imgSrc={imgSrc} option={option} name={name} /></li>;
           })
         }
       </ul>

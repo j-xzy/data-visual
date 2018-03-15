@@ -10,11 +10,14 @@ export interface IPanelProps {
 }
 
 export class Panel extends React.Component<IPanelProps, undefined> {
+  shouldComponentUpdate(nextProps: IPanelProps) {
+    return nextProps.isShow !== this.props.isShow;
+  }
+
   render() {
     const { className, title, collapse, children, isShow } = this.props;
-    const display = isShow ? 'block' : 'none';
     return (
-      <div style={{ display }} className={classNames('panel', className)}>
+      <div hidden={!isShow} className={classNames('panel', className)}>
         <div className='head'>
           <h3 className='title'>{title}</h3>
           <span className='arrow' onClick={collapse}>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
-import { PREVIEW_CHART } from '@lib/dragtype';
-import { IChartPreview, pieList } from '@lib/chart';
+import { PREVIEW_CHART, CHART } from '@lib/dragtype';
+import { IDraggableChartPreivew } from '@components/draggable-chart-preview';
 import { IChartProps } from '@components/chart';
 import './style.styl';
 
@@ -33,7 +33,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   async appendChart(option: object, left: string, top: string) {
     this.chartUid++;
 
-    const { Chart } = await import('@components/chart');
+    const { DraggableChart: Chart } = await import('@components/draggable-chart');
     let props: IChartProps = {
       option,
       left,
@@ -63,7 +63,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 
 const boxTarget = {
   drop(pros: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
-    const item = monitor.getItem() as IChartPreview;
+    const item = monitor.getItem() as IDraggableChartPreivew;
     const { x, y } = monitor.getClientOffset();
     let { left, top } = component.canvasDiv.getBoundingClientRect();
     left = x - left, top = y - top;
@@ -77,4 +77,4 @@ function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
   };
 }
 
-export const Canvas = DropTarget<ICanvasProps>(PREVIEW_CHART, boxTarget, collect)(RawCanvas);
+export const Canvas = DropTarget<ICanvasProps>([PREVIEW_CHART, CHART], boxTarget, collect)(RawCanvas);
