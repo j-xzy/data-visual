@@ -1,15 +1,10 @@
 import * as React from 'react';
 import * as echarts from 'echarts';
 
-import './style.styl';
-
 export interface IChartProps {
   option: object;
-  top: string;
-  left: string;
   width: string;
   height: string;
-  key: number;
 }
 
 export class Chart extends React.Component<IChartProps, undefined> {
@@ -26,13 +21,11 @@ export class Chart extends React.Component<IChartProps, undefined> {
   }
 
   render() {
-    let { width, height, top, left } = this.props;
-    top = parseFloat(top) - parseFloat(height) / 2 + 'px';
-    left = parseFloat(left) - parseFloat(width) / 2 + 'px';
+    let { width, height } = this.props;
     return (
       <div
         className='chart-container'
-        style={{ width, height, top, left }} ref={(e) => this.element = e}>
+        style={{ width, height }} ref={(e) => this.element = e}>
       </div>
     );
   }

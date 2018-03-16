@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART, CHART } from '@lib/dragtype';
-import { IDraggableChartPreivew } from '@components/draggable-chart-preview';
-import { IChartProps } from '@components/chart';
+import { IDraggableChartPreivewResult } from '@components/draggable-chart-preview';
+import { IDraggableChartProps, IDraggableChartResult } from '@components/draggable-chart';
 import './style.styl';
 
 export interface ICanvasProps {
@@ -34,7 +34,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     this.chartUid++;
 
     const { DraggableChart: Chart } = await import('@components/draggable-chart');
-    let props: IChartProps = {
+    let props: IDraggableChartProps = {
       option,
       left,
       top,
@@ -63,11 +63,21 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 
 const boxTarget = {
   drop(pros: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
-    const item = monitor.getItem() as IDraggableChartPreivew;
-    const { x, y } = monitor.getClientOffset();
-    let { left, top } = component.canvasDiv.getBoundingClientRect();
-    left = x - left, top = y - top;
-    component.appendChart(item.option, left + 'px', top + 'px');
+    if (monitor.getItemType() === PREVIEW_CHART) {
+      const item = monitor.getItem() as IDraggableChartPreivewResult;
+      const { x, y } = monitor.getClientOffset();
+      let { left, top } = component.canvasDiv.getBoundingClientRect();
+      left = x - left, top = y - top;
+      component.appendChart(item.option, left + 'px', top + 'px');
+      return;
+    }
+    if (monitor.getItemType() === CHART) {
+      const item = monitor.getItem() as IDraggableChartResult;
+      const delta = monitor.getDifferenceFromInitialOffset();
+      let left = parseFloat(item.left) + delta.x + 'px';
+      let top = parseFloat(item.top) + delta.y + 'px';
+      return;
+    }
   }
 };
 

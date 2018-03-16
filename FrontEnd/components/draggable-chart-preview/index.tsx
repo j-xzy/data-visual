@@ -9,7 +9,7 @@ interface IProps extends IChartPreview {
   connectDragPreview: ConnectDragPreview;
 }
 
-export interface IDraggableChartPreivew {
+export interface IDraggableChartPreivewResult {
   option: {};
 }
 
@@ -35,7 +35,7 @@ class RawDragableChartPreview extends React.Component<IProps, undefined> {
 }
 
 const source = {
-  beginDrag(props: IProps): IDraggableChartPreivew {
+  beginDrag(props: IProps): IDraggableChartPreivewResult {
     return {
       option: props.option
     };

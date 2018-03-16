@@ -3,28 +3,34 @@ import { DragSource, DragSourceConnector, DragSourceMonitor, ConnectDragSource }
 import { IChartProps, Chart } from '@components/chart';
 import { CHART } from '@lib/dragtype';
 
-interface IProps extends IChartProps {
-  connectDragSource: ConnectDragSource;
-}
-
-interface IDraggableChart {
+export interface IDraggableChartProps extends IChartProps {
+  connectDragSource?: ConnectDragSource;
+  key?: any;
   left: string;
   top: string;
 }
 
-class RawDraggableChart extends React.Component<IProps, undefined> {
+export interface IDraggableChartResult {
+  left: string;
+  top: string;
+}
+
+class RawDraggableChart extends React.Component<IDraggableChartProps, undefined> {
   render() {
-    const { connectDragSource, ...props } = this.props;
+    const { connectDragSource, key, width, height, option } = this.props;
+    let { left, top } = this.props;
+    left = parseFloat(left) - parseFloat(width) / 2 + 'px',
+      top = parseFloat(top) - parseFloat(height) / 2 + 'px';
     return connectDragSource(
-      <div>
-        <Chart {...props} />
+      <div key={key} style={{ top, left, position: 'absolute' }}>
+        <Chart width={width} height={height} option={option} />
       </div>
     );
   }
 }
 
 const source = {
-  beginDrag(props: IProps): IDraggableChart {
+  beginDrag(props: IDraggableChartProps): IDraggableChartResult {
     return {
       left: props.left,
       top: props.top
