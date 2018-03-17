@@ -3813,6 +3813,12 @@ ignore-by-default@^1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/ignore-by-default/download/ignore-by-default-1.0.1.tgz#48ca6d72f6c6a3af00a9ad4ae6876be3889e2b09"
 
+immutability-helper@^2.6.6:
+  version "2.6.6"
+  resolved "http://registry.npm.taobao.org/immutability-helper/download/immutability-helper-2.6.6.tgz#9b384c240d65257133c155086e16f678ca563b05"
+  dependencies:
+    invariant "^2.2.0"
+
 immutable@^3.7.4:
   version "3.8.2"
   resolved "http://registry.npm.taobao.org/immutable/download/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
@@ -3961,6 +3967,12 @@ into-stream@^3.1.0:
 invariant@^2.0.0, invariant@^2.1.0:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.3.tgz#1a827dfde7dcbd7c323f0ca826be8fa7c5e9d688"
+  dependencies:
+    loose-envify "^1.0.0"
+
+invariant@^2.2.0:
+  version "2.2.4"
+  resolved "http://registry.npm.taobao.org/invariant/download/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   dependencies:
     loose-envify "^1.0.0"
 
