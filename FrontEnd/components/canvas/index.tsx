@@ -3,7 +3,7 @@ import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
 import { IDraggableChartPreivewResult } from '@components/draggable-chart-preview';
-import { IChartProps, Chart } from '@components/chart';
+import { IChartProps, IChartConfig, Chart } from '@components/chart';
 import './style.styl';
 
 export interface ICanvasProps {
@@ -26,10 +26,9 @@ export interface IMoveDone {
   (id: number): void;
 }
 
-
 interface ICanvasState {
   charts: {
-    [id: string]: React.Component<IChartProps, undefined>
+    [id: string]: IChartProps
   };
 }
 
@@ -44,6 +43,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     this.getChartPotionByCanvas = this.getChartPotionByCanvas.bind(this);
     this.moveDone = this.moveDone.bind(this);
     this.moveStart = this.moveStart.bind(this);
+    this.renderCharts = this.renderCharts.bind(this);
     this.state = {
       charts: {}
     };
@@ -57,18 +57,23 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     const id = this.chartUid++;
     const zIndex = Object.keys(this.state.charts).length;
     let props: IChartProps = {
-      option, id: id, key: id, zIndex,
+      option, id: id, key: id,
       size: { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT },
-      position: { left, top },
+      position: { left, top, zIndex },
       moveChart: this.moveChart,
       moveDone: this.moveDone,
       moveStart: this.moveStart
     };
-    const ChartElement = React.createElement(Chart, props);
-    this.setState((preState) => {
-      return update(preState, {
-        charts: { [id]: { $set: ChartElement } }
-      });
+    this.setState((preState) => update(preState, {
+      charts: { [id]: { $set: props } }
+    }));
+  }
+
+  renderCharts() {
+    const charts = this.state.charts;
+    return Object.keys(charts).map((key) => {
+      const props = charts[key];
+      return <Chart {...props} />;
     });
   }
 
@@ -81,21 +86,21 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   }
 
   moveStart(id: number) {
-    this.curChartZIndex = this.state.charts[id].props.zIndex;
+    this.curChartZIndex = this.state.charts[id].position.zIndex;
   }
 
   moveChart(id: number, position: Coordinate) {
     const { left, top } = this.getChartPotionByCanvas(position.x, position.y);
     const { charts } = this.state;
     const topZIndex = Object.keys(charts).length + 1;
-    this.setState(
-      update(this.state, {
+    this.setState((preState) =>
+      update(preState, {
         charts: {
           [id]: {
-            props: {
-              zIndex: { $set: topZIndex },
-              position: {
-                $merge: { left, top }
+            position: {
+              $merge: {
+                zIndex: topZIndex,
+                left, top
               }
             }
           }
@@ -108,9 +113,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
       update(this.state, {
         charts: {
           [id]: {
-            props: {
-              zIndex: { $set: this.curChartZIndex }
-            }
+            position: { zIndex: { $set: this.curChartZIndex } }
           }
         }
       }));
@@ -122,9 +125,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}>
         <div className='canvas' ref={(e) => this.canvasDiv = e}>
-          {Object.keys(charts).map((key) =>
-            charts[key]
-          )}
+          {this.renderCharts()}
         </div>
       </div>
     );

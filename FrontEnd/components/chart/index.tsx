@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IMoveChart, IMoveDone } from '@components/canvas';
 
-export interface IChartProps {
+export interface IChartConfig {
   option: object;
   size: {
     width: string;
@@ -10,8 +10,11 @@ export interface IChartProps {
   position: {
     left: string;
     top: string;
+    zIndex: number;
   };
-  zIndex: number;
+}
+
+export interface IChartProps extends IChartConfig {
   key?: number;
   id: number;
   moveStart: IMoveDone;
@@ -24,7 +27,7 @@ type OriginXY = {
   y: number;
 };
 
-export class Chart extends React.Component<IChartProps, undefined> {
+export class Chart extends React.PureComponent<IChartProps, undefined> {
   constructor(props: IChartProps) {
     super(props);
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -40,6 +43,7 @@ export class Chart extends React.Component<IChartProps, undefined> {
     this.props.moveStart(this.props.id);
     this.canDrag = true;
   }
+
   handleMouseUp(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
     this.canDrag = false;
@@ -63,7 +67,7 @@ export class Chart extends React.Component<IChartProps, undefined> {
   }
 
   render() {
-    let { size: { width, height }, position: { left, top }, moveChart, id, zIndex } = this.props;
+    let { size: { width, height }, position: { left, top, zIndex }, moveChart, id } = this.props;
     left = parseFloat(left) - parseFloat(width) / 2 + 'px',
       top = parseFloat(top) - parseFloat(height) / 2 + 'px';
     return (
