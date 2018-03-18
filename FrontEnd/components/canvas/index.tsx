@@ -3,7 +3,9 @@ import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
 import { IDraggableChartPreivewResult } from '@components/draggable-chart-preview';
-import { IChartProps, IChartConfig, Chart } from '@components/chart';
+import { IChartProps, Chart } from '@components/chart';
+import { TransformTool, SideType } from '@components/transform-tool';
+
 import './style.styl';
 
 export interface ICanvasProps {
@@ -18,11 +20,15 @@ type Coordinate = {
   y: number;
 };
 
+export interface IMoveTransformTool {
+  (type: SideType, position: Coordinate): void;
+}
+
 export interface IMoveChart {
   (id: number, coordinate: Coordinate): void;
 }
 
-export interface IMoveDone {
+export interface IMoveChartDone {
   (id: number): void;
 }
 
@@ -30,6 +36,8 @@ interface ICanvasState {
   charts: {
     [id: string]: IChartProps
   };
+  isShowTransformTool: boolean;
+  currentChartId: number;
 }
 
 const DEFAULT_WIDTH = '300px';
@@ -40,12 +48,18 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     super(props);
     this.appendChart = this.appendChart.bind(this);
     this.moveChart = this.moveChart.bind(this);
-    this.getChartPotionByCanvas = this.getChartPotionByCanvas.bind(this);
-    this.moveDone = this.moveDone.bind(this);
-    this.moveStart = this.moveStart.bind(this);
+    this.getPotionByCanvas = this.getPotionByCanvas.bind(this);
+    this.moveChartDone = this.moveChartDone.bind(this);
+    this.moveChartStart = this.moveChartStart.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
+    this.chartClick = this.chartClick.bind(this);
+    this.moveTransformTool = this.moveTransformTool.bind(this);
+    this.renderTransformTool = this.renderTransformTool.bind(this);
+
     this.state = {
-      charts: {}
+      charts: {},
+      isShowTransformTool: false,
+      currentChartId: 0
     };
   }
 
@@ -61,8 +75,9 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
       size: { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT },
       position: { left, top, zIndex },
       moveChart: this.moveChart,
-      moveDone: this.moveDone,
-      moveStart: this.moveStart
+      moveDone: this.moveChartDone,
+      moveStart: this.moveChartStart,
+      chartClick: this.chartClick
     };
     this.setState((preState) => update(preState, {
       charts: { [id]: { $set: props } }
@@ -77,7 +92,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     });
   }
 
-  getChartPotionByCanvas(clientX: number, clientY: number) {
+  getPotionByCanvas(clientX: number, clientY: number) {
     let { left, top } = this.canvasDiv.getBoundingClientRect();
     const { canvasScale } = this.props;
     left = (clientX - left) / canvasScale;
@@ -85,12 +100,12 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     return { left, top };
   }
 
-  moveStart(id: number) {
+  moveChartStart(id: number) {
     this.curChartZIndex = this.state.charts[id].position.zIndex;
   }
 
   moveChart(id: number, position: Coordinate) {
-    const { left, top } = this.getChartPotionByCanvas(position.x, position.y);
+    const { left, top } = this.getPotionByCanvas(position.x, position.y);
     const { charts } = this.state;
     const topZIndex = Object.keys(charts).length + 1;
     this.setState((preState) =>
@@ -108,7 +123,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
       }));
   }
 
-  moveDone(id: number) {
+  moveChartDone(id: number) {
     this.setState(
       update(this.state, {
         charts: {
@@ -119,14 +134,28 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
       }));
   }
 
+  chartClick(id: number) {
+    this.setState({ isShowTransformTool: true, currentChartId: id });
+  }
+
+  moveTransformTool(type: SideType, position: Coordinate) {
+
+  }
+
+  renderTransformTool() {
+    const { isShowTransformTool, currentChartId, charts } = this.state;
+    const { position, size } = charts[currentChartId];
+    return <TransformTool position={position} size={size} moveTransformTool={this.moveTransformTool} />;
+  }
+
   render() {
     const { width, height, canvasScale, connectDropTarget } = this.props;
-    const { charts } = this.state;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}>
         <div className='canvas' ref={(e) => this.canvasDiv = e}>
           {this.renderCharts()}
         </div>
+        {this.state.isShowTransformTool && this.renderTransformTool()}
       </div>
     );
   }
@@ -137,7 +166,7 @@ const boxTarget = {
     if (monitor.getItemType() === PREVIEW_CHART) {
       const item = monitor.getItem() as IDraggableChartPreivewResult;
       const { x, y } = monitor.getClientOffset();
-      let { left, top } = component.getChartPotionByCanvas(x, y);
+      let { left, top } = component.getPotionByCanvas(x, y);
       component.appendChart(item.option, left + 'px', top + 'px');
       return;
     }

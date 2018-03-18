@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IMoveChart, IMoveDone } from '@components/canvas';
+import { IMoveChart, IMoveChartDone } from '@components/canvas';
 
 export interface IChartConfig {
   option: object;
@@ -17,21 +17,18 @@ export interface IChartConfig {
 export interface IChartProps extends IChartConfig {
   key?: number;
   id: number;
-  moveStart: IMoveDone;
+  moveStart: IMoveChartDone;
   moveChart: IMoveChart;
-  moveDone: IMoveDone;
+  moveDone: IMoveChartDone;
+  chartClick: IMoveChartDone;
 }
-
-type OriginXY = {
-  x: number;
-  y: number;
-};
 
 export class Chart extends React.PureComponent<IChartProps, undefined> {
   constructor(props: IChartProps) {
     super(props);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   element: HTMLDivElement;
@@ -60,6 +57,10 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
     this.props.moveChart(this.props.id, position);
   }
 
+  handleClick() {
+    this.props.chartClick(this.props.id);
+  }
+
   async componentDidMount() {
     let echarts = await import('echarts');
     this.chart = echarts.init(this.element);
@@ -67,13 +68,14 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   }
 
   render() {
-    let { size: { width, height }, position: { left, top, zIndex }, moveChart, id } = this.props;
+    let { size: { width, height }, position: { left, top, zIndex } } = this.props;
     left = parseFloat(left) - parseFloat(width) / 2 + 'px',
       top = parseFloat(top) - parseFloat(height) / 2 + 'px';
     return (
       <div onMouseDown={(e) => this.handleMouseDown(e)}
         onMouseMove={(e) => this.handleMouseMove(e)}
         onMouseUp={(e) => this.handleMouseUp(e)}
+        onClick={this.handleClick}
         className='chart-container'
         style={{ width, height, left, top, zIndex, position: 'absolute' }} ref={(e) => this.element = e}>
       </div >
