@@ -5,14 +5,14 @@ export enum SideType { LeftTop, Top, RightTop, Right, RightBottom, Bottom, LeftB
 
 interface ITransformProps {
   position: {
-    top: string;
-    left: string;
+    top: number;
+    left: number;
   };
   size: {
-    width: string;
-    height: string;
+    width: number;
+    height: number;
   };
-  handleTransformMouseDown: (type: SideType) => void;
+  handleTransformMouseDown: (e: React.MouseEvent<HTMLDivElement>, type: SideType) => void;
 }
 
 export class TransformTool extends React.Component<ITransformProps, undefined> {
@@ -22,16 +22,14 @@ export class TransformTool extends React.Component<ITransformProps, undefined> {
   }
 
   handleMouseDown(e: React.MouseEvent<HTMLDivElement>, type: SideType) {
-    this.props.handleTransformMouseDown(type);
+    e.stopPropagation();
+    this.props.handleTransformMouseDown(e, type);
   }
 
   render() {
-    let { position: { top, left }, size: { width, height } } = this.props;
-    left = parseFloat(left) - parseFloat(width) / 2 + 'px',
-      top = parseFloat(top) - parseFloat(height) / 2 + 'px';
-    const style = { top, left, width, height };
+    const { position: { left, top }, size: { width, height } } = this.props;
     return (
-      <div className='transform_tool' style={style}
+      <div className='transform_tool' style={{ left: left + 'px', top: top + 'px', width: width + 'px', height: height + 'px' }}
         onMouseDown={(e) => this.handleMouseDown(e, SideType.Middle)}
       >
         <div className='left-top' onMouseDown={(e) => this.handleMouseDown(e, SideType.LeftTop)}></div>

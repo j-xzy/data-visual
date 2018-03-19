@@ -20,6 +20,7 @@ type Coordinate = {
   y: number;
 };
 
+
 export interface IMoveTransformTool {
   (type: SideType, position: Coordinate, clientRect: ClientRect): void;
 }
@@ -39,9 +40,8 @@ interface ICanvasState {
   isShowTransformTool: boolean;
 }
 
-const DEFAULT_WIDTH = '300px';
-const DEFAULT_HEIGHT = '300px';
-const NO_CHOOSE_CHART = -1;
+const DEFAULT_WIDTH = 300;
+const DEFAULT_HEIGHT = 300;
 
 export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   constructor(props: ICanvasProps) {
@@ -64,18 +64,19 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 
   canvasDiv: HTMLDivElement;
   mouseDownPosition: Coordinate;
-  lastChartZIndex: number;
+  chartSnapShot: IChartProps;
   chartUid = 0;
-  currentChartId = NO_CHOOSE_CHART;
   sideType = SideType.None;
 
-  async appendChart(option: object, left: string, top: string) {
+  async appendChart(option: object, left: number, top: number) {
     const id = this.chartUid++;
     const zIndex = Object.keys(this.state.charts).length;
+    left = left - DEFAULT_WIDTH / 2,
+      top = top - DEFAULT_HEIGHT / 2;
     let props: IChartProps = {
       option, id: id, key: id,
       size: { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT },
-      position: { left, top, zIndex },
+      position: { left: left, top: top, zIndex },
       chartClick: this.chartClick
     };
     this.setState((preState) => update(preState, {
@@ -100,25 +101,15 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   }
 
   chartClick(id: number) {
-    this.lastChartZIndex = this.state.charts[id].position.zIndex;
-    this.currentChartId = id;
-    const zIndex = Object.keys(this.state.charts).length + 1;
+    this.chartSnapShot = { ...this.state.charts[id] };
     this.setState((preState) => update(preState, {
-      charts: {
-        [id]: {
-          position: {
-            zIndex: {
-              $set: zIndex
-            }
-          }
-        }
-      },
       isShowTransformTool: { $set: true }
     }));
   }
 
-  handleTransformMouseDown(type: SideType) {
+  handleTransformMouseDown(e: React.MouseEvent<HTMLDivElement>, type: SideType) {
     this.sideType = type;
+    this.handleCanvasMouseDown(e);
   }
 
   handleCanvasMouseDown(e: React.MouseEvent<HTMLDivElement>) {
@@ -129,43 +120,76 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   }
 
   handleCanvasMouseUp() {
-    this.sideType = SideType.None;
-    if (this.currentChartId !== NO_CHOOSE_CHART) {
-      this.setState((preState) => update(preState, {
-        charts: {
-          [this.currentChartId]: {
-            position: {
-              zIndex: {
-                $set: this.lastChartZIndex
-              }
-            }
-          }
-        }
-      }), () => {
-        this.currentChartId = NO_CHOOSE_CHART;
-      });
+    if (this.sideType !== SideType.None) {
+      const id = this.chartSnapShot.id;
+      this.chartSnapShot = {
+        ...this.state.charts[id]
+      };
     }
+    this.sideType = SideType.None;
   }
 
   handleCanvasMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (this.sideType === SideType.None)
       return;
+    const scale = this.props.canvasScale;
     const delta = {
-      x: e.clientX - this.mouseDownPosition.x,
-      y: e.clientY - this.mouseDownPosition.y
+      x: (e.clientX - this.mouseDownPosition.x) / scale,
+      y: (e.clientY - this.mouseDownPosition.y) / scale
     };
-    console.log(e.clientX);
-    console.log(this.mouseDownPosition.x);
     this.setState((preState) => {
-      const chart = preState.charts[this.currentChartId];
+      const chart = this.chartSnapShot;
+      const id = chart.id;
       let size = { ...chart.size };
       let position = { ...chart.position };
-      size.width = parseFloat(size.width) + delta.x + 'px';
-      size.height = parseFloat(size.height) + delta.y + 'px';
+
+      if (this.sideType === SideType.Right) {
+        size.width = size.width + delta.x;
+      }
+      if (this.sideType === SideType.Bottom) {
+        size.height = size.height + delta.y;
+      }
+      if (this.sideType === SideType.Top) {
+        size.height = size.height - delta.y;
+        position.top = position.top + delta.y;
+      }
+      if (this.sideType === SideType.Left) {
+        size.width = size.width - delta.x;
+        position.left = position.left + delta.x;
+      }
+      if (this.sideType === SideType.RightTop) {
+        size.width = size.width + delta.x;
+        size.height = size.height - delta.y;
+        position.top = position.top + delta.y;
+      }
+
+      if (this.sideType === SideType.LeftTop) {
+        size.width = size.width - delta.x;
+        size.height = size.height - delta.y;
+        position.top = position.top + delta.y;
+        position.left = position.left + delta.x;
+      }
+
+      if (this.sideType === SideType.LeftBottom) {
+        size.width = size.width - delta.x;
+        size.height = size.height + delta.y;
+        position.left = position.left + delta.x;
+      }
+
+      if (this.sideType === SideType.RightBottom) {
+        size.width = size.width + delta.x;
+        size.height = size.height + delta.y;
+      }
+      if (this.sideType === SideType.Middle) {
+        position.left = position.left + delta.x;
+        position.top = position.top + delta.y;
+      }
+
       return update(preState, {
         charts: {
-          [this.currentChartId]: {
-            size: { $set: size }
+          [id]: {
+            size: { $set: size },
+            position: { $set: position }
           }
         }
       });
@@ -174,7 +198,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 
   renderTransformTool() {
     const { isShowTransformTool, charts } = this.state;
-    const { position, size } = charts[this.currentChartId];
+    const { position, size } = this.state.charts[this.chartSnapShot.id];
     return <TransformTool position={position} size={size} handleTransformMouseDown={this.handleTransformMouseDown} />;
   }
 
@@ -200,7 +224,7 @@ const boxTarget = {
       const item = monitor.getItem() as IDraggableChartPreivewResult;
       const { x, y } = monitor.getClientOffset();
       let { left, top } = component.getPotionByCanvas(x, y);
-      component.appendChart(item.option, left + 'px', top + 'px');
+      component.appendChart(item.option, left, top);
       return;
     }
   }

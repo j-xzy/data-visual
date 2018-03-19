@@ -4,12 +4,12 @@ import { IMoveChart, IMoveChartDone } from '@components/canvas';
 export interface IChartConfig {
   option: object;
   size: {
-    width: string;
-    height: string;
+    width: number;
+    height: number;
   };
   position: {
-    left: string;
-    top: string;
+    left: number;
+    top: number;
     zIndex: number;
   };
 }
@@ -40,14 +40,18 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   }
 
   render() {
-    let { size: { width, height }, position: { left, top, zIndex } } = this.props;
-    left = parseFloat(left) - parseFloat(width) / 2 + 'px',
-      top = parseFloat(top) - parseFloat(height) / 2 + 'px';
+    const { size: { width, height }, position: { left, top, zIndex } } = this.props;
     return (
       <div
         onClick={this.handleClick}
         className='chart-container'
-        style={{ width, height, left, top, zIndex, position: 'absolute' }} ref={(e) => this.element = e}>
+        style={{
+          width: width + 'px',
+          height: height + 'px',
+          left: left + 'px', top: top + 'px',
+          zIndex,
+          position: 'absolute'
+        }} ref={(e) => this.element = e}>
       </div >
     );
   }
