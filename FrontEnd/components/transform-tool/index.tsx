@@ -22,7 +22,6 @@ export class TransformTool extends React.Component<ITransformProps, undefined> {
   }
 
   handleMouseDown(e: React.MouseEvent<HTMLDivElement>, type: SideType) {
-    e.stopPropagation();
     this.props.handleTransformMouseDown(type);
   }
 

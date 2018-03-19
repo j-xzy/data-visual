@@ -46,12 +46,15 @@ const NO_CHOOSE_CHART = -1;
 export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   constructor(props: ICanvasProps) {
     super(props);
-    this.appendChart = this.appendChart.bind(this);
     this.getPotionByCanvas = this.getPotionByCanvas.bind(this);
+    this.appendChart = this.appendChart.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
     this.chartClick = this.chartClick.bind(this);
     this.renderTransformTool = this.renderTransformTool.bind(this);
     this.handleTransformMouseDown = this.handleTransformMouseDown.bind(this);
+    this.handleCanvasMouseUp = this.handleCanvasMouseUp.bind(this);
+    this.handleCanvasMouseMove = this.handleCanvasMouseMove.bind(this);
+    this.handleCanvasMouseDown = this.handleCanvasMouseDown.bind(this);
 
     this.state = {
       charts: {},
@@ -59,11 +62,12 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     };
   }
 
-  sideType: SideType;
   canvasDiv: HTMLDivElement;
-  currentLastChartZIndex: number;
+  mouseDownPosition: Coordinate;
+  lastChartZIndex: number;
   chartUid = 0;
   currentChartId = NO_CHOOSE_CHART;
+  sideType = SideType.None;
 
   async appendChart(option: object, left: string, top: string) {
     const id = this.chartUid++;
@@ -95,12 +99,8 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     return { left, top };
   }
 
-  moveChartStart(id: number) {
-    this.currentLastChartZIndex = this.state.charts[id].position.zIndex;
-  }
-
   chartClick(id: number) {
-    this.currentLastChartZIndex = this.state.charts[id].position.zIndex;
+    this.lastChartZIndex = this.state.charts[id].position.zIndex;
     this.currentChartId = id;
     const zIndex = Object.keys(this.state.charts).length + 1;
     this.setState((preState) => update(preState, {
@@ -121,6 +121,57 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     this.sideType = type;
   }
 
+  handleCanvasMouseDown(e: React.MouseEvent<HTMLDivElement>) {
+    this.mouseDownPosition = {
+      x: e.clientX,
+      y: e.clientY
+    };
+  }
+
+  handleCanvasMouseUp() {
+    this.sideType = SideType.None;
+    if (this.currentChartId !== NO_CHOOSE_CHART) {
+      this.setState((preState) => update(preState, {
+        charts: {
+          [this.currentChartId]: {
+            position: {
+              zIndex: {
+                $set: this.lastChartZIndex
+              }
+            }
+          }
+        }
+      }), () => {
+        this.currentChartId = NO_CHOOSE_CHART;
+      });
+    }
+  }
+
+  handleCanvasMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (this.sideType === SideType.None)
+      return;
+    const delta = {
+      x: e.clientX - this.mouseDownPosition.x,
+      y: e.clientY - this.mouseDownPosition.y
+    };
+    console.log(e.clientX);
+    console.log(this.mouseDownPosition.x);
+    this.setState((preState) => {
+      const chart = preState.charts[this.currentChartId];
+      let size = { ...chart.size };
+      let position = { ...chart.position };
+      size.width = parseFloat(size.width) + delta.x + 'px';
+      size.height = parseFloat(size.height) + delta.y + 'px';
+      return update(preState, {
+        charts: {
+          [this.currentChartId]: {
+            size: { $set: size }
+          }
+        }
+      });
+    });
+  }
+
   renderTransformTool() {
     const { isShowTransformTool, charts } = this.state;
     const { position, size } = charts[this.currentChartId];
@@ -130,7 +181,10 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   render() {
     const { width, height, canvasScale, connectDropTarget } = this.props;
     return connectDropTarget(
-      <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}>
+      <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
+        onMouseDown={(e) => this.handleCanvasMouseDown(e)}
+        onMouseMove={(e) => this.handleCanvasMouseMove(e)}
+        onMouseUp={this.handleCanvasMouseUp}>
         <div className='canvas' ref={(e) => this.canvasDiv = e}>
           {this.renderCharts()}
         </div>
