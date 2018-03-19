@@ -21,7 +21,7 @@ type Coordinate = {
 };
 
 export interface IMoveTransformTool {
-  (type: SideType, position: Coordinate): void;
+  (type: SideType, position: Coordinate, clientRect: ClientRect): void;
 }
 
 export interface IMoveChart {
@@ -37,35 +37,33 @@ interface ICanvasState {
     [id: string]: IChartProps
   };
   isShowTransformTool: boolean;
-  currentChartId: number;
 }
 
 const DEFAULT_WIDTH = '300px';
 const DEFAULT_HEIGHT = '300px';
+const NO_CHOOSE_CHART = -1;
 
 export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   constructor(props: ICanvasProps) {
     super(props);
     this.appendChart = this.appendChart.bind(this);
-    this.moveChart = this.moveChart.bind(this);
     this.getPotionByCanvas = this.getPotionByCanvas.bind(this);
-    this.moveChartDone = this.moveChartDone.bind(this);
-    this.moveChartStart = this.moveChartStart.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
     this.chartClick = this.chartClick.bind(this);
-    this.moveTransformTool = this.moveTransformTool.bind(this);
     this.renderTransformTool = this.renderTransformTool.bind(this);
+    this.handleTransformMouseDown = this.handleTransformMouseDown.bind(this);
 
     this.state = {
       charts: {},
-      isShowTransformTool: false,
-      currentChartId: 0
+      isShowTransformTool: false
     };
   }
 
+  sideType: SideType;
   canvasDiv: HTMLDivElement;
+  currentLastChartZIndex: number;
   chartUid = 0;
-  curChartZIndex: number;
+  currentChartId = NO_CHOOSE_CHART;
 
   async appendChart(option: object, left: string, top: string) {
     const id = this.chartUid++;
@@ -74,9 +72,6 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
       option, id: id, key: id,
       size: { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT },
       position: { left, top, zIndex },
-      moveChart: this.moveChart,
-      moveDone: this.moveChartDone,
-      moveStart: this.moveChartStart,
       chartClick: this.chartClick
     };
     this.setState((preState) => update(preState, {
@@ -101,51 +96,35 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   }
 
   moveChartStart(id: number) {
-    this.curChartZIndex = this.state.charts[id].position.zIndex;
-  }
-
-  moveChart(id: number, position: Coordinate) {
-    const { left, top } = this.getPotionByCanvas(position.x, position.y);
-    const { charts } = this.state;
-    const topZIndex = Object.keys(charts).length + 1;
-    this.setState((preState) =>
-      update(preState, {
-        charts: {
-          [id]: {
-            position: {
-              $merge: {
-                zIndex: topZIndex,
-                left, top
-              }
-            }
-          }
-        }
-      }));
-  }
-
-  moveChartDone(id: number) {
-    this.setState(
-      update(this.state, {
-        charts: {
-          [id]: {
-            position: { zIndex: { $set: this.curChartZIndex } }
-          }
-        }
-      }));
+    this.currentLastChartZIndex = this.state.charts[id].position.zIndex;
   }
 
   chartClick(id: number) {
-    this.setState({ isShowTransformTool: true, currentChartId: id });
+    this.currentLastChartZIndex = this.state.charts[id].position.zIndex;
+    this.currentChartId = id;
+    const zIndex = Object.keys(this.state.charts).length + 1;
+    this.setState((preState) => update(preState, {
+      charts: {
+        [id]: {
+          position: {
+            zIndex: {
+              $set: zIndex
+            }
+          }
+        }
+      },
+      isShowTransformTool: { $set: true }
+    }));
   }
 
-  moveTransformTool(type: SideType, position: Coordinate) {
-
+  handleTransformMouseDown(type: SideType) {
+    this.sideType = type;
   }
 
   renderTransformTool() {
-    const { isShowTransformTool, currentChartId, charts } = this.state;
-    const { position, size } = charts[currentChartId];
-    return <TransformTool position={position} size={size} moveTransformTool={this.moveTransformTool} />;
+    const { isShowTransformTool, charts } = this.state;
+    const { position, size } = charts[this.currentChartId];
+    return <TransformTool position={position} size={size} handleTransformMouseDown={this.handleTransformMouseDown} />;
   }
 
   render() {

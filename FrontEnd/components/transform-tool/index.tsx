@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './style.styl';
-import { IMoveTransformTool } from '@components/canvas';
+
+export enum SideType { LeftTop, Top, RightTop, Right, RightBottom, Bottom, LeftBottom, Left, Middle, None }
 
 interface ITransformProps {
   position: {
@@ -11,40 +12,18 @@ interface ITransformProps {
     width: string;
     height: string;
   };
-  moveTransformTool: IMoveTransformTool;
+  handleTransformMouseDown: (type: SideType) => void;
 }
-
-export enum SideType { LeftTop, Top, RightTop, Right, RightBottom, Bottom, LeftBottom, Left, Middle }
 
 export class TransformTool extends React.Component<ITransformProps, undefined> {
   constructor(props: ITransformProps) {
     super(props);
     this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
   }
-
-  isMouseDown = false;
-  currentSide: SideType;
 
   handleMouseDown(e: React.MouseEvent<HTMLDivElement>, type: SideType) {
     e.stopPropagation();
-    this.isMouseDown = true;
-    this.currentSide = type;
-  }
-
-  handleMouseUp(e: React.MouseEvent<HTMLDivElement>) {
-    this.isMouseDown = false;
-  }
-
-  handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
-    if (!this.isMouseDown) return;
-    const position = {
-      x: e.clientX,
-      y: e.clientY
-    };
-    this.props.moveTransformTool(this.currentSide, position);
+    this.props.handleTransformMouseDown(type);
   }
 
   render() {
@@ -55,8 +34,6 @@ export class TransformTool extends React.Component<ITransformProps, undefined> {
     return (
       <div className='transform_tool' style={style}
         onMouseDown={(e) => this.handleMouseDown(e, SideType.Middle)}
-        onMouseUp={(e) => this.handleMouseUp(e)}
-        onMouseMove={(e) => this.handleMouseMove(e)}
       >
         <div className='left-top' onMouseDown={(e) => this.handleMouseDown(e, SideType.LeftTop)}></div>
         <div className='top' onMouseDown={(e) => this.handleMouseDown(e, SideType.Top)}></div>
