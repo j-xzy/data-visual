@@ -39,6 +39,8 @@ const DEFAULT_CANVASSIZE: CanvasSize = {
   height: 600
 };
 const DEFAULT_CANVASSCALE = 1;
+const MIN_SCALE_VALUE = 0.1;
+const MAX_SCALE_VALUE = 20;
 
 export const Context: React.Context<IContextValue> = React.createContext();
 
@@ -47,10 +49,11 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     super(undefined);
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
     this.changeCanvasSize = this.changeCanvasSize.bind(this);
-    this.changeCanvasScale = this.changeCanvasScale.bind(this);
+    this.handleScaleChange = this.handleScaleChange.bind(this);
     this.handleCanvasWheel = this.handleCanvasWheel.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
     this.showTransformTool = this.showTransformTool.bind(this);
+    this.hideTransformTool = this.hideTransformTool.bind(this);
 
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
@@ -90,14 +93,19 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   handleCanvasWheel(e: React.WheelEvent<HTMLDivElement>) {
+    const scale = this.state.canvasScale;
     if (e.deltaY > 0) {
-      this.changeCanvasScale(this.state.canvasScale - 0.05);
+      scale >= MIN_SCALE_VALUE && this.handleScaleChange(scale - 0.05);
     } else {
-      this.changeCanvasScale(this.state.canvasScale + 0.05);
+      scale <= MAX_SCALE_VALUE && this.handleScaleChange(scale + 0.05);
     }
   }
 
   handleContentClick() {
+    this.hideTransformTool();
+  }
+
+  hideTransformTool() {
     this.setState({ isShowTransformTool: false });
   }
 
@@ -105,7 +113,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.setState({ isShowTransformTool: true });
   }
 
-  changeCanvasScale(scale: number) {
+  handleScaleChange(scale: number) {
     this.setState({ canvasScale: scale });
   }
 
@@ -132,11 +140,15 @@ class RawStudio extends React.Component<undefined, IStudioState> {
           </div>
           <div className='st_content' onClick={this.handleContentClick}>
             <div ref={(node) => this.contentNode = node} className='canvas_wrapper'>
-              <Canvas onChartClick={this.showTransformTool} isShowTransformTool={isShowTransformTool} onWheel={this.handleCanvasWheel} canvasScale={canvasScale} width={canvasSize.width} height={canvasSize.height} />
+              <Canvas
+                onChartClick={this.showTransformTool} isShowTransformTool={isShowTransformTool}
+                onWheel={this.handleCanvasWheel} canvasScale={canvasScale} hideTransformTool={this.hideTransformTool}
+                width={canvasSize.width} height={canvasSize.height} >
+              </Canvas>
             </div>
             <div className='scroll-wrapper' >
               <div className='scroll-postion'>
-                <ScaleScroller defaultValue={DEFAULT_CANVASSCALE} onChange={this.changeCanvasScale} />
+                <ScaleScroller maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE} value={canvasScale} onChange={this.handleScaleChange} />
               </div>
             </div>
           </div>

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './style.styl';
 
 let echarts: any;
 

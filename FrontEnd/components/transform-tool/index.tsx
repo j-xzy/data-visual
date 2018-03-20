@@ -13,6 +13,8 @@ interface ITransformProps {
     height: number;
   };
   handleTransformMouseDown: (e: React.MouseEvent<HTMLDivElement>, type: SideType) => void;
+  onCopyClick: () => void;
+  onTrashcanClick: () => void;
 }
 
 export class TransformTool extends React.Component<ITransformProps, undefined> {
@@ -42,8 +44,8 @@ export class TransformTool extends React.Component<ITransformProps, undefined> {
         <div className='left-bottom' onMouseDown={(e) => this.handleMouseDown(e, SideType.LeftBottom)}></div>
         <div className='left' onMouseDown={(e) => this.handleMouseDown(e, SideType.Left)}></div>
         <div className='tools'>
-          <i className='icon-copy icon'></i>
-          <i className='icon-trashcan icon'></i>
+          <i className='icon-copy icon' onClick={this.props.onCopyClick}></i>
+          <i className='icon-trashcan icon' onClick={this.props.onTrashcanClick}></i>
         </div>
       </div>);
   }

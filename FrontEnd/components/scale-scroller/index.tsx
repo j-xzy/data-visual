@@ -4,62 +4,42 @@ import './style.styl';
 
 interface IProps {
   onChange: (scale: number) => void;
-  defaultValue: number;
+  value: number;
+  minValue: number;
+  maxValue: number;
 }
 
-interface IState {
-  inputValue: number;
-}
-
-export class ScaleScroller extends React.Component<IProps, IState> {
+export class ScaleScroller extends React.Component<IProps, undefined> {
   constructor(props: IProps) {
     super(props);
     this.handlePlusClick = this.handlePlusClick.bind(this);
     this.handleMinusClick = this.handleMinusClick.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.state = {
-      inputValue: this.props.defaultValue
-    };
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleInputChange(value: number) {
-    this.setState({
-      inputValue: value
-    });
-    this.props.onChange(value);
-  }
 
   handlePlusClick() {
-    this.setState((preState) => {
-      return {
-        inputValue: preState.inputValue + 0.1
-      };
-    }, () => {
-      this.props.onChange(this.state.inputValue);
-    });
+    this.props.onChange(this.props.value + 0.1);
   }
 
   handleMinusClick() {
-    this.setState((preState) => {
-      return {
-        inputValue: preState.inputValue - 0.1
-      };
-    }, () => {
-      this.props.onChange(this.state.inputValue);
-    });
+    this.props.onChange(this.props.value - 0.1);
   }
 
-  shouldComponentUpdate(nextProps: IProps, nextState: IState) {
-    return nextState.inputValue !== this.state.inputValue;
+  handleChange(value: number) {
+    this.props.onChange(value);
+  }
+
+  shouldComponentUpdate(nextProps: IProps) {
+    return nextProps.value !== this.props.value;
   }
 
   render() {
-    const { defaultValue } = this.props;
-    const { inputValue } = this.state;
+    const { value, minValue, maxValue } = this.props;
     return (
       <div className='scale-scroller-containr'>
         <Icon onClick={this.handleMinusClick} className='scroll-icon' type='minus-circle-o' />
-        <Slider className='scroll' key='2' defaultValue={defaultValue} value={inputValue} min={0.1} max={20} step={0.1} onChange={this.handleInputChange} />
+        <Slider className='scroll' key='2' value={value} min={minValue} max={maxValue} step={0.1} onChange={(value: number) => this.handleChange(value)} />
         <Icon onClick={this.handlePlusClick} className='scroll-icon' type='plus-circle-o' />
       </div>);
   }
