@@ -27,11 +27,12 @@ export class TransformTool extends React.Component<ITransformProps, undefined> {
   }
 
   render() {
-    const { position: { left, top }, size: { width, height } } = this.props;
+    const { position, size } = this.props;
     return (
-      <div className='transform_tool' style={{ left: left + 'px', top: top + 'px', width: width + 'px', height: height + 'px' }}
+      <div className='transform_tool' style={{ ...position, ...size }}
         onMouseDown={(e) => this.handleMouseDown(e, SideType.Middle)}
       >
+        <i className='icon-resize icon'></i>
         <div className='left-top' onMouseDown={(e) => this.handleMouseDown(e, SideType.LeftTop)}></div>
         <div className='top' onMouseDown={(e) => this.handleMouseDown(e, SideType.Top)}></div>
         <div className='right-top' onMouseDown={(e) => this.handleMouseDown(e, SideType.RightTop)}></div>
@@ -40,6 +41,10 @@ export class TransformTool extends React.Component<ITransformProps, undefined> {
         <div className='bottom' onMouseDown={(e) => this.handleMouseDown(e, SideType.Bottom)}></div>
         <div className='left-bottom' onMouseDown={(e) => this.handleMouseDown(e, SideType.LeftBottom)}></div>
         <div className='left' onMouseDown={(e) => this.handleMouseDown(e, SideType.Left)}></div>
+        <div className='tools'>
+          <i className='icon-copy icon'></i>
+          <i className='icon-trashcan icon'></i>
+        </div>
       </div>);
   }
 }

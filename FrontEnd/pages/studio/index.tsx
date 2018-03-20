@@ -14,17 +14,18 @@ export type CanvasPos = {
 };
 
 export type CanvasSize = {
-  width: string,
-  height: string
+  width: number,
+  height: number
 };
 
 export interface IStudioState {
   canvasSize: CanvasSize;
+  isShowTransformTool: boolean;
   canvasScale: number;
 }
 
 export interface IChangeCanvasSize {
-  (width: string, height: string): void;
+  (width: number, height: number): void;
 }
 
 export interface IContextValue {
@@ -34,8 +35,8 @@ export interface IContextValue {
 }
 
 const DEFAULT_CANVASSIZE: CanvasSize = {
-  width: '800px',
-  height: '600px'
+  width: 800,
+  height: 600
 };
 const DEFAULT_CANVASSCALE = 1;
 
@@ -47,9 +48,14 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
     this.changeCanvasSize = this.changeCanvasSize.bind(this);
     this.changeCanvasScale = this.changeCanvasScale.bind(this);
+    this.handleCanvasWheel = this.handleCanvasWheel.bind(this);
+    this.handleContentClick = this.handleContentClick.bind(this);
+    this.showTransformTool = this.showTransformTool.bind(this);
+
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
-      canvasScale: DEFAULT_CANVASSCALE
+      canvasScale: DEFAULT_CANVASSCALE,
+      isShowTransformTool: false
     };
   }
 
@@ -64,8 +70,8 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   updateCanvasPos() {
     const { width, height } = document.defaultView.getComputedStyle(this.contentNode, null);
     const { canvasSize, canvasScale } = this.state;
-    let canvasWidth = parseFloat(canvasSize.width) * canvasScale,
-      canvasHeight = parseFloat(canvasSize.height) * canvasScale,
+    let canvasWidth = canvasSize.width * canvasScale,
+      canvasHeight = canvasSize.height * canvasScale,
       paddingLeft = (parseFloat(width) - canvasWidth) / 2 + 'px',
       paddingTop = (parseFloat(height) - canvasHeight) / 2 + 'px';
     paddingLeft = parseFloat(paddingLeft) < 0 ? '50px' : paddingLeft;
@@ -74,13 +80,29 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.contentNode.style.paddingTop = paddingTop;
   }
 
-  changeCanvasSize(width: string, height: string) {
+  changeCanvasSize(width: number, height: number) {
     this.setState({
       canvasSize: {
         width: width,
         height: height
       }
     });
+  }
+
+  handleCanvasWheel(e: React.WheelEvent<HTMLDivElement>) {
+    if (e.deltaY > 0) {
+      this.changeCanvasScale(this.state.canvasScale - 0.05);
+    } else {
+      this.changeCanvasScale(this.state.canvasScale + 0.05);
+    }
+  }
+
+  handleContentClick() {
+    this.setState({ isShowTransformTool: false });
+  }
+
+  showTransformTool() {
+    this.setState({ isShowTransformTool: true });
   }
 
   changeCanvasScale(scale: number) {
@@ -101,17 +123,16 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale } = this.state;
-
+    const { canvasSize, canvasScale, isShowTransformTool } = this.state;
     return (
       <Context.Provider value={this.contextValue}>
         <div className='studio'>
           <div className='leftbar_container'>
             <Leftbar />
           </div>
-          <div className='st_content'>
+          <div className='st_content' onClick={this.handleContentClick}>
             <div ref={(node) => this.contentNode = node} className='canvas_wrapper'>
-              <Canvas canvasScale={canvasScale} width={canvasSize.width} height={canvasSize.height} />
+              <Canvas onChartClick={this.showTransformTool} isShowTransformTool={isShowTransformTool} onWheel={this.handleCanvasWheel} canvasScale={canvasScale} width={canvasSize.width} height={canvasSize.height} />
             </div>
             <div className='scroll-wrapper' >
               <div className='scroll-postion'>
