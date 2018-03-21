@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Sidebar from '@base/sidebar';
-import ComSetting from '@components/com-setting';
-import PageSetting from '@components/page-setting';
+import ComSetting from '@pages/studio/com-setting';
+import PageSetting from '@pages/studio/page-setting';
 import { Context as StudioContext } from '@pages/studio';
 import './style.styl';
 

@@ -5,15 +5,16 @@ let moduleNameMapper = {};
 for (let key in paths) {
   let name = key.replace(/\/\*$/, '(.*)'),
     value = paths[key][0].replace(/\*$/, '$1');
-  moduleNameMapper[name] = value.replace(/^./,'<rootDir>')
+  moduleNameMapper[name] = value.replace(/^./, '<rootDir>')
 }
 
-module.exports =  merge({
+module.exports = merge({
   setupFiles: [
     './FrontEnd/test/setup.js',
   ],
   transform: {
-    "^.+\\.tsx?$": "ts-jest"
+    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.jsx?$": "babel-jest"
   },
   modulePaths: [
     "<rootDir>/FrontEnd/"

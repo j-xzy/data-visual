@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import Leftbar from '@components/leftbar';
-import Setting from '@components/setting';
-import { Canvas } from '@components/canvas';
-import { ScaleScroller } from '@components/scale-scroller';
+import Slider from '@base/slider';
+import Leftbar from '@pages/studio/leftbar';
+import { Canvas } from '@pages/studio/canvas';
+import Setting from '@pages/studio/setting';
 
 import './style.styl';
 
@@ -148,7 +148,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
             </div>
             <div className='scroll-wrapper' >
               <div className='scroll-postion'>
-                <ScaleScroller maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE} value={canvasScale} onChange={this.handleScaleChange} />
+                <Slider step={0.1} 　width={200} maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE} value={canvasScale} onChange={this.handleScaleChange} />
               </div>
             </div>
           </div>

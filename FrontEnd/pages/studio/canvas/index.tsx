@@ -24,6 +24,17 @@ type Coordinate = {
   y: number;
 };
 
+type Position = {
+  left: number;
+  top: number;
+  zIndex: number;
+};
+
+type Size = {
+  width: number;
+  height: number;
+};
+
 interface ICanvasState {
   charts: {
     [id: string]: IChartProps
@@ -33,10 +44,7 @@ interface ICanvasState {
       left: number;
       top: number;
     };
-    size: {
-      width: number;
-      height: number;
-    };
+    size: Size;
   };
 }
 
@@ -77,14 +85,11 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   chartUid = 0;
   sideType = SideType.None;
 
-  appendChart(option: object, left: number, top: number, callback?: (chartId: number) => void) {
+  appendChart(option: object, position: Position, size: Size, callback?: (chartId: number) => void) {
     const id = this.chartUid++;
-    const zIndex = Object.keys(this.state.charts).length;
     let props: IChartProps = {
-      option, id, key: id,
-      scale: { x: 1, y: 1 },
-      size: { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT },
-      position: { left: left, top: top, zIndex },
+      option, id, position, size,
+      scale: { x: 1, y: 1 }, key: id,
       chartClick: this.chartClick
     };
     this.setState((preState) => update(preState, {
@@ -254,9 +259,10 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     const { option, position: { left, top }, size } = this.state.charts[this.chartSnapShot.id];
     const offsetPosition = {
       left: left + 10,
-      top: top + 10
+      top: top + 10,
+      zIndex: Object.keys(this.state.charts).length
     };
-    this.appendChart(option, offsetPosition.left, offsetPosition.top, (chartId) => {
+    this.appendChart(option, offsetPosition, size, (chartId) => {
       this.chartSnapShot = this.state.charts[chartId];
     });
     this.setState((preState) => update(preState, {
@@ -317,9 +323,12 @@ const boxTarget = {
       const item = monitor.getItem() as IDraggableChartPreivewResult;
       const { x, y } = monitor.getClientOffset();
       let { left, top } = component.getPotionByCanvas(x, y);
-      left = left - DEFAULT_WIDTH / 2,
-        top = top - DEFAULT_HEIGHT / 2;
-      component.appendChart(item.option, left, top);
+      const position = {
+        left: left - DEFAULT_WIDTH / 2,
+        top: top - DEFAULT_HEIGHT / 2,
+        zIndex: Object.keys(component.state.charts).length
+      };
+      component.appendChart(item.option, position, { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT });
       return;
     }
   }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Slider, Icon } from 'antd';
+import { Slider as AtSlider, Icon } from 'antd';
 import './style.styl';
 
 interface IProps {
@@ -7,9 +7,11 @@ interface IProps {
   value: number;
   minValue: number;
   maxValue: number;
+  step: number;
+  width?: string | number;
 }
 
-export class ScaleScroller extends React.Component<IProps, undefined> {
+export default class Slider extends React.Component<IProps, undefined> {
   constructor(props: IProps) {
     super(props);
     this.handlePlusClick = this.handlePlusClick.bind(this);
@@ -17,13 +19,19 @@ export class ScaleScroller extends React.Component<IProps, undefined> {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  static defaultProps = {
+    step: 0.1,
+    width: '100%'
+  };
 
   handlePlusClick() {
-    this.props.onChange(this.props.value + 0.1);
+    const { value, step } = this.props;
+    this.props.onChange(value + step);
   }
 
   handleMinusClick() {
-    this.props.onChange(this.props.value - 0.1);
+    const { value, step } = this.props;
+    this.props.onChange(value - step);
   }
 
   handleChange(value: number) {
@@ -35,11 +43,11 @@ export class ScaleScroller extends React.Component<IProps, undefined> {
   }
 
   render() {
-    const { value, minValue, maxValue } = this.props;
+    const { value, minValue, maxValue, step, width } = this.props;
     return (
-      <div className='scale-scroller-containr'>
+      <div className='scale-scroller-containr' style={{ width }}>
         <Icon onClick={this.handleMinusClick} className='scroll-icon' type='minus-circle-o' />
-        <Slider className='scroll' key='2' value={value} min={minValue} max={maxValue} step={0.1} onChange={(value: number) => this.handleChange(value)} />
+        <AtSlider className='scroll' key='2' value={value} min={minValue} max={maxValue} step={step} onChange={(value: number) => this.handleChange(value)} />
         <Icon onClick={this.handlePlusClick} className='scroll-icon' type='plus-circle-o' />
       </div>);
   }
