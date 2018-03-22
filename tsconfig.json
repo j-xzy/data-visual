@@ -17,6 +17,7 @@
       "@base/*": ["./FrontEnd/base/*"],
       "@pages/*": ["./FrontEnd/pages/*"],
       "@components/*": ["./FrontEnd/components/*"],
+      "@container/*": ["./FrontEnd/container/*"],
       "@charts/*": ["./FrontEnd/charts/*"],
       "@lib/*": ["./FrontEnd/lib/*"]
     }

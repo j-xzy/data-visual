@@ -22,11 +22,7 @@ export default class DoubleInput extends React.Component<undefined, undefined> {
   render() {
     return (
       <div className='number-container'>
-        <div className='number'>
-          {React.Children.map(this.props.children, this.renderInput)}
-        </div>
-        <div className='number'>
-        </div>
+        {React.Children.map(this.props.children, this.renderInput)}
       </div>
     );
   }

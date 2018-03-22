@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { mount } from 'enzyme';
 import Sidebar from '../index';
 
@@ -17,7 +17,7 @@ describe('<Sidebar />', () => {
     expect(wrapper.find('ul li').at(1).hasClass('bright')).toBe(false);
     expect(wrapper.find('.p1').at(1).prop('hidden')).toBe(false);
     expect(wrapper.find('.p2').at(1).prop('hidden')).toBe(true);
-
+    
     wrapper.find('ul li').at(1).simulate('click');
 
     expect(wrapper.find('ul li').at(0).hasClass('bright')).toBe(false);

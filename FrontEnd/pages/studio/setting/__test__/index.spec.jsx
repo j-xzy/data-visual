@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import React from 'react';
+import Enzyme from 'enzyme';
 import Setting from '../index';
 import Sidebar from '@base/sidebar';
 

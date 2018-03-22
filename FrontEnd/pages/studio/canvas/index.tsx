@@ -2,7 +2,7 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
-import { IDraggableChartPreivewResult } from '@components/draggable-chart-preview';
+import { IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartProps, Chart } from '@components/chart';
 import { TransformTool, SideType } from '@components/transform-tool';
 
@@ -90,7 +90,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     let props: IChartProps = {
       option, id, position, size,
       scale: { x: 1, y: 1 }, key: id,
-      chartClick: this.chartClick
+      onChartClick: this.chartClick
     };
     this.setState((preState) => update(preState, {
       charts: { [id]: { $set: props } }

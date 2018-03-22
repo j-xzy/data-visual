@@ -13,13 +13,13 @@ export type CanvasPos = {
   paddingTop: string
 };
 
-export type CanvasSize = {
+export type CanvasSizeType = {
   width: number,
   height: number
 };
 
 export interface IStudioState {
-  canvasSize: CanvasSize;
+  canvasSize: CanvasSizeType;
   isShowTransformTool: boolean;
   canvasScale: number;
 }
@@ -29,12 +29,12 @@ export interface IChangeCanvasSize {
 }
 
 export interface IContextValue {
-  defaultCanvasSize: CanvasSize;
+  canvasSize: CanvasSizeType;
   updateCanvasPos: () => void;
   changeCanvasSize: IChangeCanvasSize;
 }
 
-const DEFAULT_CANVASSIZE: CanvasSize = {
+const DEFAULT_CANVASSIZE: CanvasSizeType = {
   width: 800,
   height: 600
 };
@@ -63,12 +63,6 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   private contentNode: HTMLElement;
-
-  private contextValue: IContextValue = {
-    defaultCanvasSize: DEFAULT_CANVASSIZE,
-    updateCanvasPos: this.updateCanvasPos.bind(this),
-    changeCanvasSize: this.changeCanvasSize.bind(this)
-  };
 
   updateCanvasPos() {
     const { width, height } = document.defaultView.getComputedStyle(this.contentNode, null);
@@ -133,7 +127,11 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   render() {
     const { canvasSize, canvasScale, isShowTransformTool } = this.state;
     return (
-      <Context.Provider value={this.contextValue}>
+      <Context.Provider value={{
+        canvasSize: this.state.canvasSize,
+        updateCanvasPos: this.updateCanvasPos.bind(this),
+        changeCanvasSize: this.changeCanvasSize.bind(this)
+      }}>
         <div className='studio'>
           <div className='leftbar_container'>
             <Leftbar />
@@ -148,7 +146,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
             </div>
             <div className='scroll-wrapper' >
               <div className='scroll-postion'>
-                <Slider step={0.1} 　width={200} maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE} value={canvasScale} onChange={this.handleScaleChange} />
+                <Slider step={0.1} width={200} maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE} value={canvasScale} onChange={this.handleScaleChange} />
               </div>
             </div>
           </div>

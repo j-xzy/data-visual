@@ -22,7 +22,7 @@ export interface IChartConfig {
 export interface IChartProps extends IChartConfig {
   key?: number;
   id: number;
-  chartClick: (id: number) => void;
+  onChartClick: (id: number) => void;
 }
 
 export class Chart extends React.PureComponent<IChartProps, undefined> {
@@ -36,7 +36,7 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   chart: echarts.ECharts;
 
   handleClick() {
-    this.props.chartClick(this.props.id);
+    this.props.onChartClick(this.props.id);
   }
 
  refreshChart(nextProps: IChartConfig) {
