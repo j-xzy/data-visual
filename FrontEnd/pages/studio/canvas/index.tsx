@@ -122,7 +122,6 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
       const position = preState.charts[id].position;
       const size = preState.charts[id].size;
       return update(preState, {
-        isShowTransformTool: { $set: true },
         transformTool: {
           position: { $set: position },
           size: { $set: size }

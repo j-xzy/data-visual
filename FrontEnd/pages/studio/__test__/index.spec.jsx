@@ -22,4 +22,8 @@ describe('<Studio />', () => {
   test('drag preview_chart', () => {
     expect(1).toBe(1);
   });
+
+  test('wheel', () => {
+    expect(1).toBe(1);
+  });
 });
