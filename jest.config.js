@@ -11,6 +11,7 @@ for (let key in paths) {
 module.exports = merge({
   setupFiles: [
     './FrontEnd/test/setup.js',
+    'jest-canvas-mock'
   ],
   transform: {
     "^.+\\.tsx?$": "ts-jest",

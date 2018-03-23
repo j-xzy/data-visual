@@ -48,6 +48,10 @@ interface ICanvasState {
   };
 }
 
+export const OFFSET_POSITION = {
+  left: 10,
+  top: 10
+};
 const DEFAULT_WIDTH = 300;
 const DEFAULT_HEIGHT = 300;
 const CHART_MINI_SIZE = {
@@ -256,18 +260,18 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 
   handleCopyClick() {
     const { option, position: { left, top }, size } = this.state.charts[this.chartSnapShot.id];
-    const offsetPosition = {
-      left: left + 10,
-      top: top + 10,
-      zIndex: Object.keys(this.state.charts).length
+    const position = {
+      left: left + OFFSET_POSITION.left,
+      top: top + OFFSET_POSITION.top,
     };
-    this.appendChart(option, offsetPosition, size, (chartId) => {
+    const zIndex = Object.keys(this.state.charts).length;
+    this.appendChart(option, { ...position, zIndex }, size, (chartId) => {
       this.chartSnapShot = this.state.charts[chartId];
     });
     this.setState((preState) => update(preState, {
       transformTool: {
         size: { $set: size },
-        position: { $set: offsetPosition }
+        position: { $set: position }
       }
     }));
   }

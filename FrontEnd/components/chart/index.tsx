@@ -39,11 +39,11 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
     this.props.onChartClick(this.props.id);
   }
 
- refreshChart(nextProps: IChartConfig) {
+  refreshChart(nextProps: IChartConfig) {
     this.chart.dispose();
     const { width, height } = nextProps.size;
     this.chart = echarts.init(this.element, '', { width, height });
-    this.chart.setOption(this.props.option);
+    this.chart.setOption(nextProps.option);
   }
 
   async componentDidMount() {

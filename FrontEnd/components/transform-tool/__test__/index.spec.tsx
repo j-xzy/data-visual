@@ -44,7 +44,7 @@ describe('<TransformTool />', () => {
 
     wrapper.find('.bottom').simulate('mouseDown');
     expect(handleTransformMouseDown.mock.calls[6][1]).toBe(SideType.Bottom);
-    
+
     wrapper.find('.left-bottom').simulate('mouseDown');
     expect(handleTransformMouseDown.mock.calls[7][1]).toBe(SideType.LeftBottom);
 
