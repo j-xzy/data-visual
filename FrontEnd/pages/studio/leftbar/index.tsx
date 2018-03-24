@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Collapse } from 'antd';
 import Sidebar from '@base/sidebar';
-import Layer from '@pages/studio/layer';
+import { Layer } from '@pages/studio/layer';
 import { DragableChartPreview } from '@container/draggable-chart-preview';
 import { barList, pieList } from '@lib/chart';
 import { Context as StudioContext } from '@pages/studio';

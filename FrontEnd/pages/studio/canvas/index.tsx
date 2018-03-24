@@ -262,7 +262,7 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     const { option, position: { left, top }, size } = this.state.charts[this.chartSnapShot.id];
     const position = {
       left: left + OFFSET_POSITION.left,
-      top: top + OFFSET_POSITION.top,
+      top: top + OFFSET_POSITION.top
     };
     const zIndex = Object.keys(this.state.charts).length;
     this.appendChart(option, { ...position, zIndex }, size, (chartId) => {
