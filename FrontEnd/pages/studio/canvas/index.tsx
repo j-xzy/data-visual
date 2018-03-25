@@ -3,7 +3,7 @@ import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
 import { IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
-import { IChartProps, Chart } from '@components/chart';
+import { IChartProps, IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType } from '@components/transform-tool';
 
 import './style.styl';
@@ -13,9 +13,11 @@ export interface ICanvasProps {
   height: number;
   canvasScale: number;
   isShowTransformTool: boolean;
+  charts: ReadonlyArray<Readonly<IChartConfig>>;
   connectDropTarget?: ConnectDropTarget;
   onWheel: (e: React.WheelEvent<HTMLDivElement>) => void;
   onChartClick: () => void;
+  updateCharts: (charts: ReadonlyArray<Readonly<IChartConfig>>, callback?: () => void) => void;
   hideTransformTool: () => void;
 }
 
@@ -27,7 +29,6 @@ type Coordinate = {
 type Position = {
   left: number;
   top: number;
-  zIndex: number;
 };
 
 type Size = {
@@ -36,9 +37,6 @@ type Size = {
 };
 
 interface ICanvasState {
-  charts: {
-    [id: string]: IChartProps
-  };
   transformTool: {
     position: {
       left: number;
@@ -74,8 +72,8 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
     this.handleClick = this.handleClick.bind(this);
     this.handleCopyClick = this.handleCopyClick.bind(this);
     this.handleTrashcanClick = this.handleTrashcanClick.bind(this);
+
     this.state = {
-      charts: {},
       transformTool: {
         position: { left: 0, top: 0 },
         size: { width: 0, height: 0 }
@@ -85,29 +83,25 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 
   canvasDiv: HTMLDivElement;
   mouseDownPosition: Coordinate;
-  chartSnapShot: IChartProps;
-  chartUid = 0;
+  chartSnapShot: IChartConfig;
   sideType = SideType.None;
 
-  appendChart(option: object, position: Position, size: Size, callback?: (chartId: number) => void) {
-    const id = this.chartUid++;
-    let props: IChartProps = {
-      option, id, position, size,
-      scale: { x: 1, y: 1 }, key: id,
-      onChartClick: this.chartClick
+  appendChart(option: object, position: Position, size: Size, callback?: () => void) {
+    let props: IChartConfig = {
+      option, position, size,
+      scale: { x: 1, y: 1 }
     };
-    this.setState((preState) => update(preState, {
-      charts: { [id]: { $set: props } }
-    }), () => {
-      typeof callback === 'function' && callback(id);
-    });
+    const { updateCharts, charts } = this.props;
+    updateCharts(update(charts, {
+      $push: [props]
+    }), callback);
   }
 
   renderCharts() {
-    const charts = this.state.charts;
-    return Object.keys(charts).map((key) => {
-      const props = charts[key];
-      return <Chart {...props} />;
+    const charts = this.props.charts;
+    return charts.map((props, idx) => {
+      const { id, ...onIdProps } = props;
+      return <Chart onChartClick={this.chartClick} {...onIdProps} key={idx} id={idx} />;
     });
   }
 
@@ -121,17 +115,14 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 
   chartClick(id: number) {
     this.props.onChartClick();
-    this.chartSnapShot = { ...this.state.charts[id] };
-    this.setState((preState) => {
-      const position = preState.charts[id].position;
-      const size = preState.charts[id].size;
-      return update(preState, {
-        transformTool: {
-          position: { $set: position },
-          size: { $set: size }
-        }
-      });
-    });
+    this.chartSnapShot = { ...this.props.charts[id], id };
+    const { position, size } = this.chartSnapShot;
+    this.setState(update(this.state, {
+      transformTool: {
+        position: { $set: position },
+        size: { $set: size }
+      }
+    }));
   }
 
   handleTransformMouseDown(e: React.MouseEvent<HTMLDivElement>, type: SideType) {
@@ -149,25 +140,22 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   handleCanvasMouseUp() {
     if (this.sideType !== SideType.None) {
       const id = this.chartSnapShot.id;
-      this.setState((preState) => {
-        const chart = preState.charts[id];
-        const size = {
-          width: chart.scale.x * chart.size.width,
-          height: chart.scale.y * chart.size.height
-        };
-        return update(preState, {
-          charts: {
-            [id]: {
-              size: { $merge: size },
-              position: { $merge: preState.transformTool.position },
-              scale: {
-                $set: { x: 1, y: 1 }
-              }
-            }
+      const charts = this.props.charts;
+      const chart = charts[id];
+      const size = {
+        width: chart.scale.x * chart.size.width,
+        height: chart.scale.y * chart.size.height
+      };
+      this.props.updateCharts(update(charts, {
+        [id]: {
+          size: { $merge: size },
+          position: { $merge: this.state.transformTool.position },
+          scale: {
+            $set: { x: 1, y: 1 }
           }
-        });
-      }, () => {
-        this.chartSnapShot = { ...this.state.charts[id] };
+        }
+      }), () => {
+        this.chartSnapShot = { ...this.props.charts[id], id };
       });
     }
     this.sideType = SideType.None;
@@ -182,91 +170,92 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
       y: (e.clientY - this.mouseDownPosition.y) / scale
     };
 
-    this.setState((preState) => {
-      const chart = this.chartSnapShot;
-      const id = chart.id;
-      let size = { ...chart.size };
-      let position = { ...chart.position };
+    const chart = this.chartSnapShot;
+    const id = chart.id;
+    let size = { ...chart.size };
+    let position = { ...chart.position };
 
-      if (this.sideType === SideType.Right) {
-        size.width = size.width + delta.x;
-      }
-      if (this.sideType === SideType.Bottom) {
-        size.height = size.height + delta.y;
-      }
-      if (this.sideType === SideType.Top) {
-        size.height = size.height - delta.y;
-        position.top = position.top + delta.y;
-      }
-      if (this.sideType === SideType.Left) {
-        size.width = size.width - delta.x;
-        position.left = position.left + delta.x;
-      }
-      if (this.sideType === SideType.RightTop) {
-        size.width = size.width + delta.x;
-        size.height = size.height - delta.y;
-        position.top = position.top + delta.y;
-      }
+    if (this.sideType === SideType.Right) {
+      size.width = size.width + delta.x;
+    }
+    if (this.sideType === SideType.Bottom) {
+      size.height = size.height + delta.y;
+    }
+    if (this.sideType === SideType.Top) {
+      size.height = size.height - delta.y;
+      position.top = position.top + delta.y;
+    }
+    if (this.sideType === SideType.Left) {
+      size.width = size.width - delta.x;
+      position.left = position.left + delta.x;
+    }
+    if (this.sideType === SideType.RightTop) {
+      size.width = size.width + delta.x;
+      size.height = size.height - delta.y;
+      position.top = position.top + delta.y;
+    }
 
-      if (this.sideType === SideType.LeftTop) {
-        size.width = size.width - delta.x;
-        size.height = size.height - delta.y;
-        position.top = position.top + delta.y;
-        position.left = position.left + delta.x;
-      }
+    if (this.sideType === SideType.LeftTop) {
+      size.width = size.width - delta.x;
+      size.height = size.height - delta.y;
+      position.top = position.top + delta.y;
+      position.left = position.left + delta.x;
+    }
 
-      if (this.sideType === SideType.LeftBottom) {
-        size.width = size.width - delta.x;
-        size.height = size.height + delta.y;
-        position.left = position.left + delta.x;
-      }
+    if (this.sideType === SideType.LeftBottom) {
+      size.width = size.width - delta.x;
+      size.height = size.height + delta.y;
+      position.left = position.left + delta.x;
+    }
 
-      if (this.sideType === SideType.RightBottom) {
-        size.width = size.width + delta.x;
-        size.height = size.height + delta.y;
-      }
-      if (this.sideType === SideType.Middle) {
-        position.left = position.left + delta.x;
-        position.top = position.top + delta.y;
-      }
+    if (this.sideType === SideType.RightBottom) {
+      size.width = size.width + delta.x;
+      size.height = size.height + delta.y;
+    }
+    if (this.sideType === SideType.Middle) {
+      position.left = position.left + delta.x;
+      position.top = position.top + delta.y;
+    }
 
-      const chartScale = {
-        x: size.width / chart.size.width,
-        y: size.height / chart.size.height
-      };
-      const chartPosition = {
-        left: position.left + chart.size.width * (chartScale.x - 1) / 2,
-        top: position.top + chart.size.height * (chartScale.y - 1) / 2
-      };
+    const chartScale = {
+      x: size.width / chart.size.width,
+      y: size.height / chart.size.height
+    };
+    const chartPosition = {
+      left: position.left + chart.size.width * (chartScale.x - 1) / 2,
+      top: position.top + chart.size.height * (chartScale.y - 1) / 2
+    };
 
-      if (size.width < CHART_MINI_SIZE.width || size.height < CHART_MINI_SIZE.height) {
-        return;
+    if (size.width < CHART_MINI_SIZE.width || size.height < CHART_MINI_SIZE.height) {
+      return;
+    }
+
+    this.setState({
+      transformTool: {
+        size,
+        position
       }
-
-      return update(preState, {
-        transformTool: {
-          size: { $set: size },
-          position: { $set: position }
-        },
-        charts: {
-          [id]: {
-            position: { $merge: chartPosition },
-            scale: { $set: chartScale }
-          }
-        }
-      });
     });
+
+    const { updateCharts, charts } = this.props;
+    updateCharts(update(charts, {
+      [id]: {
+        position: { $merge: chartPosition },
+        scale: { $set: chartScale }
+      }
+    }));
   }
 
   handleCopyClick() {
-    const { option, position: { left, top }, size } = this.state.charts[this.chartSnapShot.id];
+    const charts = this.props.charts;
+    const id = this.chartSnapShot.id;
+    const { option, position: { left, top }, size } = charts[id];
     const position = {
       left: left + OFFSET_POSITION.left,
       top: top + OFFSET_POSITION.top
     };
-    const zIndex = Object.keys(this.state.charts).length;
-    this.appendChart(option, { ...position, zIndex }, size, (chartId) => {
-      this.chartSnapShot = this.state.charts[chartId];
+    this.appendChart(option, { ...position }, size, () => {
+      this.chartSnapShot = { ...this.props.charts[id + 1], id: id + 1 };
     });
     this.setState((preState) => update(preState, {
       transformTool: {
@@ -277,12 +266,11 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   }
 
   handleTrashcanClick() {
+    const { charts, hideTransformTool, updateCharts } = this.props;
     const id = this.chartSnapShot.id;
-    this.props.hideTransformTool();
-    this.setState(update(this.state, {
-      charts: {
-        $unset: [id]
-      }
+    hideTransformTool();
+    updateCharts(update(charts, {
+      $splice: [[id, 1]]
     }));
   }
 
@@ -328,8 +316,7 @@ const boxTarget = {
       let { left, top } = component.getPotionByCanvas(x, y);
       const position = {
         left: left - DEFAULT_WIDTH / 2,
-        top: top - DEFAULT_HEIGHT / 2,
-        zIndex: Object.keys(component.state.charts).length
+        top: top - DEFAULT_HEIGHT / 2
       };
       component.appendChart(item.option, position, { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT });
       return;

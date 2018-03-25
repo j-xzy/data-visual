@@ -16,6 +16,12 @@ export default class CanvasSize extends React.Component<IProps, undefined> {
     this.handleHeightChange = this.handleHeightChange.bind(this);
   }
 
+  shouldComponentUpdate(nextProps: IProps) {
+    const { canvasSize: { width, height } } = nextProps;
+    const { canvasSize: { width: lastWidth, height: lastHeight } } = this.props;
+    return width !== lastWidth || height !== lastHeight;
+  }
+
   handleWidthChange(width: number) {
     this.props.onCanvasSizeChange(width, this.props.canvasSize.height);
   }

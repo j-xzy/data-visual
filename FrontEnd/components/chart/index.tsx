@@ -15,13 +15,12 @@ export interface IChartConfig {
   position: {
     left: number;
     top: number;
-    zIndex: number;
   };
+  id?: number;
 }
 
 export interface IChartProps extends IChartConfig {
-  key?: number;
-  id: number;
+  key: number;
   onChartClick: (id: number) => void;
 }
 
@@ -64,13 +63,13 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   }
 
   render() {
-    const { size, position, scale } = this.props;
+    const { size, position, scale, id } = this.props;
     const transform = `scale(${scale.x},${scale.y})`;
     return (
       <div
         onClick={this.handleClick}
         className='chart-container'
-        style={{ ...size, ...position, position: 'absolute', transform }} ref={(e) => this.element = e}>
+        style={{ ...size, ...position, position: 'absolute', transform, zIndex: id }} ref={(e) => this.element = e}>
       </div >
     );
   }

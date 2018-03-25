@@ -5,6 +5,7 @@ import Slider from '@base/slider';
 import Leftbar from '@pages/studio/leftbar';
 import { Canvas } from '@pages/studio/canvas';
 import Setting from '@pages/studio/setting';
+import { IChartConfig } from '@components/chart';
 
 import './style.styl';
 
@@ -22,6 +23,7 @@ export interface IStudioState {
   canvasSize: CanvasSizeType;
   isShowTransformTool: boolean;
   canvasScale: number;
+  charts: IChartConfig[];
 }
 
 export interface IChangeCanvasSize {
@@ -38,9 +40,10 @@ const DEFAULT_CANVASSIZE: CanvasSizeType = {
   width: 800,
   height: 600
 };
+
 const DEFAULT_CANVASSCALE = 1;
-const MIN_SCALE_VALUE = 0.1;
-const MAX_SCALE_VALUE = 20;
+const MIN_SCALE_VALUE = 0.01;
+const MAX_SCALE_VALUE = 10;
 
 export const Context: React.Context<IContextValue> = React.createContext();
 
@@ -54,11 +57,13 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.handleContentClick = this.handleContentClick.bind(this);
     this.showTransformTool = this.showTransformTool.bind(this);
     this.hideTransformTool = this.hideTransformTool.bind(this);
+    this.updateCharts = this.updateCharts.bind(this);
 
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
       canvasScale: DEFAULT_CANVASSCALE,
-      isShowTransformTool: false
+      isShowTransformTool: false,
+      charts: []
     };
   }
 
@@ -84,6 +89,10 @@ class RawStudio extends React.Component<undefined, IStudioState> {
         height: height
       }
     });
+  }
+
+  updateCharts(charts: IChartConfig[], callback: () => void) {
+    this.setState({ charts }, () => { typeof callback === 'function' && callback(); });
   }
 
   handleCanvasWheel(e: React.WheelEvent<HTMLDivElement>) {
@@ -125,7 +134,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, isShowTransformTool } = this.state;
+    const { canvasSize, canvasScale, isShowTransformTool, charts } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
@@ -141,12 +150,12 @@ class RawStudio extends React.Component<undefined, IStudioState> {
               <Canvas
                 onChartClick={this.showTransformTool} isShowTransformTool={isShowTransformTool}
                 onWheel={this.handleCanvasWheel} canvasScale={canvasScale} hideTransformTool={this.hideTransformTool}
-                width={canvasSize.width} height={canvasSize.height} >
+                width={canvasSize.width} height={canvasSize.height} charts={charts} updateCharts={this.updateCharts}>
               </Canvas>
             </div>
             <div className='scroll-wrapper' >
               <div className='scroll-postion'>
-                <Slider step={0.1} width={200} maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE} value={canvasScale} onChange={this.handleScaleChange} />
+                <Slider step={0.01} width={200} maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE} value={canvasScale} onChange={this.handleScaleChange} />
               </div>
             </div>
           </div>
