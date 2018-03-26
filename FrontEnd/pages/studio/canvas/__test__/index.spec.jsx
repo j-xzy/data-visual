@@ -33,12 +33,15 @@ let hideTransformTool = jest.fn();
 beforeEach(() => {
   const OriginCanvas = Canvas.DecoratedComponent;
   const identity = el => el;
-  wrapper = mount(<OriginCanvas hideTransformTool={hideTransformTool} onChartClick={() => { }} connectDropTarget={identity} />);
+  wrapper = mount(<OriginCanvas charts={[]} updateCharts={updateCharts} hideTransformTool={hideTransformTool} onChartClick={() => { }} connectDropTarget={identity} />);
   wrapper.instance().appendChart(option, position, size);
   wrapper.update();
   wrapper.setProps({ isShowTransformTool: true });
   wrapper.find(Chart).find('.chart-container').prop('onClick')();
   wrapper.update();
+  function updateCharts(charts) {
+    wrapper.setProps({ charts }, () => { typeof callback === 'function' && callback(); });
+  }
 });
 
 describe('<Canvas /> change size and position', () => {
@@ -374,8 +377,8 @@ describe('Canvas /> copy and delete', () => {
     expect(wrapper.find(Chart).at(1).prop('position')).toEqual({
       left: position.left + OFFSET_POSITION.left,
       top: position.top + OFFSET_POSITION.top,
-      zIndex: 1
     });
+    expect(wrapper.find(Chart).at(1).childAt(0).prop('style').zIndex).toBe(1);
     expect(wrapper.find(TransformTool).prop('position')).toEqual({
       left: position.left + OFFSET_POSITION.left,
       top: position.top + OFFSET_POSITION.top
