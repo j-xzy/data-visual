@@ -17,7 +17,7 @@ export class ChartPreview extends React.Component<IChartPreview, undefined> {
     return (
       <div className='preview-container'>
         <img src={imgSrc} />
-        <span >{name}</span>
+        <span>{name}</span>
       </div>
     );
   }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
-import { IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
+import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType } from '@components/transform-tool';
 
@@ -14,11 +14,14 @@ export interface ICanvasProps {
   canvasScale: number;
   isShowTransformTool: boolean;
   charts: ReadonlyArray<Readonly<IChartConfig>>;
-  connectDropTarget?: ConnectDropTarget;
   onWheel: (e: React.WheelEvent<HTMLDivElement>) => void;
   onChartClick: () => void;
   updateCharts: (charts: ReadonlyArray<Readonly<IChartConfig>>, callback?: () => void) => void;
   hideTransformTool: () => void;
+}
+
+interface IRawCanvasProps extends ICanvasProps {
+  connectDropTarget: ConnectDropTarget;
 }
 
 type Coordinate = {
@@ -57,8 +60,8 @@ const CHART_MINI_SIZE = {
   height: 50
 };
 
-export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
-  constructor(props: ICanvasProps) {
+export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
+  constructor(props: IRawCanvasProps) {
     super(props);
     this.getPotionByCanvas = this.getPotionByCanvas.bind(this);
     this.appendChart = this.appendChart.bind(this);
@@ -333,4 +336,4 @@ function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
   };
 }
 
-export const Canvas = DropTarget<ICanvasProps>([PREVIEW_CHART], boxTarget, collect)(RawCanvas);
+export const Canvas = DropTarget<ICanvasProps>(PREVIEW_CHART, boxTarget, collect)(RawCanvas);

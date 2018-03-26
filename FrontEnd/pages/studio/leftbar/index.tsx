@@ -1,19 +1,12 @@
 import * as React from 'react';
-import { Collapse } from 'antd';
 import Sidebar from '@base/sidebar';
-import { Layer } from '@pages/studio/layer';
-import { DragableChartPreview } from '@container/draggable-chart-preview';
-import { barList, pieList } from '@lib/chart';
+import Layer from '@pages/studio/layer';
+import  ComponentPanel  from '@pages/studio/component-panel';
 import { Context as StudioContext } from '@pages/studio';
 
+import ComSetting from '@pages/studio/com-setting';
+
 import './style.styl';
-
-const Panel = Collapse.Panel;
-
-const panelStyle = {
-  background: '#000',
-  border: 0
-};
 
 export default class LeftBar extends React.Component {
   render() {
@@ -22,29 +15,7 @@ export default class LeftBar extends React.Component {
         {({ updateCanvasPos, charts }) => (
           <Sidebar onOpenChangeAfter={() => updateCanvasPos()} className='leftbar' mode='left' width='200px' height='100%'>
             <Sidebar.Panel className='component_panel' title='组件'>
-              <Collapse bordered={false}>
-                <Panel header='饼状图' key='1' style={panelStyle}>
-                  <ul>
-                    {
-                      pieList.map(({ name, imgSrc, option }) => {
-                        return <li key={name}><DragableChartPreview imgSrc={imgSrc} option={option} name={name} /></li>;
-                      })
-                    }
-                  </ul>
-                </Panel>
-                <Panel header='柱状图' key='2' style={panelStyle}>
-                  <ul>
-                    {
-                      barList.map(({ name, imgSrc, option }) => {
-                        return <li key={name}><DragableChartPreview imgSrc={imgSrc} option={option} name={name} /></li>;
-                      })
-                    }
-                  </ul>
-                </Panel>
-                <Panel header='地图' key='3' style={panelStyle}>
-                  <div>这是地图</div>
-                </Panel>
-              </Collapse>
+              <ComponentPanel />
             </Sidebar.Panel>
             <Sidebar.Panel className='layer_panel' title='图层'>
               <Layer charts={charts} />
