@@ -16,6 +16,7 @@ export interface IChartConfig {
     left: number;
     top: number;
   };
+  imgSrc: string;
   id?: number;
 }
 

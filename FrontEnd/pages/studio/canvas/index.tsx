@@ -3,7 +3,7 @@ import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
 import { IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
-import { IChartProps, IChartConfig, Chart } from '@components/chart';
+import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType } from '@components/transform-tool';
 
 import './style.styl';
@@ -86,9 +86,10 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
   chartSnapShot: IChartConfig;
   sideType = SideType.None;
 
-  appendChart(option: object, position: Position, size: Size, callback?: () => void) {
-    let props: IChartConfig = {
-      option, position, size,
+  appendChart(option: object, config: { position: Position, size: Size, imgSrc: string }, callback?: () => void) {
+    const { position, size, imgSrc } = config;
+    const props: IChartConfig = {
+      option, position, size, imgSrc,
       scale: { x: 1, y: 1 }
     };
     const { updateCharts, charts } = this.props;
@@ -248,13 +249,13 @@ export class RawCanvas extends React.Component<ICanvasProps, ICanvasState> {
 
   handleCopyClick() {
     const charts = this.props.charts;
-    const id = this.chartSnapShot.id;
+    const { id, imgSrc } = this.chartSnapShot;
     const { option, position: { left, top }, size } = charts[id];
     const position = {
       left: left + OFFSET_POSITION.left,
       top: top + OFFSET_POSITION.top
     };
-    this.appendChart(option, { ...position }, size, () => {
+    this.appendChart(option, { position, size, imgSrc }, () => {
       this.chartSnapShot = { ...this.props.charts[id + 1], id: id + 1 };
     });
     this.setState((preState) => update(preState, {
@@ -318,7 +319,9 @@ const boxTarget = {
         left: left - DEFAULT_WIDTH / 2,
         top: top - DEFAULT_HEIGHT / 2
       };
-      component.appendChart(item.option, position, { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT });
+      const size = { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT };
+      const imgSrc = item.imgSrc;
+      component.appendChart(item.option, { position, size, imgSrc });
       return;
     }
   }

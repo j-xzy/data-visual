@@ -34,7 +34,7 @@ beforeEach(() => {
   const OriginCanvas = Canvas.DecoratedComponent;
   const identity = el => el;
   wrapper = mount(<OriginCanvas charts={[]} updateCharts={updateCharts} hideTransformTool={hideTransformTool} onChartClick={() => { }} connectDropTarget={identity} />);
-  wrapper.instance().appendChart(option, position, size);
+  wrapper.instance().appendChart(option, { position, size, imgSrc: '' });
   wrapper.update();
   wrapper.setProps({ isShowTransformTool: true });
   wrapper.find(Chart).find('.chart-container').prop('onClick')();

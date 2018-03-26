@@ -19,4 +19,4 @@
 | minValue | 最小值 |　number　| １ |  |
 | maxValue | 最大值 |　number　|  100 |  |
 | step | 步长 | number | 0.1 | |
-| onChange | 数值发生改变触发次事件 | (value) => void
+| onChange | 数值发生改变触发事件 | (value) => void

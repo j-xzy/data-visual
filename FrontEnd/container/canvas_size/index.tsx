@@ -1,12 +1,12 @@
 import * as React from 'react';
 import DoubleInput from '@components/double-input';
-import { CanvasSizeType, IChangeCanvasSize } from '@pages/studio';
+import { CanvasSizeType, IUpdateCanvasSize } from '@pages/studio';
 
 const Input = DoubleInput.Input;
 
 interface IProps {
   canvasSize: CanvasSizeType;
-  onCanvasSizeChange: IChangeCanvasSize;
+  onCanvasSizeChange: IUpdateCanvasSize;
 }
 
 export default class CanvasSize extends React.Component<IProps, undefined> {

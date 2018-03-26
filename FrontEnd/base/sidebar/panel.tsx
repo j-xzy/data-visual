@@ -10,10 +10,6 @@ export interface IPanelProps {
 }
 
 export class Panel extends React.Component<IPanelProps, undefined> {
-  shouldComponentUpdate(nextProps: IPanelProps) {
-    return nextProps.isShow !== this.props.isShow;
-  }
-
   render() {
     const { className, title, collapse, children, isShow } = this.props;
     return (

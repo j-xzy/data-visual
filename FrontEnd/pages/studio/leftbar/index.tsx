@@ -16,14 +16,10 @@ const panelStyle = {
 };
 
 export default class LeftBar extends React.Component {
-  shouldComponentUpdate() {
-    return false;
-  }
-
   render() {
     return (
       <StudioContext.Consumer>
-        {({ updateCanvasPos }: any) => (
+        {({ updateCanvasPos, charts }) => (
           <Sidebar onOpenChangeAfter={() => updateCanvasPos()} className='leftbar' mode='left' width='200px' height='100%'>
             <Sidebar.Panel className='component_panel' title='组件'>
               <Collapse bordered={false}>
@@ -51,7 +47,7 @@ export default class LeftBar extends React.Component {
               </Collapse>
             </Sidebar.Panel>
             <Sidebar.Panel className='layer_panel' title='图层'>
-              <Layer />
+              <Layer charts={charts} />
             </Sidebar.Panel>
           </Sidebar>
         )}

@@ -19,21 +19,24 @@ export type CanvasSizeType = {
   height: number
 };
 
+export type Charts = IChartConfig[];
+
 export interface IStudioState {
   canvasSize: CanvasSizeType;
   isShowTransformTool: boolean;
   canvasScale: number;
-  charts: IChartConfig[];
+  charts: Charts;
 }
 
-export interface IChangeCanvasSize {
+export interface IUpdateCanvasSize {
   (width: number, height: number): void;
 }
 
 export interface IContextValue {
   canvasSize: CanvasSizeType;
+  charts: Charts;
   updateCanvasPos: () => void;
-  changeCanvasSize: IChangeCanvasSize;
+  updateCanvasSize: IUpdateCanvasSize;
 }
 
 const DEFAULT_CANVASSIZE: CanvasSizeType = {
@@ -51,7 +54,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   constructor() {
     super(undefined);
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
-    this.changeCanvasSize = this.changeCanvasSize.bind(this);
+    this.updateCanvasSize = this.updateCanvasSize.bind(this);
     this.handleScaleChange = this.handleScaleChange.bind(this);
     this.handleCanvasWheel = this.handleCanvasWheel.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
@@ -82,7 +85,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.contentNode.style.paddingTop = paddingTop;
   }
 
-  changeCanvasSize(width: number, height: number) {
+  updateCanvasSize(width: number, height: number) {
     this.setState({
       canvasSize: {
         width: width,
@@ -138,8 +141,9 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
+        charts: this.state.charts,
         updateCanvasPos: this.updateCanvasPos.bind(this),
-        changeCanvasSize: this.changeCanvasSize.bind(this)
+        updateCanvasSize: this.updateCanvasSize.bind(this)
       }}>
         <div className='studio'>
           <div className='leftbar_container'>
