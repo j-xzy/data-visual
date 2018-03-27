@@ -1,12 +1,12 @@
 import * as React from 'react';
 import DoubleInput from '@components/double-input';
-import { CanvasSizeType, IUpdateCanvasSize } from '@pages/studio';
+import { CanvasSizeType, IUpdateStudioState } from '@pages/studio';
 
 const Input = DoubleInput.Input;
 
 interface IProps {
   canvasSize: CanvasSizeType;
-  onCanvasSizeChange: IUpdateCanvasSize;
+  updateStudioState: IUpdateStudioState;
 }
 
 export default class CanvasSize extends React.Component<IProps, undefined> {
@@ -23,11 +23,21 @@ export default class CanvasSize extends React.Component<IProps, undefined> {
   }
 
   handleWidthChange(width: number) {
-    this.props.onCanvasSizeChange(width, this.props.canvasSize.height);
+    this.props.updateStudioState({
+      canvasSize: {
+        width,
+        height: this.props.canvasSize.height
+      }
+    });
   }
 
   handleHeightChange(height: number) {
-    this.props.onCanvasSizeChange(this.props.canvasSize.width, height);
+    this.props.updateStudioState({
+      canvasSize: {
+        width: this.props.canvasSize.width,
+        height
+      }
+    });
   }
 
   render() {

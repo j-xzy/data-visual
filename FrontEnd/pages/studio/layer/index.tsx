@@ -1,5 +1,5 @@
 import * as React from 'react';
-import cloneDeep from 'lodash.clonedeep';
+import update from 'immutability-helper';
 import LayerItem from '@container/draggable-layer-item';
 import { Charts } from '@pages/studio';
 
@@ -9,34 +9,45 @@ interface IProps {
   charts: Charts;
 }
 
-export default class RawLayer extends React.Component<IProps, undefined> {
+interface IState {
+  charts: Charts;
+}
+
+export default class RawLayer extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.renderLayer = this.renderLayer.bind(this);
-    this.setDragStatus = this.setDragStatus.bind(this);
-  }
-
-  duplicateCharts: Charts;
-  isDragging = false;
-
-  setDragStatus(isDragging: boolean) {
-    this.isDragging = isDragging;
+    this.moveChart = this.moveChart.bind(this);
+    this.state = {
+      charts: []
+    };
   }
 
   renderLayer() {
-    const charts = this.isDragging ? [...this.duplicateCharts] : [...this.props.charts];
+    const charts = [...this.state.charts];
     return charts.reverse().map((chart, idx) => {
-      return <LayerItem setDragStatus={this.setDragStatus} key={idx} index={idx} imgSrc={chart.imgSrc} />;
+      return <LayerItem moveChart={this.moveChart} key={chart.id} index={idx} imgSrc={chart.imgSrc} />;
     });
   }
 
-  shouldComponentUpdate(nextProps: IProps) {
-    console.log( nextProps.charts === this.props.charts);
-    return nextProps.charts !== this.props.charts;
+  moveChart(dragIndex: number, hoverIndex: number) {
+    const charts = this.state.charts;
+    const dragChart = charts[dragIndex];
+    this.setState({
+      charts: update(charts, {
+        $splice: [[dragIndex, 1], [hoverIndex, 0, dragChart]]
+      })
+    });
+  }
+
+  shouldComponentUpdate(nextProps: IProps, nextState: IState) {
+    return this.state.charts !== nextState.charts;
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-   // this.duplicateCharts = cloneDeep(nextProps.charts);
+    if (nextProps.charts !== this.props.charts) {
+      this.setState({ charts: [...nextProps.charts] });
+    }
   }
 
   render() {

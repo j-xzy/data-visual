@@ -3,16 +3,15 @@ import { findDOMNode } from 'react-dom';
 import {
   DragSource, DragSourceConnector,
   DragSourceMonitor, ConnectDragSource,
-  ConnectDragPreview, DropTarget,
-  DropTargetConnector, DropTargetMonitor,
-  ConnectDropTarget
+  DropTarget, DropTargetConnector,
+  DropTargetMonitor, ConnectDropTarget
 } from 'react-dnd';
 import { LayerItem, IProps as ILayerItemProps } from '@components/layer-item';
 import { LAYER_ITEM } from '@lib/dragtype';
 
 interface IDraggableLayerItemProps extends ILayerItemProps {
   index: number;
-  setDragStatus: (isDragging: boolean) => void;
+  moveChart: (dragIndex: number, hoverIndex: number) => void;
 }
 
 interface IRawLayerItemProps extends IDraggableLayerItemProps {
@@ -41,13 +40,11 @@ export class RawLayerItem extends React.Component<IRawLayerItemProps, undefined>
 
 const dragSource = {
   beginDrag(props: IDraggableLayerItemProps, monitor: DragSourceMonitor, component: RawLayerItem) {
-    component.props.setDragStatus(true);
     return {
       index: props.index
     };
   },
   endDrag(props: IDraggableLayerItemProps, monitor: DragSourceMonitor, component: RawLayerItem) {
-    component.props.setDragStatus(false);
   }
 };
 
@@ -88,7 +85,7 @@ const dropTarget = {
     }
 
     // Time to actually perform the action
-    // props.moveCard(dragIndex, hoverIndex);
+    props.moveChart(dragIndex, hoverIndex);
 
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,

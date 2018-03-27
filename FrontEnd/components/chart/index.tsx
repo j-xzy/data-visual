@@ -2,7 +2,7 @@ import * as React from 'react';
 
 let echarts: any;
 
-export interface IChartConfig {
+export interface IChartBaseConfig {
   option: object;
   scale: {
     x: number;
@@ -17,11 +17,15 @@ export interface IChartConfig {
     top: number;
   };
   imgSrc: string;
-  id?: number;
 }
 
-export interface IChartProps extends IChartConfig {
+export interface IChartConfig extends IChartBaseConfig {
+  id: number;
+}
+
+export interface IChartProps extends IChartBaseConfig {
   key: number;
+  index: number;
   onChartClick: (id: number) => void;
 }
 
@@ -36,10 +40,10 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   chart: echarts.ECharts;
 
   handleClick() {
-    this.props.onChartClick(this.props.id);
+    this.props.onChartClick(this.props.index);
   }
 
-  refreshChart(nextProps: IChartConfig) {
+  refreshChart(nextProps: IChartProps) {
     this.chart.dispose();
     const { width, height } = nextProps.size;
     this.chart = echarts.init(this.element, '', { width, height });
@@ -57,20 +61,20 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
     this.chart.dispose();
   }
 
-  componentWillReceiveProps(nextProps: IChartConfig) {
+  componentWillReceiveProps(nextProps: IChartProps) {
     if (nextProps.size !== this.props.size) {
       this.refreshChart(nextProps);
     }
   }
 
   render() {
-    const { size, position, scale, id } = this.props;
+    const { size, position, scale, index } = this.props;
     const transform = `scale(${scale.x},${scale.y})`;
     return (
       <div
         onClick={this.handleClick}
         className='chart-container'
-        style={{ ...size, ...position, position: 'absolute', transform, zIndex: id }} ref={(e) => this.element = e}>
+        style={{ ...size, ...position, position: 'absolute', transform, zIndex: index }} ref={(e) => this.element = e}>
       </div >
     );
   }

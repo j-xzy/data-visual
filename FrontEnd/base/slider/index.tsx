@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Slider as AtSlider, Icon } from 'antd';
+import { IUpdateStudioState } from '@pages/studio';
 import './style.styl';
 
 interface IProps {
-  onChange: (scale: number) => void;
+  updateStudioState: IUpdateStudioState;
   value: number;
   minValue: number;
   maxValue: number;
@@ -26,16 +27,16 @@ export default class Slider extends React.Component<IProps, undefined> {
 
   handlePlusClick() {
     const { value, step } = this.props;
-    this.props.onChange(value + step);
+    this.props.updateStudioState({ canvasScale: value + step });
   }
 
   handleMinusClick() {
     const { value, step } = this.props;
-    this.props.onChange(value - step);
+    this.props.updateStudioState({ canvasScale: value - step });
   }
 
   handleChange(value: number) {
-    this.props.onChange(value);
+    this.props.updateStudioState({ canvasScale: value });
   }
 
   shouldComponentUpdate(nextProps: IProps) {

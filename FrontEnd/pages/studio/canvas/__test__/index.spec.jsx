@@ -27,20 +27,29 @@ const size = {
   height: 300
 };
 
+const transformTool = {
+  position: { left: 0, top: 0 },
+  size: { width: 0, height: 0 }
+}
+
 let wrapper;
 let hideTransformTool = jest.fn();
 
 beforeEach(() => {
   const OriginCanvas = Canvas.DecoratedComponent;
   const identity = el => el;
-  wrapper = mount(<OriginCanvas charts={[]} updateCharts={updateCharts} hideTransformTool={hideTransformTool} onChartClick={() => { }} connectDropTarget={identity} />);
+  wrapper = mount(<OriginCanvas
+    transformTool={transformTool} canvasScale={1}
+    charts={[]} updateStudioState={updateStudioState}
+    hideTransformTool={hideTransformTool}
+    onChartClick={() => { }} connectDropTarget={identity} />);
   wrapper.instance().appendChart(option, { position, size, imgSrc: '' });
   wrapper.update();
   wrapper.setProps({ isShowTransformTool: true });
   wrapper.find(Chart).find('.chart-container').prop('onClick')();
   wrapper.update();
-  function updateCharts(charts) {
-    wrapper.setProps({ charts }, () => { typeof callback === 'function' && callback(); });
+  function updateStudioState(state) {
+    wrapper.setProps({ ...state }, () => { typeof callback === 'function' && callback(); });
   }
 });
 
@@ -52,6 +61,15 @@ describe('<Canvas /> change size and position', () => {
     expect(wrapper.find(Chart).prop('position')).toEqual(wrapper.find(TransformTool).prop('position'));
 
     wrapper.unmount();
+  });
+
+  test('onWheel', () => {
+    wrapper.update();
+    expect(wrapper.prop('canvasScale')).toBe(1);
+    wrapper.simulate('wheel', { deltaY: 1 });
+    expect(wrapper.prop('canvasScale')).toBe(0.95);
+    wrapper.simulate('wheel', { deltaY: -1 });
+    expect(wrapper.prop('canvasScale')).toBe(1);
   });
 
   test('move scale:1', () => {

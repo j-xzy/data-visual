@@ -7,9 +7,9 @@ export default class PageSetting extends React.Component {
   render() {
     return (
       <StudioContext.Consumer>
-        {({ updateCanvasSize, canvasSize }) => ([
+        {({ updateStudioState, canvasSize }) => ([
           <Item name='屏幕大小' key='pageSize'>
-            <CanvasSize onCanvasSizeChange={updateCanvasSize} canvasSize={canvasSize} />
+            <CanvasSize updateStudioState={updateStudioState} canvasSize={canvasSize} />
           </Item>
         ])}
       </StudioContext.Consumer>
