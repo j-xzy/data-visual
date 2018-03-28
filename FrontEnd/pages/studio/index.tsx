@@ -44,6 +44,7 @@ export interface IUpdateStudioState {
 export interface IContextValue {
   canvasSize: CanvasSizeType;
   charts: Charts;
+  choosedChartIndex: number;
   updateCanvasPos: () => void;
   updateStudioState: IUpdateStudioState;
 }
@@ -118,6 +119,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
         charts: this.state.charts,
+        choosedChartIndex: this.state.choosedChartIndex,
         updateCanvasPos: this.updateCanvasPos.bind(this),
         updateStudioState: this.updateStudioState.bind(this)
       }}>

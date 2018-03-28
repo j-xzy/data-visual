@@ -34,11 +34,14 @@ export class RawLayerItem extends React.Component<IRawLayerItemProps, undefined>
   }
 
   render() {
-    const { connectDragSource, connectDropTarget, imgSrc,
+    const { connectDragSource, connectDropTarget, imgSrc, checked,
       isDragging, onClick, index, onMouseEnter, onMouseLeave } = this.props;
     const opacity = isDragging ? 0 : 1;
     return connectDragSource(
-      connectDropTarget(<div onMouseLeave={() => onMouseLeave(index)} onMouseEnter={() => onMouseEnter(index)} onClick={() => onClick(index)} ><LayerItem style={{ opacity }} imgSrc={imgSrc} /></div>)
+      connectDropTarget(
+        <div onMouseLeave={() => onMouseLeave(index)} onMouseEnter={() => onMouseEnter(index)} onClick={() => onClick(index)} >
+          <LayerItem checked={checked} style={{ opacity }} imgSrc={imgSrc} />
+        </div>)
     );
   }
 }

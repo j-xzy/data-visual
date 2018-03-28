@@ -7,6 +7,7 @@ import './style.styl';
 
 interface IProps {
   charts: Charts;
+  choosedChartIndex: number;
   updateStudioState: IUpdateStudioState;
 }
 
@@ -80,10 +81,11 @@ export default class RawLayer extends React.Component<IProps, IState> {
 
   renderLayer() {
     const charts = [...this.state.charts];
+    const choosedChartIndex = this.props.choosedChartIndex;
     return charts.map((chart, idx) => {
       return (
         <LayerItem
-          onClick={this.handleClick} moveDone={this.moveDone}
+          onClick={this.handleClick} moveDone={this.moveDone} checked={false}
           moveChart={this.moveChart} key={chart.id} onMouseLeave={this.handleMouseLeave}
           index={idx} imgSrc={chart.imgSrc} onMouseEnter={this.handleMouseEnter} >
         </LayerItem>
