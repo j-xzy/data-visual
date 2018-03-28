@@ -28,13 +28,9 @@ export default class RawLayer extends React.Component<IProps, IState> {
   }
 
   handleClick(index: number) {
-    const chart = this.state.charts[index];
+    const charts = this.state.charts;
     this.props.updateStudioState({
-      transformTool: {
-        position: chart.position,
-        size: chart.size
-      },
-      isShowTransformTool: true
+      choosedChartIndex: charts.length - index - 1
     });
   }
 

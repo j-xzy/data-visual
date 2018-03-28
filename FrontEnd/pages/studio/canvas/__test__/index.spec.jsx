@@ -18,8 +18,7 @@ const option = {
 
 const position = {
   left: 0,
-  top: 0,
-  zIndex: 0
+  top: 0
 };
 
 const size = {
@@ -33,7 +32,6 @@ const transformTool = {
 }
 
 let wrapper;
-let hideTransformTool = jest.fn();
 
 beforeEach(() => {
   const OriginCanvas = Canvas.DecoratedComponent;
@@ -41,11 +39,9 @@ beforeEach(() => {
   wrapper = mount(<OriginCanvas
     transformTool={transformTool} canvasScale={1}
     charts={[]} updateStudioState={updateStudioState}
-    hideTransformTool={hideTransformTool}
     onChartClick={() => { }} connectDropTarget={identity} />);
   wrapper.instance().appendChart(option, { position, size, imgSrc: '' });
   wrapper.update();
-  wrapper.setProps({ isShowTransformTool: true });
   wrapper.find(Chart).find('.chart-container').prop('onClick')();
   wrapper.update();
   function updateStudioState(state) {
@@ -55,7 +51,6 @@ beforeEach(() => {
 
 describe('<Canvas /> change size and position', () => {
   afterEach(() => {
-    hideTransformTool.mockClear();
     // canvas and transformtool are same size and position
     expect(wrapper.find(Chart).prop('size')).toEqual(wrapper.find(TransformTool).prop('size'));
     expect(wrapper.find(Chart).prop('position')).toEqual(wrapper.find(TransformTool).prop('position'));
@@ -81,7 +76,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 1, y: 1 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -50, top: -50, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -50, top: -50 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -99,7 +94,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 1, y: 1 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -25, top: -25, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -25, top: -25 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -116,7 +111,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 350 / 300, y: 350 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -50, top: -50, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -50, top: -50 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -133,7 +128,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 325 / 300, y: 325 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -25, top: -25, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -25, top: -25 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -150,7 +145,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 1, y: 350 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: -50, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: -50 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -167,7 +162,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 1, y: 325 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: -25, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: -25 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -184,7 +179,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 350 / 300, y: 350 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: -50, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: -50 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -201,7 +196,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 325 / 300, y: 325 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: -25, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: -25 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -218,7 +213,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 350 / 300, y: 1 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -235,7 +230,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 325 / 300, y: 1 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -252,7 +247,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 350 / 300, y: 350 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -269,7 +264,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 325 / 300, y: 325 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -286,7 +281,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 1, y: 350 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -303,7 +298,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 1, y: 325 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: 0, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -320,7 +315,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 350 / 300, y: 350 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -50, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -50, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -337,7 +332,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 325 / 300, y: 325 / 300 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -25, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -25, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -354,7 +349,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 350 / 300, y: 1 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -50, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -50, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -371,7 +366,7 @@ describe('<Canvas /> change size and position', () => {
     wrapper.update();
 
     expect(wrapper.find(Chart).prop('scale')).toEqual({ x: 325 / 300, y: 1 });
-    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -25, top: 0, zIndex: 0 });
+    expect(wrapper.find(TransformTool).prop('position')).toEqual({ left: -25, top: 0 });
 
     wrapper.instance().handleCanvasMouseUp();
 
@@ -383,7 +378,6 @@ describe('<Canvas /> change size and position', () => {
 
 describe('Canvas /> copy and delete', () => {
   afterEach(() => {
-    hideTransformTool.mockClear();
     wrapper.unmount();
   });
 
@@ -403,11 +397,33 @@ describe('Canvas /> copy and delete', () => {
     });
   });
 
+  test('cross copy', () => {
+    const twoPositon = {
+      left: position.left + 30,
+      top: position.top + 30
+    }
+    wrapper.instance().appendChart(option, { position: twoPositon, size, imgSrc: '' });
+    wrapper.find(Chart).find('.chart-container').at(0).prop('onClick')();
+    wrapper.find('.icon-copy').simulate('click');
+    wrapper.update();
+    expect(wrapper.find(Chart).at(2).prop('position')).toEqual({
+      left: position.left + OFFSET_POSITION.left,
+      top: position.top + OFFSET_POSITION.top,
+    });
+
+    wrapper.find(Chart).find('.chart-container').at(2).prop('onClick')();
+    wrapper.find('.icon-copy').simulate('click');
+    wrapper.update();
+    expect(wrapper.find(Chart).at(3).prop('position')).toEqual({
+      left: position.left + 2 * OFFSET_POSITION.left,
+      top: position.top + 2 * OFFSET_POSITION.top,
+    });
+  });
+
   test('delete', () => {
     expect(wrapper.find(Chart).length).toBe(1);
     wrapper.find('.icon-trashcan').simulate('click');
     wrapper.update();
     expect(wrapper.find(Chart).length).toBe(0);
-    expect(hideTransformTool.mock.calls.length).toBe(1);
   });
 });

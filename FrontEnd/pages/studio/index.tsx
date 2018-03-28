@@ -31,10 +31,9 @@ export interface ITransformTool {
 
 export interface IStudioState {
   canvasSize: CanvasSizeType;
-  isShowTransformTool: boolean;
   canvasScale: number;
   charts: Charts;
-  transformTool: ITransformTool;
+  choosedChartIndex: number;
 }
 
 export interface IUpdateStudioState {
@@ -54,6 +53,7 @@ const DEFAULT_CANVASSIZE: CanvasSizeType = {
 };
 
 const DEFAULT_CANVASSCALE = 1;
+export const NO_CHOOSED_CHART = -1;
 export const MIN_SCALE_VALUE = 0.01;
 export const MAX_SCALE_VALUE = 10;
 
@@ -63,20 +63,13 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   constructor() {
     super(undefined);
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
-    this.handleContentClick = this.handleContentClick.bind(this);
-    this.showTransformTool = this.showTransformTool.bind(this);
-    this.hideTransformTool = this.hideTransformTool.bind(this);
     this.updateStudioState = this.updateStudioState.bind(this);
-
+    this.handleContentClick = this.handleContentClick.bind(this);
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
       canvasScale: DEFAULT_CANVASSCALE,
-      isShowTransformTool: false,
       charts: [],
-      transformTool: {
-        position: { left: 0, top: 0 },
-        size: { width: 0, height: 0 }
-      }
+      choosedChartIndex: NO_CHOOSED_CHART
     };
   }
 
@@ -100,15 +93,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   handleContentClick() {
-    this.hideTransformTool();
-  }
-
-  hideTransformTool() {
-    this.setState({ isShowTransformTool: false });
-  }
-
-  showTransformTool() {
-    this.setState({ isShowTransformTool: true });
+    this.setState({ choosedChartIndex: NO_CHOOSED_CHART });
   }
 
   componentDidMount() {
@@ -125,7 +110,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, isShowTransformTool, transformTool, charts } = this.state;
+    const { canvasSize, canvasScale, charts, choosedChartIndex } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
@@ -140,9 +125,9 @@ class RawStudio extends React.Component<undefined, IStudioState> {
           <div className='st_content' onClick={this.handleContentClick}>
             <div ref={(node) => this.contentNode = node} className='canvas_wrapper'>
               <Canvas
-                isShowTransformTool={isShowTransformTool} transformTool={transformTool}
-                canvasScale={canvasScale} hideTransformTool={this.hideTransformTool}
-                width={canvasSize.width} height={canvasSize.height} charts={charts} updateStudioState={this.updateStudioState}>
+                canvasScale={canvasScale} width={canvasSize.width}
+                height={canvasSize.height} charts={charts} updateStudioState={this.updateStudioState}
+                choosedChartIndex={choosedChartIndex} >
               </Canvas>
             </div>
             <div className='scroll-wrapper' >
