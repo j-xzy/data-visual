@@ -1,7 +1,7 @@
 import * as React from 'react';
 import update from 'immutability-helper';
 import LayerItem from '@container/draggable-layer-item';
-import { Charts, IUpdateStudioState } from '@pages/studio';
+import { Charts, IUpdateStudioState, NO_HOVER_CHART } from '@pages/studio';
 
 import './style.styl';
 
@@ -21,6 +21,8 @@ export default class RawLayer extends React.Component<IProps, IState> {
     this.moveChart = this.moveChart.bind(this);
     this.moveDone = this.moveDone.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
 
     this.state = {
       charts: []
@@ -34,10 +36,16 @@ export default class RawLayer extends React.Component<IProps, IState> {
     });
   }
 
-  renderLayer() {
-    const charts = [...this.state.charts];
-    return charts.map((chart, idx) => {
-      return <LayerItem onClick={this.handleClick} moveDone={this.moveDone} moveChart={this.moveChart} key={chart.id} index={idx} imgSrc={chart.imgSrc} />;
+  handleMouseEnter(index: number) {
+    const charts = this.state.charts;
+    this.props.updateStudioState({
+      hoverChartIndex: charts.length - index - 1
+    });
+  }
+
+  handleMouseLeave(index: number) {
+    this.props.updateStudioState({
+      hoverChartIndex: NO_HOVER_CHART
     });
   }
 
@@ -68,6 +76,19 @@ export default class RawLayer extends React.Component<IProps, IState> {
     if (nextProps.charts !== this.props.charts) {
       this.setState({ charts: [...nextProps.charts].reverse() });
     }
+  }
+
+  renderLayer() {
+    const charts = [...this.state.charts];
+    return charts.map((chart, idx) => {
+      return (
+        <LayerItem
+          onClick={this.handleClick} moveDone={this.moveDone}
+          moveChart={this.moveChart} key={chart.id} onMouseLeave={this.handleMouseLeave}
+          index={idx} imgSrc={chart.imgSrc} onMouseEnter={this.handleMouseEnter} >
+        </LayerItem>
+      );
+    });
   }
 
   render() {

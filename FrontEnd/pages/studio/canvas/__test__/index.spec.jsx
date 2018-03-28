@@ -33,7 +33,7 @@ const transformTool = {
 
 let wrapper;
 
-beforeEach(() => {
+beforeEach(async () => {
   const OriginCanvas = Canvas.DecoratedComponent;
   const identity = el => el;
   wrapper = mount(<OriginCanvas
@@ -41,6 +41,7 @@ beforeEach(() => {
     charts={[]} updateStudioState={updateStudioState}
     onChartClick={() => { }} connectDropTarget={identity} />);
   wrapper.instance().appendChart(option, { position, size, imgSrc: '' });
+  await wrapper.find(Chart).instance().componentDidMount();
   wrapper.update();
   wrapper.find(Chart).find('.chart-container').prop('onClick')();
   wrapper.update();
@@ -397,27 +398,21 @@ describe('Canvas /> copy and delete', () => {
     });
   });
 
-  test('cross copy', () => {
-    const twoPositon = {
-      left: position.left + 30,
-      top: position.top + 30
-    }
-    wrapper.instance().appendChart(option, { position: twoPositon, size, imgSrc: '' });
-    wrapper.find(Chart).find('.chart-container').at(0).prop('onClick')();
+  test('multi copy', () => {
     wrapper.find('.icon-copy').simulate('click');
     wrapper.update();
-    expect(wrapper.find(Chart).at(2).prop('position')).toEqual({
-      left: position.left + OFFSET_POSITION.left,
-      top: position.top + OFFSET_POSITION.top,
-    });
+    expect(wrapper.instance().chartSnapShot.index).toBe(1);
+    expect(wrapper.prop('choosedChartIndex')).toBe(1);
 
-    wrapper.find(Chart).find('.chart-container').at(2).prop('onClick')();
     wrapper.find('.icon-copy').simulate('click');
     wrapper.update();
-    expect(wrapper.find(Chart).at(3).prop('position')).toEqual({
-      left: position.left + 2 * OFFSET_POSITION.left,
-      top: position.top + 2 * OFFSET_POSITION.top,
-    });
+    expect(wrapper.instance().chartSnapShot.index).toBe(2);
+    expect(wrapper.prop('choosedChartIndex')).toBe(2);
+
+    wrapper.find('.icon-copy').simulate('click');
+    wrapper.update();
+    expect(wrapper.instance().chartSnapShot.index).toBe(3);
+    expect(wrapper.prop('choosedChartIndex')).toBe(3);
   });
 
   test('delete', () => {
@@ -425,5 +420,21 @@ describe('Canvas /> copy and delete', () => {
     wrapper.find('.icon-trashcan').simulate('click');
     wrapper.update();
     expect(wrapper.find(Chart).length).toBe(0);
+  });
+
+  test('delete index', async () => {
+    wrapper.instance().appendChart(option, { position, size, imgSrc: '' }); // 1
+    await wrapper.find(Chart).at(1).instance().componentDidMount();
+    wrapper.instance().appendChart(option, { position, size, imgSrc: '' }); // 2
+    await wrapper.find(Chart).at(2).instance().componentDidMount();
+
+    expect(wrapper.find(Chart).at(0).prop('index')).toBe(0);
+    expect(wrapper.find(Chart).at(1).prop('index')).toBe(1);
+    expect(wrapper.find(Chart).at(2).prop('index')).toBe(2);
+
+    wrapper.find(Chart).find('.chart-container').at(1).prop('onClick')();
+    wrapper.find('.icon-trashcan').simulate('click');
+    expect(wrapper.find(Chart).at(0).prop('index')).toBe(0);
+    expect(wrapper.find(Chart).at(1).prop('index')).toBe(1);
   });
 });

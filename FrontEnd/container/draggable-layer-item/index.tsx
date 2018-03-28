@@ -12,6 +12,8 @@ import { LAYER_ITEM } from '@lib/dragtype';
 interface IDraggableLayerItemProps extends ILayerItemProps {
   index: number;
   onClick: (index: number) => void;
+  onMouseEnter: (index: number) => void;
+  onMouseLeave: (index: number) => void;
   moveDone: () => void;
   moveChart: (dragIndex: number, hoverIndex: number) => void;
 }
@@ -32,10 +34,11 @@ export class RawLayerItem extends React.Component<IRawLayerItemProps, undefined>
   }
 
   render() {
-    const { connectDragSource, connectDropTarget, imgSrc, isDragging, onClick, index } = this.props;
+    const { connectDragSource, connectDropTarget, imgSrc,
+      isDragging, onClick, index, onMouseEnter, onMouseLeave } = this.props;
     const opacity = isDragging ? 0 : 1;
     return connectDragSource(
-      connectDropTarget(<div onClick={() => onClick(index)} ><LayerItem style={{ opacity }} imgSrc={imgSrc} /></div>)
+      connectDropTarget(<div onMouseLeave={() => onMouseLeave(index)} onMouseEnter={() => onMouseEnter(index)} onClick={() => onClick(index)} ><LayerItem style={{ opacity }} imgSrc={imgSrc} /></div>)
     );
   }
 }

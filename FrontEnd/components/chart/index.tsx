@@ -1,4 +1,7 @@
 import * as React from 'react';
+import * as classNames from 'classnames';
+
+import './style.styl';
 
 let echarts: any;
 
@@ -26,6 +29,7 @@ export interface IChartConfig extends IChartBaseConfig {
 export interface IChartProps extends IChartBaseConfig {
   key: number;
   index: number;
+  isMask: boolean;
   onChartClick: (id: number) => void;
 }
 
@@ -62,18 +66,22 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   }
 
   componentWillReceiveProps(nextProps: IChartProps) {
-    if (nextProps.size !== this.props.size) {
+    const { width, height } = nextProps.size;
+    if (height !== this.props.size.height || width !== this.props.size.width) {
       this.refreshChart(nextProps);
     }
   }
 
   render() {
-    const { size, position, scale, index } = this.props;
+    const { size, position, scale, index, isMask } = this.props;
+    const cls = classNames('chart-container', {
+      'chart-container-mask': isMask
+    });
     const transform = `scale(${scale.x},${scale.y})`;
     return (
       <div
         onClick={this.handleClick}
-        className='chart-container'
+        className={cls}
         style={{ ...size, ...position, position: 'absolute', transform, zIndex: index }} ref={(e) => this.element = e}>
       </div >
     );

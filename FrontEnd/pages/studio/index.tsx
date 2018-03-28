@@ -34,6 +34,7 @@ export interface IStudioState {
   canvasScale: number;
   charts: Charts;
   choosedChartIndex: number;
+  hoverChartIndex: number;
 }
 
 export interface IUpdateStudioState {
@@ -54,6 +55,7 @@ const DEFAULT_CANVASSIZE: CanvasSizeType = {
 
 const DEFAULT_CANVASSCALE = 1;
 export const NO_CHOOSED_CHART = -1;
+export const NO_HOVER_CHART = -1;
 export const MIN_SCALE_VALUE = 0.01;
 export const MAX_SCALE_VALUE = 10;
 
@@ -69,7 +71,8 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       canvasSize: DEFAULT_CANVASSIZE,
       canvasScale: DEFAULT_CANVASSCALE,
       charts: [],
-      choosedChartIndex: NO_CHOOSED_CHART
+      choosedChartIndex: NO_CHOOSED_CHART,
+      hoverChartIndex: NO_HOVER_CHART
     };
   }
 
@@ -110,7 +113,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, charts, choosedChartIndex } = this.state;
+    const { canvasSize, canvasScale, charts, choosedChartIndex, hoverChartIndex } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
@@ -125,7 +128,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
           <div className='st_content' onClick={this.handleContentClick}>
             <div ref={(node) => this.contentNode = node} className='canvas_wrapper'>
               <Canvas
-                canvasScale={canvasScale} width={canvasSize.width}
+                canvasScale={canvasScale} width={canvasSize.width} hoverChartIndex={hoverChartIndex}
                 height={canvasSize.height} charts={charts} updateStudioState={this.updateStudioState}
                 choosedChartIndex={choosedChartIndex} >
               </Canvas>

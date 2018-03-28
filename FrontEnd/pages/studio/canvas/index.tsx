@@ -5,7 +5,7 @@ import { PREVIEW_CHART } from '@lib/dragtype';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType } from '@components/transform-tool';
-import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, ITransformTool, NO_CHOOSED_CHART } from '@pages/studio';
+import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, ITransformTool, NO_CHOOSED_CHART, NO_HOVER_CHART } from '@pages/studio';
 
 import './style.styl';
 
@@ -16,6 +16,7 @@ export interface ICanvasProps {
   charts: ReadonlyArray<IChartConfig>;
   updateStudioState: IUpdateStudioState;
   choosedChartIndex: number;
+  hoverChartIndex: number;
 }
 
 interface ICanvasState {
@@ -104,10 +105,11 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   renderCharts() {
-    const charts = this.props.charts;
+    const { charts, hoverChartIndex } = this.props;
     return charts.map((props, idx) => {
-      const { id, ...onIdProps } = props;
-      return <Chart onChartClick={this.chartClick} {...onIdProps} key={idx} index={idx} />;
+      let isMask = hoverChartIndex !== NO_HOVER_CHART && hoverChartIndex === idx;
+      const { id, ...onIdProps } = props;  // Note: key must be id
+      return <Chart isMask={isMask} onChartClick={this.chartClick} {...onIdProps} key={id} index={idx} />;
     });
   }
 
@@ -264,9 +266,8 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
       left: left + OFFSET_POSITION.left,
       top: top + OFFSET_POSITION.top
     };
-    this.appendChart(option, { position, size, imgSrc }, () => {
-      this.chartSnapShot = { ...charts[charts.length], index: charts.length };
-    });
+    this.appendChart(option, { position, size, imgSrc });
+    this.props.updateStudioState({ choosedChartIndex: charts.length });
     this.setState({
       transformTool: { size, position }
     });
@@ -312,7 +313,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   render() {
-    const { width, height, canvasScale, connectDropTarget, choosedChartIndex } = this.props;
+    const { width, height, canvasScale, connectDropTarget, choosedChartIndex, hoverChartIndex } = this.props;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
         onMouseDown={(e) => this.handleCanvasMouseDown(e)}
