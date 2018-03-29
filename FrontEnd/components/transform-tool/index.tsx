@@ -3,7 +3,7 @@ import './style.styl';
 
 export enum SideType { LeftTop, Top, RightTop, Right, RightBottom, Bottom, LeftBottom, Left, Middle, None }
 
-interface ITransformProps {
+export interface ITransformConfig {
   position: {
     top: number;
     left: number;
@@ -12,9 +12,13 @@ interface ITransformProps {
     width: number;
     height: number;
   };
+  id: number;
+}
+
+interface ITransformProps extends ITransformConfig {
   handleTransformMouseDown: (e: React.MouseEvent<HTMLDivElement>, type: SideType) => void;
-  onCopyClick: () => void;
-  onTrashcanClick: () => void;
+  onCopyClick: (id: number) => void;
+  onTrashcanClick: (id: number) => void;
 }
 
 export class TransformTool extends React.Component<ITransformProps, undefined> {
@@ -29,7 +33,7 @@ export class TransformTool extends React.Component<ITransformProps, undefined> {
   }
 
   render() {
-    const { position, size } = this.props;
+    const { position, size, id } = this.props;
     return (
       <div className='transform_tool' style={{ ...position, ...size }}
         onMouseDown={(e) => this.handleMouseDown(e, SideType.Middle)}
@@ -44,8 +48,8 @@ export class TransformTool extends React.Component<ITransformProps, undefined> {
         <div className='left-bottom' onMouseDown={(e) => this.handleMouseDown(e, SideType.LeftBottom)}></div>
         <div className='left' onMouseDown={(e) => this.handleMouseDown(e, SideType.Left)}></div>
         <div className='tools'>
-          <i className='icon-copy icon' onClick={this.props.onCopyClick}></i>
-          <i className='icon-trashcan icon' onClick={this.props.onTrashcanClick}></i>
+          <i className='icon-copy icon' onClick={() => this.props.onCopyClick(id)}></i>
+          <i className='icon-trashcan icon' onClick={() => this.props.onTrashcanClick(id)}></i>
         </div>
       </div>);
   }

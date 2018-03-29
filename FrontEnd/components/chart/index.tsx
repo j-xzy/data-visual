@@ -5,7 +5,7 @@ import './style.styl';
 
 let echarts: any;
 
-export interface IChartBaseConfig {
+export interface IChartConfig {
   option: object;
   scale: {
     x: number;
@@ -20,13 +20,10 @@ export interface IChartBaseConfig {
     top: number;
   };
   imgSrc: string;
-}
-
-export interface IChartConfig extends IChartBaseConfig {
   id: number;
 }
 
-export interface IChartProps extends IChartBaseConfig {
+export interface IChartProps extends IChartConfig {
   key: number;
   index: number;
   isMask: boolean;
@@ -36,16 +33,11 @@ export interface IChartProps extends IChartBaseConfig {
 export class Chart extends React.PureComponent<IChartProps, undefined> {
   constructor(props: IChartProps) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
     this.refreshChart = this.refreshChart.bind(this);
   }
 
   element: HTMLDivElement;
   chart: echarts.ECharts;
-
-  handleClick() {
-    this.props.onChartClick(this.props.index);
-  }
 
   refreshChart(nextProps: IChartProps) {
     this.chart.dispose();
@@ -73,14 +65,14 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   }
 
   render() {
-    const { size, position, scale, index, isMask } = this.props;
+    const { size, position, scale, index, isMask, onChartClick, id } = this.props;
     const cls = classNames('chart-container', {
       'chart-container-mask': isMask
     });
     const transform = `scale(${scale.x},${scale.y})`;
     return (
       <div
-        onClick={this.handleClick}
+        onClick={() => onChartClick(id)}
         className={cls}
         style={{ ...size, ...position, position: 'absolute', transform, zIndex: index }} ref={(e) => this.element = e}>
       </div >

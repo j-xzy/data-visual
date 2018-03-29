@@ -401,17 +401,14 @@ describe('Canvas /> copy and delete', () => {
   test('multi copy', () => {
     wrapper.find('.icon-copy').simulate('click');
     wrapper.update();
-    expect(wrapper.instance().chartSnapShot.index).toBe(1);
     expect(wrapper.prop('choosedChartIndex')).toBe(1);
 
     wrapper.find('.icon-copy').simulate('click');
     wrapper.update();
-    expect(wrapper.instance().chartSnapShot.index).toBe(2);
     expect(wrapper.prop('choosedChartIndex')).toBe(2);
 
     wrapper.find('.icon-copy').simulate('click');
     wrapper.update();
-    expect(wrapper.instance().chartSnapShot.index).toBe(3);
     expect(wrapper.prop('choosedChartIndex')).toBe(3);
   });
 

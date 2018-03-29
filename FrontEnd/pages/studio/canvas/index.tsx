@@ -4,8 +4,8 @@ import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget }
 import { PREVIEW_CHART } from '@lib/dragtype';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
-import { TransformTool, SideType } from '@components/transform-tool';
-import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, ITransformTool, NO_CHOOSED_CHART, NO_HOVER_CHART } from '@pages/studio';
+import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
+import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HOVER_CHART } from '@pages/studio';
 
 import './style.styl';
 
@@ -15,16 +15,16 @@ export interface ICanvasProps {
   canvasScale: number;
   charts: ReadonlyArray<IChartConfig>;
   updateStudioState: IUpdateStudioState;
-  choosedChartIndex: number;
+  choosedChartIds: number[];
   hoverChartIndex: number;
 }
 
-interface ICanvasState {
-  transformTool: ITransformTool;
-}
+type ITransformTools = {
+  [p: string]: ITransformConfig;  // p is chartId
+};
 
-interface IChartSnapShot extends IChartConfig {
-  index: number;
+interface ICanvasState {
+  transformTools: ITransformTools;
 }
 
 interface IRawCanvasProps extends ICanvasProps {
@@ -57,8 +57,6 @@ const CHART_MINI_SIZE = {
   height: 50
 };
 
-let guid = 0;
-
 export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   constructor(props: IRawCanvasProps) {
     super(props);
@@ -66,7 +64,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     this.appendChart = this.appendChart.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
     this.chartClick = this.chartClick.bind(this);
-    this.renderTransformTool = this.renderTransformTool.bind(this);
+    this.renderTransformTools = this.renderTransformTools.bind(this);
     this.handleTransformMouseDown = this.handleTransformMouseDown.bind(this);
     this.handleCanvasMouseUp = this.handleCanvasMouseUp.bind(this);
     this.handleCanvasMouseMove = this.handleCanvasMouseMove.bind(this);
@@ -75,23 +73,23 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     this.handleCopyClick = this.handleCopyClick.bind(this);
     this.handleTrashcanClick = this.handleTrashcanClick.bind(this);
     this.handleCanvasWheel = this.handleCanvasWheel.bind(this);
+    this.updateChartAfterMouseMove = this.updateChartAfterMouseMove.bind(this);
+    this.getChartConfigWhileMousemove = this.getChartConfigWhileMousemove.bind(this);
+    this.setTransformToolsState = this.setTransformToolsState.bind(this);
 
     this.state = {
-      transformTool: {
-        position: { left: 0, top: 0 },
-        size: { width: 0, height: 0 }
-      }
+      transformTools: {} // depends on props.choosedChartIds
     };
   }
 
   canvasDiv: HTMLDivElement;
-  mouseDownPosition: Coordinate;
-  chartSnapShot: IChartSnapShot;
+  lastMousePosition: Coordinate;
   sideType = SideType.None;
+  idMapIndex: Map<number, number> = new Map(); // chart'id map charts's index
 
   appendChart(option: object, config: { position: Position, size: Size, imgSrc: string }, callback?: () => void) {
     const { position, size, imgSrc } = config;
-    guid++;
+    const guid = Date.now();
     const props: IChartConfig = {
       option, position, size, imgSrc, id: guid,
       scale: { x: 1, y: 1 }
@@ -102,15 +100,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         $push: [props]
       })
     }, callback);
-  }
-
-  renderCharts() {
-    const { charts, hoverChartIndex } = this.props;
-    return charts.map((props, idx) => {
-      let isMask = hoverChartIndex !== NO_HOVER_CHART && hoverChartIndex === idx;
-      const { id, ...onIdProps } = props;  // Note: key must be id
-      return <Chart isMask={isMask} onChartClick={this.chartClick} {...onIdProps} key={id} index={idx} />;
-    });
+    return guid;
   }
 
   getPotionByCanvas(clientX: number, clientY: number) {
@@ -121,8 +111,9 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     return { left, top };
   }
 
-  chartClick(index: number) {
-    this.props.updateStudioState({ choosedChartIndex: index });
+  chartClick(id: number) {
+    const ids = this.props.choosedChartIds;
+    this.props.updateStudioState({ choosedChartIds: [...ids, id] });
   }
 
   handleTransformMouseDown(e: React.MouseEvent<HTMLDivElement>, type: SideType) {
@@ -131,7 +122,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   handleCanvasMouseDown(e: React.MouseEvent<HTMLDivElement>) {
-    this.mouseDownPosition = {
+    this.lastMousePosition = {
       x: e.clientX,
       y: e.clientY
     };
@@ -139,28 +130,32 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   handleCanvasMouseUp() {
     if (this.sideType !== SideType.None) {
-      const index = this.chartSnapShot.index;
-      const charts = this.props.charts;
-      const chart = charts[index];
-      const size = {
-        width: chart.scale.x * chart.size.width,
-        height: chart.scale.y * chart.size.height
-      };
-      this.props.updateStudioState({
-        charts: update(charts, {
-          [index]: {
-            size: { $merge: size },
-            position: { $merge: this.state.transformTool.position },
-            scale: {
-              $set: { x: 1, y: 1 }
-            }
-          }
-        })
-      }, () => {
-        this.chartSnapShot = { ...this.props.charts[index], index };
-      });
+      for (let [id, index] of this.idMapIndex) {
+        this.updateChartAfterMouseMove(id, index);
+      }
     }
     this.sideType = SideType.None;
+  }
+
+  updateChartAfterMouseMove(id: number, index: number) {
+    const charts = this.props.charts;
+    const transformTool = this.state.transformTools[id];
+    const chart = charts[index];
+    const size = {
+      width: chart.scale.x * chart.size.width,
+      height: chart.scale.y * chart.size.height
+    };
+    this.props.updateStudioState({
+      charts: update(charts, {
+        [index]: {
+          size: { $merge: size },
+          position: { $merge: transformTool.position },
+          scale: {
+            $set: { x: 1, y: 1 }
+          }
+        }
+      })
+    });
   }
 
   handleCanvasWheel(e: React.WheelEvent<HTMLDivElement>) {
@@ -175,16 +170,36 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   handleCanvasMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (this.sideType === SideType.None)
       return;
-    const { updateStudioState, charts, canvasScale } = this.props;
-    const delta = {
-      x: (e.clientX - this.mouseDownPosition.x) / canvasScale,
-      y: (e.clientY - this.mouseDownPosition.y) / canvasScale
-    };
 
-    const chart = this.chartSnapShot;
-    const index = chart.index;
-    let size = { ...chart.size };
-    let position = { ...chart.position };
+    const charts = this.props.charts;
+    let newCharts: IChartConfig[] = [];
+
+    for (let i = 0, length = charts.length; i < length; i++) {
+      const ps = { x: e.clientX, y: e.clientY };
+      newCharts.push(this.getChartConfigWhileMousemove(ps, charts[i].id));
+    }
+    this.props.updateStudioState({ charts: newCharts });
+
+    this.lastMousePosition = {
+      x: e.clientX,
+      y: e.clientY
+    };
+  }
+
+  getChartConfigWhileMousemove(postion: Coordinate, chartId: number) {
+    const { updateStudioState, charts, canvasScale } = this.props;
+    const { transformTools } = this.state;
+    const transformTool = transformTools[chartId];
+
+    const delta = {
+      x: (postion.x - this.lastMousePosition.x) / canvasScale,
+      y: (postion.y - this.lastMousePosition.y) / canvasScale
+    };
+    const chartIndex = this.idMapIndex.get(chartId);
+    const chart = this.props.charts[chartIndex];
+
+    let size = { ...transformTool.size };
+    let position = { ...transformTool.position };
 
     if (this.sideType === SideType.Right) {
       size.width = size.width + delta.x;
@@ -241,79 +256,98 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
       return;
     }
 
-    this.setState({
-      transformTool: {
-        size,
-        position
-      }
+    let foo = update(charts[chartIndex], {
+      position: { $merge: chartPosition },
+      scale: { $set: chartScale }
     });
-
-    updateStudioState({
-      charts: update(charts, {
-        [index]: {
-          position: { $merge: chartPosition },
-          scale: { $set: chartScale }
-        }
-      })
-    });
+    return foo;
   }
 
-  handleCopyClick() {
+  handleCopyClick(id: number) {
     const { charts } = this.props;
-    const { index, imgSrc } = this.chartSnapShot;
-    const { option, position: { left, top }, size } = charts[index];
+    const index = this.idMapIndex.get(id);
+    const { option, position: { left, top }, size, imgSrc } = charts[index];
     const position = {
       left: left + OFFSET_POSITION.left,
       top: top + OFFSET_POSITION.top
     };
-    this.appendChart(option, { position, size, imgSrc });
-    this.props.updateStudioState({ choosedChartIndex: charts.length });
-    this.setState({
-      transformTool: { size, position }
-    });
+    const newChartId = this.appendChart(option, { position, size, imgSrc });
+    this.props.updateStudioState({ choosedChartIds: [newChartId] });
   }
 
-  handleTrashcanClick() {
+  handleTrashcanClick(id: number) {
     const { charts, updateStudioState } = this.props;
-    const index = this.chartSnapShot.index;
+    const index = this.idMapIndex.get(id);
     updateStudioState({
       charts: update(charts, {
         $splice: [[index, 1]]
       }),
-      choosedChartIndex: NO_CHOOSED_CHART
+      choosedChartIds: []
     });
   }
 
-  renderTransformTool() {
-    const transformTool = this.state.transformTool;
-    const { position, size } = transformTool;
-    return (
-      <TransformTool
-        position={position} size={size}
-        handleTransformMouseDown={this.handleTransformMouseDown}
-        onCopyClick={this.handleCopyClick}
-        onTrashcanClick={this.handleTrashcanClick}>
-      </TransformTool>);
+  renderTransformTools() {
+    const transformTools = this.state.transformTools;
+    return Object.keys(transformTools).map((key) => {
+      const { position, size } = transformTools[key];
+      return (
+        <TransformTool
+          position={position} size={size} key={key} id={parseInt(key)}
+          handleTransformMouseDown={this.handleTransformMouseDown}
+          onCopyClick={this.handleCopyClick}
+          onTrashcanClick={this.handleTrashcanClick}>
+        </TransformTool>);
+    });
+  }
+
+  // Re-build the mapping with each render
+  renderCharts() {
+    const { charts, hoverChartIndex } = this.props;
+    this.idMapIndex.clear();
+    return charts.map((props, idx) => {
+      const isMask = hoverChartIndex !== NO_HOVER_CHART && hoverChartIndex === idx;
+      const { id, ...onIdProps } = props;  // key must be chartId
+      this.idMapIndex.set(id, idx);
+      return <Chart isMask={isMask} onChartClick={this.chartClick} {...onIdProps} key={id} id={id} index={idx} />;
+    });
   }
 
   handleClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
   }
 
-  componentWillReceiveProps(nextProps: ICanvasProps) {
-    const choosedChartIndex = nextProps.choosedChartIndex;
-    if (choosedChartIndex !== NO_CHOOSED_CHART && choosedChartIndex !== this.props.choosedChartIndex) {
-      // show transformtool and update chartSnapShot
-      this.chartSnapShot = { ...nextProps.charts[choosedChartIndex], index: choosedChartIndex };
-      const { position, size } = this.chartSnapShot;
-      this.setState({
-        transformTool: { position, size }
-      });
+  setTransformToolsState(charts: ReadonlyArray<IChartConfig>) {
+    let newTransformTools: ITransformTools = {};
+    for (const chart of charts) {
+      const {
+        position: { left, top },
+        size: { width, height }, id,
+        scale: { x: scaleX, y: scaleY }
+      } = chart;
+
+      const toolSize = {
+        width: scaleX * width,
+        height: scaleY * height
+      };
+
+      const toolPosition = {
+        left: left - width * (scaleX - 1) / 2,
+        top: top - height * (scaleY - 1) / 2
+      };
+
+      newTransformTools[id] = { position: toolPosition, size: toolSize, id };
     }
+    this.setState({
+      transformTools: newTransformTools
+    });
+  }
+
+  componentWillReceiveProps(nextProps: ICanvasProps) {
+    this.setTransformToolsState(nextProps.charts);
   }
 
   render() {
-    const { width, height, canvasScale, connectDropTarget, choosedChartIndex, hoverChartIndex } = this.props;
+    const { width, height, canvasScale, connectDropTarget } = this.props;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
         onMouseDown={(e) => this.handleCanvasMouseDown(e)}
@@ -323,7 +357,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         onMouseUp={this.handleCanvasMouseUp}>
         <div className='canvas' ref={(e) => this.canvasDiv = e}>
           {this.renderCharts()}
-          {choosedChartIndex !== NO_CHOOSED_CHART && this.renderTransformTool()}
+          {this.renderTransformTools()}
         </div>
       </div>
     );

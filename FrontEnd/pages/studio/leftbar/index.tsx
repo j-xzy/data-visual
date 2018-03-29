@@ -10,13 +10,13 @@ export default class LeftBar extends React.Component {
   render() {
     return (
       <StudioContext.Consumer>
-        {({ updateCanvasPos, charts, updateStudioState, choosedChartIndex }) => (
+        {({ updateCanvasPos, charts, updateStudioState }) => (
           <Sidebar onOpenChangeAfter={() => updateCanvasPos()} className='leftbar' mode='left' width='200px' height='100%'>
             <Sidebar.Panel className='component_panel' title='组件'>
               <ComponentPanel />
             </Sidebar.Panel>
             <Sidebar.Panel className='layer_panel' title='图层'>
-              <Layer choosedChartIndex={choosedChartIndex} updateStudioState={updateStudioState} charts={charts} />
+              <Layer updateStudioState={updateStudioState} charts={charts} />
             </Sidebar.Panel>
           </Sidebar>
         )}

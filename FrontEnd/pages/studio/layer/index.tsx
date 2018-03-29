@@ -7,7 +7,7 @@ import './style.styl';
 
 interface IProps {
   charts: Charts;
-  choosedChartIndex: number;
+  // choosedChartIndex: number;
   updateStudioState: IUpdateStudioState;
 }
 
@@ -31,9 +31,9 @@ export default class RawLayer extends React.Component<IProps, IState> {
   }
 
   handleClick(index: number) {
-    const charts = this.state.charts;
+    // const charts = this.state.charts;
     this.props.updateStudioState({
-      choosedChartIndex: charts.length - index - 1
+     // choosedChartIndex: charts.length - index - 1
     });
   }
 
@@ -81,7 +81,6 @@ export default class RawLayer extends React.Component<IProps, IState> {
 
   renderLayer() {
     const charts = [...this.state.charts];
-    const choosedChartIndex = this.props.choosedChartIndex;
     return charts.map((chart, idx) => {
       return (
         <LayerItem

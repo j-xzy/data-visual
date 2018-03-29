@@ -21,20 +21,16 @@ export type CanvasSizeType = {
 
 export type Charts = ReadonlyArray<IChartConfig>;
 
-export interface ITransformTool {
-  position: {
-    left: number;
-    top: number;
-  };
-  size: CanvasSizeType;
-}
-
 export interface IStudioState {
   canvasSize: CanvasSizeType;
   canvasScale: number;
   charts: Charts;
-  choosedChartIndex: number;
+  choosedChartIds: number[];
   hoverChartIndex: number;
+}
+
+interface ISetstateFunction {
+  (prestate: IStudioState): void;
 }
 
 export interface IUpdateStudioState {
@@ -44,7 +40,6 @@ export interface IUpdateStudioState {
 export interface IContextValue {
   canvasSize: CanvasSizeType;
   charts: Charts;
-  choosedChartIndex: number;
   updateCanvasPos: () => void;
   updateStudioState: IUpdateStudioState;
 }
@@ -55,7 +50,6 @@ const DEFAULT_CANVASSIZE: CanvasSizeType = {
 };
 
 const DEFAULT_CANVASSCALE = 1;
-export const NO_CHOOSED_CHART = -1;
 export const NO_HOVER_CHART = -1;
 export const MIN_SCALE_VALUE = 0.01;
 export const MAX_SCALE_VALUE = 10;
@@ -68,11 +62,12 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
     this.updateStudioState = this.updateStudioState.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
+
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
       canvasScale: DEFAULT_CANVASSCALE,
       charts: [],
-      choosedChartIndex: NO_CHOOSED_CHART,
+      choosedChartIds: [],
       hoverChartIndex: NO_HOVER_CHART
     };
   }
@@ -92,12 +87,12 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.contentNode.style.paddingTop = paddingTop;
   }
 
-  updateStudioState(state: IStudioState, callback: () => void) {
+  updateStudioState(state: IStudioState, callback?: () => void) {
     this.setState({ ...state }, () => { typeof callback === 'function' && callback(); });
   }
 
   handleContentClick() {
-    this.setState({ choosedChartIndex: NO_CHOOSED_CHART });
+    this.setState({ choosedChartIds: [] });
   }
 
   componentDidMount() {
@@ -114,12 +109,11 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, charts, choosedChartIndex, hoverChartIndex } = this.state;
+    const { canvasSize, canvasScale, charts, choosedChartIds, hoverChartIndex } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
         charts: this.state.charts,
-        choosedChartIndex: this.state.choosedChartIndex,
         updateCanvasPos: this.updateCanvasPos.bind(this),
         updateStudioState: this.updateStudioState.bind(this)
       }}>
@@ -132,7 +126,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
               <Canvas
                 canvasScale={canvasScale} width={canvasSize.width} hoverChartIndex={hoverChartIndex}
                 height={canvasSize.height} charts={charts} updateStudioState={this.updateStudioState}
-                choosedChartIndex={choosedChartIndex} >
+                choosedChartIds={choosedChartIds} >
               </Canvas>
             </div>
             <div className='scroll-wrapper' >
