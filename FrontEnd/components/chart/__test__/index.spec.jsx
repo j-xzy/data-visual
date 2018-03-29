@@ -32,19 +32,20 @@ const position = {
 }
 
 const index = 10;
+const id = 123123;
 
 describe('<Chart />', () => {
   test('Click', () => {
     const chartClick = jest.fn();
     const wrapper = shallow(
       <Chart
-        option={option} scale={scale}
+        option={option} scale={scale} id={id}
         size={size} position={position}
         index={index} onChartClick={chartClick} >
       </Chart>
     );
     wrapper.simulate('click');
-    expect(chartClick.mock.calls[0][0]).toBe(index);
+    expect(chartClick.mock.calls[0][1]).toBe(id);
   });
   test('Change the size of the Chart will refresh', async () => {
     const chartClick = jest.fn();

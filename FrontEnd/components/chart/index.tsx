@@ -27,7 +27,7 @@ export interface IChartProps extends IChartConfig {
   key: number;
   index: number;
   isMask: boolean;
-  onChartClick: (id: number) => void;
+  onChartClick: (e: React.MouseEvent<HTMLElement>, id: number) => void;
 }
 
 export class Chart extends React.PureComponent<IChartProps, undefined> {
@@ -72,7 +72,7 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
     const transform = `scale(${scale.x},${scale.y})`;
     return (
       <div
-        onClick={() => onChartClick(id)}
+        onClick={(e) => onChartClick(e, id)}
         className={cls}
         style={{ ...size, ...position, position: 'absolute', transform, zIndex: index }} ref={(e) => this.element = e}>
       </div >

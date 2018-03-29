@@ -111,9 +111,13 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     return { left, top };
   }
 
-  chartClick(id: number) {
+  chartClick(e: React.MouseEvent<HTMLDivElement>, id: number) {
     const ids = this.props.choosedChartIds;
-    this.props.updateStudioState({ choosedChartIds: [...ids, id] });
+    if (e.ctrlKey === true) {
+      this.props.updateStudioState({ choosedChartIds: [...ids, id] });
+    } else {
+      this.props.updateStudioState({ choosedChartIds: [id] });
+    }
   }
 
   handleTransformMouseDown(e: React.MouseEvent<HTMLDivElement>, type: SideType) {
@@ -130,9 +134,11 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   handleCanvasMouseUp() {
     if (this.sideType !== SideType.None) {
-      for (let [id, index] of this.idMapIndex) {
+      const choosedChartIds = this.props.choosedChartIds;
+      choosedChartIds.forEach((id) => {
+        const index = this.idMapIndex.get(id);
         this.updateChartAfterMouseMove(id, index);
-      }
+      });
     }
     this.sideType = SideType.None;
   }
@@ -171,12 +177,17 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     if (this.sideType === SideType.None)
       return;
 
-    const charts = this.props.charts;
+    const { charts, choosedChartIds } = this.props;
+    const ps = { x: e.clientX, y: e.clientY };
     let newCharts: IChartConfig[] = [];
 
     for (let i = 0, length = charts.length; i < length; i++) {
-      const ps = { x: e.clientX, y: e.clientY };
-      newCharts.push(this.getChartConfigWhileMousemove(ps, charts[i].id));
+      const id = charts[i].id;
+      let chart = charts[i];
+      if (choosedChartIds.indexOf(id) !== -1) {
+        chart = this.getChartConfigWhileMousemove(ps, id);
+      }
+      newCharts.push(chart);
     }
     this.props.updateStudioState({ charts: newCharts });
 
@@ -253,7 +264,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     };
 
     if (size.width < CHART_MINI_SIZE.width || size.height < CHART_MINI_SIZE.height) {
-      return;
+      return charts[chartIndex];
     }
 
     let foo = update(charts[chartIndex], {
@@ -316,9 +327,12 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     e.stopPropagation();
   }
 
-  setTransformToolsState(charts: ReadonlyArray<IChartConfig>) {
+  setTransformToolsState(charts: ReadonlyArray<IChartConfig>, choosedChartIds: number[]) {
     let newTransformTools: ITransformTools = {};
     for (const chart of charts) {
+      if (choosedChartIds.indexOf(chart.id) === -1) {
+        continue;
+      }
       const {
         position: { left, top },
         size: { width, height }, id,
@@ -343,7 +357,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   componentWillReceiveProps(nextProps: ICanvasProps) {
-    this.setTransformToolsState(nextProps.charts);
+    this.setTransformToolsState(nextProps.charts, nextProps.choosedChartIds);
   }
 
   render() {
