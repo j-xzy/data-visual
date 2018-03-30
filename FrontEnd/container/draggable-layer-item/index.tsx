@@ -11,11 +11,13 @@ import { LAYER_ITEM } from '@lib/dragtype';
 
 interface IDraggableLayerItemProps extends ILayerItemProps {
   index: number;
-  onClick: (index: number) => void;
-  onMouseEnter: (index: number) => void;
-  onMouseLeave: (index: number) => void;
+  id: number;
+  onClick: (e: React.MouseEvent<HTMLDivElement>, id: number) => void;
+  onMouseEnter: (id: number) => void;
+  onMouseLeave: () => void;
   moveDone: () => void;
   moveChart: (dragIndex: number, hoverIndex: number) => void;
+  onCheckChange: (id: number, checked: boolean) => void;
 }
 
 interface IRawLayerItemProps extends IDraggableLayerItemProps {
@@ -31,16 +33,22 @@ interface IBeginDragResult {
 export class RawLayerItem extends React.Component<IRawLayerItemProps, undefined> {
   constructor(props: IRawLayerItemProps) {
     super(props);
+    this.handleCheckChange = this.handleCheckChange.bind(this);
+  }
+
+  handleCheckChange(checked: boolean) {
+    const { id, onCheckChange } = this.props;
+    onCheckChange(id, checked);
   }
 
   render() {
-    const { connectDragSource, connectDropTarget, imgSrc, checked,
+    const { connectDragSource, connectDropTarget, imgSrc, checked, id,
       isDragging, onClick, index, onMouseEnter, onMouseLeave } = this.props;
     const opacity = isDragging ? 0 : 1;
     return connectDragSource(
       connectDropTarget(
-        <div onMouseLeave={() => onMouseLeave(index)} onMouseEnter={() => onMouseEnter(index)} onClick={() => onClick(index)} >
-          <LayerItem checked={checked} style={{ opacity }} imgSrc={imgSrc} />
+        <div onMouseLeave={() => onMouseLeave()} onMouseEnter={() => onMouseEnter(id)} onClick={(e) => onClick(e, id)} >
+          <LayerItem onCheckChange={this.handleCheckChange} checked={checked} style={{ opacity }} imgSrc={imgSrc} />
         </div>)
     );
   }

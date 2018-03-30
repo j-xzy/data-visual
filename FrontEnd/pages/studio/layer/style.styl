@@ -1,4 +1,43 @@
 .layer_container
   height: 100%
-  overflow-x: hidden
-  overflow-y: auto
+  display: flex
+  flex-direction: column
+  .layer_wrapper
+    height: 30px
+    min-height: 30px
+    background: rgba(33, 33, 33, 1)
+  .layer_order_wrapper
+    display: flex
+    justify-content: space-around
+    align-items: center
+    .icon
+      color: #fff
+      font-size: 16px
+      cursor: pointer
+    .down
+      transform: rotate(180deg)
+    :hover
+      color: #00c1de
+  .layer_list
+    flex: 1
+    overflow-x: hidden
+    overflow-y: auto
+  .layer_delete_wrapper
+    cursor: pointer
+    i
+      margin: 0 5px 0 0
+      color: #00c1de
+      position: relative
+      top: 5px
+      left: 10px
+      font-size: 18px
+    span
+      position: relative
+      left: 10px
+      top: 2px
+      font-size: 14px
+      color: rgba(255, 255, 255, 0.5)
+
+.layer_delete_wrapper:hover
+  span
+    color: #00c1de

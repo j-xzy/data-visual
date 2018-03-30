@@ -25,12 +25,8 @@ export interface IStudioState {
   canvasSize: CanvasSizeType;
   canvasScale: number;
   charts: Charts;
-  choosedChartIds: number[];
-  hoverChartIndex: number;
-}
-
-interface ISetstateFunction {
-  (prestate: IStudioState): void;
+  choosedChartIds: ReadonlyArray<number>;
+  hoverChartId: number;
 }
 
 export interface IUpdateStudioState {
@@ -40,6 +36,7 @@ export interface IUpdateStudioState {
 export interface IContextValue {
   canvasSize: CanvasSizeType;
   charts: Charts;
+  choosedChartIds: ReadonlyArray<number>;
   updateCanvasPos: () => void;
   updateStudioState: IUpdateStudioState;
 }
@@ -68,7 +65,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       canvasScale: DEFAULT_CANVASSCALE,
       charts: [],
       choosedChartIds: [],
-      hoverChartIndex: NO_HOVER_CHART
+      hoverChartId: NO_HOVER_CHART
     };
   }
 
@@ -109,11 +106,12 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, charts, choosedChartIds, hoverChartIndex } = this.state;
+    const { canvasSize, canvasScale, charts, choosedChartIds, hoverChartId } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
         charts: this.state.charts,
+        choosedChartIds: this.state.choosedChartIds,
         updateCanvasPos: this.updateCanvasPos.bind(this),
         updateStudioState: this.updateStudioState.bind(this)
       }}>
@@ -124,7 +122,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
           <div className='st_content' onClick={this.handleContentClick}>
             <div ref={(node) => this.contentNode = node} className='canvas_wrapper'>
               <Canvas
-                canvasScale={canvasScale} width={canvasSize.width} hoverChartIndex={hoverChartIndex}
+                canvasScale={canvasScale} width={canvasSize.width} hoverChartId={hoverChartId}
                 height={canvasSize.height} charts={charts} updateStudioState={this.updateStudioState}
                 choosedChartIds={choosedChartIds} >
               </Canvas>

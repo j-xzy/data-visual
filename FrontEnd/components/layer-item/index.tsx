@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Checkbox } from 'antd';
+import * as classNames from 'classnames';
 import './style.styl';
 
 export interface IProps {
@@ -8,12 +9,19 @@ export interface IProps {
   style?: object;
 }
 
-export class LayerItem extends React.Component<IProps, undefined> {
+interface ILayerItemProps extends IProps {
+  onCheckChange: (checked: boolean) => void;
+}
+
+export class LayerItem extends React.Component<ILayerItemProps, undefined> {
   render() {
-    const { imgSrc, style, checked} = this.props;
+    const { imgSrc, style, checked, onCheckChange } = this.props;
+    const cls = classNames('layer_item', {
+      layer_highlight: checked
+    });
     return (
-      <div style={style} className='layer_item'>
-        <Checkbox checked={checked} className='layer_check' />
+      <div style={style} className={cls}>
+        <Checkbox onChange={() => onCheckChange(!checked)} checked={checked} className='layer_check' />
         <div className='layer_img_container'>
           <img src={imgSrc} />
         </div>
