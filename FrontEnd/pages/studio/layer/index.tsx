@@ -4,6 +4,7 @@ import { Tooltip } from 'antd';
 import LayerItem from '@container/draggable-layer-item';
 import { Charts, IUpdateStudioState, NO_HOVER_CHART } from '@pages/studio';
 import { IChartConfig } from '@components/chart';
+import * as tools from '@lib/tools';
 
 import './style.styl';
 
@@ -29,6 +30,10 @@ export default class RawLayer extends React.Component<IProps, IState> {
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.topZIndex = this.topZIndex.bind(this);
+    this.bottomZIndex = this.bottomZIndex.bind(this);
+    this.upZIndex = this.upZIndex.bind(this);
+    this.downZIndex = this.downZIndex.bind(this);
     this.changeZIndex = this.changeZIndex.bind(this);
 
     this.state = {
@@ -38,11 +43,19 @@ export default class RawLayer extends React.Component<IProps, IState> {
 
   handleClick(e: React.MouseEvent<HTMLDivElement>, id: number) {
     const { updateStudioState, choosedChartIds } = this.props;
+    let ids: number[] = [];
     if (e.ctrlKey === true) {
-      this.props.updateStudioState({ choosedChartIds: [...choosedChartIds, id] });
+      const idx = choosedChartIds.indexOf(id);
+      if (idx !== -1) {
+        ids = [...choosedChartIds];
+        ids.splice(idx, 1);
+      } else {
+        ids = [...choosedChartIds, id];
+      }
     } else {
-      this.props.updateStudioState({ choosedChartIds: [id] });
+      ids = [id];
     }
+    this.props.updateStudioState({ choosedChartIds: ids });
   }
 
   handleMouseEnter(id: number) {
@@ -100,32 +113,70 @@ export default class RawLayer extends React.Component<IProps, IState> {
     });
   }
 
-  changeZIndex(zIndexType: ZIndexType) {
-    const { choosedChartIds, updateStudioState, charts } = this.props;
-    if (choosedChartIds.length === 0)
-      return;
+  changeZIndex(type: ZIndexType) {
+    const { charts, choosedChartIds, updateStudioState } = this.props;
+    let newCharts = [...charts];
+    if (choosedChartIds.length === 0) return;
 
-    let newCharts: IChartConfig[] = [];
-    for (let i = 0, length = charts.length; i < length; i++) {
-      const chart = charts[i];
-      const id = chart.id;
-      if (choosedChartIds.indexOf(id) === -1) {
-        newCharts.push(chart);
-        continue;
-      }
-      if (zIndexType === ZIndexType.Top) {
+    switch (type) {
+      case ZIndexType.Top: this.topZIndex(choosedChartIds, newCharts); break;
+      case ZIndexType.Bottom: this.bottomZIndex(choosedChartIds, newCharts); break;
+      case ZIndexType.Up: this.upZIndex(choosedChartIds, newCharts); break;
+      case ZIndexType.Down: this.downZIndex(choosedChartIds, newCharts); break;
+    }
 
-      }
-      if (zIndexType === ZIndexType.Bottom) {
+    updateStudioState({
+      charts: newCharts
+    });
+  }
 
-      }
-      if (zIndexType === ZIndexType.Up) {
-
-      }
-      if (zIndexType === ZIndexType.Down) {
-
+  topZIndex(choosedChartIds: ReadonlyArray<number>, newCharts: IChartConfig[]) {
+    for (let i = 0, length = newCharts.length; i < length;) {
+      const id = newCharts[i].id;
+      if (choosedChartIds.indexOf(id) !== -1) {
+        tools.topIndex(newCharts, i);
+        length--;
+      } else {
+        i++;
       }
     }
+    return newCharts;
+  }
+
+  bottomZIndex(choosedChartIds: ReadonlyArray<number>, newCharts: IChartConfig[]) {
+    if (choosedChartIds.length === 0) return;
+    for (let i = newCharts.length - 1, n = 0; i >= n;) {
+      const id = newCharts[i].id;
+      if (choosedChartIds.indexOf(id) !== -1) {
+        tools.bottomIndex(newCharts, i);
+        n++;
+      } else {
+        i--;
+      }
+    }
+    return newCharts;
+  }
+
+  upZIndex(choosedChartIds: ReadonlyArray<number>, newCharts: IChartConfig[]) {
+    for (let i = newCharts.length - 2; i >= 0; i--) {
+      const id = newCharts[i].id;
+      if (choosedChartIds.indexOf(id) !== -1) {
+        if (choosedChartIds.indexOf(newCharts[i + 1].id) === -1)
+          tools.swap(newCharts, i, i + 1);
+      }
+    }
+    return newCharts;
+  }
+
+  downZIndex(choosedChartIds: ReadonlyArray<number>, newCharts: IChartConfig[]) {
+    for (let i = 1; i < newCharts.length; i++) {
+      const id = newCharts[i].id;
+      if (choosedChartIds.indexOf(id) !== -1) {
+        if (choosedChartIds.indexOf(newCharts[i - 1].id) === -1)
+          tools.swap(newCharts, i, i - 1);
+      }
+    }
+    return newCharts;
   }
 
   shouldComponentUpdate(nextProps: IProps, nextState: IState) {
