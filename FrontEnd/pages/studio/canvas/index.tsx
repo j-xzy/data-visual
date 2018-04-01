@@ -52,7 +52,7 @@ export const OFFSET_POSITION = {
 };
 const DEFAULT_WIDTH = 300;
 const DEFAULT_HEIGHT = 300;
-const CHART_MINI_SIZE = {
+export const CHART_MINI_SIZE = {
   width: 50,
   height: 50
 };
