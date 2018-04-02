@@ -19,7 +19,7 @@ interface IState {
 }
 enum ZIndexType { Top, Bottom, Up, Down }
 
-export default class RawLayer extends React.Component<IProps, IState> {
+export default class Layer extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.renderLayer = this.renderLayer.bind(this);
@@ -219,7 +219,7 @@ export default class RawLayer extends React.Component<IProps, IState> {
             <i className='icon-up icon' onClick={() => this.changeZIndex(ZIndexType.Up)}></i>
           </Tooltip>
           <Tooltip title='下移一层'>
-            <i className='icon-up down icon' onClick={() => this.changeZIndex(ZIndexType.Down)}></i>
+            <i className='icon-down down icon' onClick={() => this.changeZIndex(ZIndexType.Down)}></i>
           </Tooltip>
         </div>
         <div className='layer_list'>

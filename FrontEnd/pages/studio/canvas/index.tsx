@@ -69,6 +69,8 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     this.handleCopyClick = this.handleCopyClick.bind(this);
     this.handleTrashcanClick = this.handleTrashcanClick.bind(this);
     this.handleCanvasWheel = this.handleCanvasWheel.bind(this);
+    this.getChartAfterMouseMove = this.getChartAfterMouseMove.bind(this);
+    this.getChartConfigWhileMousemove = this.getChartConfigWhileMousemove.bind(this);
 
     this.state = {
       transformTools: {} // depends on props.choosedChartIds
@@ -128,7 +130,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   handleCanvasMouseUp() {
     if (this.sideType !== SideType.None) {
       const { choosedChartIds, charts } = this.props;
-      const newCharts = this.mergeNewCharts(this.getChartAfterMouseMove.bind(this));
+      const newCharts = this.mergeNewCharts(this.getChartAfterMouseMove);
       this.props.updateStudioState({ charts: newCharts });
     }
     this.sideType = SideType.None;
@@ -167,7 +169,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
       return;
 
     const ps = { x: e.clientX, y: e.clientY };
-    const newCharts = this.mergeNewCharts(this.getChartConfigWhileMousemove.bind(this), ps);
+    const newCharts = this.mergeNewCharts(this.getChartConfigWhileMousemove, ps);
     this.props.updateStudioState({ charts: newCharts });
 
     this.lastMousePosition = {
