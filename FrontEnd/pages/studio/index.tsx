@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import update from 'immutability-helper';
 import Slider from '@base/slider';
 import Leftbar from '@pages/studio/leftbar';
 import { Canvas, OFFSET_POSITION } from '@pages/studio/canvas';
@@ -63,6 +64,9 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.deleteChoosedChart = this.deleteChoosedChart.bind(this);
     this.copyChoosedChart = this.copyChoosedChart.bind(this);
     this.toChartsClipboard = this.toChartsClipboard.bind(this);
+    this.handleSliderChange = this.handleSliderChange.bind(this);
+    this.handleSliderPlusClick = this.handleSliderPlusClick.bind(this);
+    this.handleSliderMinusClick = this.handleSliderMinusClick.bind(this);
 
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
@@ -74,6 +78,9 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   private contentNode: HTMLElement;
+
+  // Note: id maybe duplicated in chartsClipboard,
+  // so it will be re-assigned when copy
   private chartsClipboard: IChartConfig[] = [];
 
   updateCanvasPos() {
@@ -97,6 +104,26 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.setState({ choosedChartIds: [] });
   }
 
+  handleSliderChange(value: number) {
+    this.setState({
+      canvasScale: value
+    });
+  }
+
+  handleSliderPlusClick() {
+    this.setState(({ canvasScale }) => {
+      return { canvasScale: canvasScale + 0.3 };
+    });
+  }
+
+
+  handleSliderMinusClick() {
+    this.setState(({ canvasScale }) => {
+      return { canvasScale: canvasScale - 0.3 };
+    });
+  }
+
+
   onKeyDown(e: KeyboardEvent) {
     if (e.key === 'Delete') {
       this.deleteChoosedChart();
@@ -119,27 +146,33 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     charts.forEach((chart, idx) => {
       if (choosedChartIds.indexOf(chart.id) !== -1) {
         let chartConfig: IChartConfig;
-        const { position: { left, top }, id, ...config } = chart;
+        const { position: { left, top }, ...config } = chart;
         const position = {
           left: left + OFFSET_POSITION.left,
           top: top + OFFSET_POSITION.top
         };
-        chartConfig = { ...config, position, id: Date.now() + 100000000 * idx };
+        chartConfig = { ...config, position };
         this.chartsClipboard.push(chartConfig);
       }
     });
   }
 
   copyChoosedChart() {
-    this.setState(({ charts }) => {
-      return {
-        charts: [...charts, ...this.chartsClipboard],
-        choosedChartIds: (() => {
-          return this.chartsClipboard.map(({ id }) => {
-            return id;
-          });
-        })()
-      };
+    // reassign id
+    let chartsClipboardCopyed: IChartConfig[] = [];
+    for (let i = 0, length = this.chartsClipboard.length; i < length; i++) {
+      chartsClipboardCopyed.push(Object.assign({}, this.chartsClipboard[i]));
+      chartsClipboardCopyed[i].id = Date.now() + 1000000 * (i + 1);
+    }
+    this.setState({
+      charts: update(this.state.charts, {
+        $push: chartsClipboardCopyed
+      }),
+      choosedChartIds: (() => {
+        return chartsClipboardCopyed.map(({ id }) => {
+          return id;
+        });
+      })()
     });
   }
 
@@ -196,7 +229,10 @@ class RawStudio extends React.Component<undefined, IStudioState> {
             </div>
             <div className='scroll-wrapper' >
               <div className='scroll-postion'>
-                <Slider step={0.01} width={200} maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE} value={canvasScale} updateStudioState={this.updateStudioState} />
+                <Slider step={0.01} width={200} maxValue={MAX_SCALE_VALUE} minValue={MIN_SCALE_VALUE}
+                  value={canvasScale} onChange={this.handleSliderChange}
+                  onMinusClick={this.handleSliderMinusClick} onPlusClick={this.handleSliderPlusClick} >
+                </Slider>
               </div>
             </div>
           </div>

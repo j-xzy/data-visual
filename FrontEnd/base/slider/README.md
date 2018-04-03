@@ -19,4 +19,6 @@
 | minValue | 最小值 |　number　| １ |  |
 | maxValue | 最大值 |　number　|  100 |  |
 | step | 步长 | number | 0.1 | |
-| onChange | 数值发生改变触发事件 | (value) => void
+| onChange | 滚动时触发事件 | (value) => void
+| onMinusClick | 减按钮单击时触发事件 | () => void
+| onPlusClick | 加按钮单击时触发事件 | () => void
