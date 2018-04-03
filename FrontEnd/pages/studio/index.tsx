@@ -3,7 +3,7 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Slider from '@base/slider';
 import Leftbar from '@pages/studio/leftbar';
-import { Canvas } from '@pages/studio/canvas';
+import { Canvas, OFFSET_POSITION } from '@pages/studio/canvas';
 import Setting from '@pages/studio/setting';
 import { IChartConfig } from '@components/chart';
 
@@ -59,6 +59,10 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.updateCanvasPos = this.updateCanvasPos.bind(this);
     this.updateStudioState = this.updateStudioState.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.deleteChoosedChart = this.deleteChoosedChart.bind(this);
+    this.copyChoosedChart = this.copyChoosedChart.bind(this);
+    this.toChartsClipboard = this.toChartsClipboard.bind(this);
 
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
@@ -70,6 +74,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   private contentNode: HTMLElement;
+  private chartsClipboard: IChartConfig[] = [];
 
   updateCanvasPos() {
     const { width, height } = document.defaultView.getComputedStyle(this.contentNode, null);
@@ -92,13 +97,75 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.setState({ choosedChartIds: [] });
   }
 
+  onKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Delete') {
+      this.deleteChoosedChart();
+    }
+    if (e.ctrlKey && e.key === 'c') {
+      this.toChartsClipboard();
+    }
+    if (e.ctrlKey && e.key === 'v') {
+      this.copyChoosedChart();
+    }
+  }
+
+  toChartsClipboard() {
+    if (this.state.choosedChartIds.length === 0)
+      return;
+
+    const { charts, choosedChartIds } = this.state;
+    this.chartsClipboard = [];
+
+    charts.forEach((chart, idx) => {
+      if (choosedChartIds.indexOf(chart.id) !== -1) {
+        let chartConfig: IChartConfig;
+        const { position: { left, top }, id, ...config } = chart;
+        const position = {
+          left: left + OFFSET_POSITION.left,
+          top: top + OFFSET_POSITION.top
+        };
+        chartConfig = { ...config, position, id: Date.now() + 100000000 * idx };
+        this.chartsClipboard.push(chartConfig);
+      }
+    });
+  }
+
+  copyChoosedChart() {
+    this.setState(({ charts }) => {
+      return {
+        charts: [...charts, ...this.chartsClipboard],
+        choosedChartIds: (() => {
+          return this.chartsClipboard.map(({ id }) => {
+            return id;
+          });
+        })()
+      };
+    });
+  }
+
+  deleteChoosedChart() {
+    if (this.state.choosedChartIds.length === 0)
+      return;
+    this.setState(({ charts, choosedChartIds }) => {
+      let newCharts: IChartConfig[] = [];
+      charts.forEach((chart, idx) => {
+        choosedChartIds.indexOf(chart.id) === -1 && newCharts.push(chart);
+      });
+      return {
+        charts: newCharts
+      };
+    });
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.updateCanvasPos);
+    window.addEventListener('keydown', this.onKeyDown);
     this.updateCanvasPos();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateCanvasPos);
+    window.removeEventListener('keydown', this.onKeyDown);
   }
 
   componentDidUpdate() {

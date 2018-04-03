@@ -3,6 +3,8 @@ import { Collapse } from 'antd';
 import { barList, pieList } from '@lib/chart';
 import { DragableChartPreview } from '@container/draggable-chart-preview';
 
+import './style.styl';
+
 const Panel = Collapse.Panel;
 
 const panelStyle = {
@@ -18,7 +20,7 @@ export default class ComponentPanel extends React.PureComponent {
           <ul>
             {
               pieList.map(({ name, imgSrc, option }) => {
-                return <li key={name}><DragableChartPreview imgSrc={imgSrc} option={option} name={name} /></li>;
+                return <li className='component_panel_li' key={name}><DragableChartPreview imgSrc={imgSrc} option={option} name={name} /></li>;
               })
             }
           </ul>
@@ -27,7 +29,7 @@ export default class ComponentPanel extends React.PureComponent {
           <ul>
             {
               barList.map(({ name, imgSrc, option }) => {
-                return <li key={name}><DragableChartPreview imgSrc={imgSrc} option={option} name={name} /></li>;
+                return <li className='component_panel_li' key={name}><DragableChartPreview imgSrc={imgSrc} option={option} name={name} /></li>;
               })
             }
           </ul>

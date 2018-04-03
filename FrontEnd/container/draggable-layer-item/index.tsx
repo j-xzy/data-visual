@@ -43,7 +43,7 @@ export class RawLayerItem extends React.Component<IRawLayerItemProps, undefined>
 
   render() {
     const { connectDragSource, connectDropTarget, imgSrc, checked, id,
-      isDragging, onClick, index, onMouseEnter, onMouseLeave } = this.props;
+      isDragging, onClick, onMouseEnter, onMouseLeave } = this.props;
     const opacity = isDragging ? 0 : 1;
     return connectDragSource(
       connectDropTarget(

@@ -15,7 +15,6 @@ export function topIndex(arr: any[], idx: number) {
 }
 
 export function bottomIndex(arr: any[], idx: number) {
-  const length = arr.length;
   if (idx <= 0) {
     return arr;
   }

@@ -1,0 +1,31 @@
+.tab_wrapper
+  .tab_head
+    display: flex
+  .tab_title
+    position: relative
+    flex: 1
+    transition: all 0.3s
+    text-align: center
+    line-height: 30px
+    height: 30px
+    font-size: 15px
+    background: rgba(255,255,255,0.2)
+    color: #fff
+    cursor: pointer
+  :last-child:after
+    width: 0 !important
+    height 0 !important
+  .tab_active_title
+    background: rgb(255, 255, 255) !important
+    color: rgba(0, 0, 0, 0.8) !important
+.tab_title:after
+  position: absolute
+  display: table
+  right: 0
+  top: 0
+  content: ''
+  height: 100%
+  width: 1px
+  background: #fff
+.tab_title:hover
+  background: rgba(255,255,255,0.5)

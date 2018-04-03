@@ -42,7 +42,7 @@ export default class Layer extends React.Component<IProps, IState> {
   }
 
   handleClick(e: React.MouseEvent<HTMLDivElement>, id: number) {
-    const { updateStudioState, choosedChartIds } = this.props;
+    const { choosedChartIds } = this.props;
     let ids: number[] = [];
     if (e.ctrlKey === true) {
       const idx = choosedChartIds.indexOf(id);
@@ -59,7 +59,6 @@ export default class Layer extends React.Component<IProps, IState> {
   }
 
   handleMouseEnter(id: number) {
-    const charts = this.state.charts;
     this.props.updateStudioState({
       hoverChartId: id
     });

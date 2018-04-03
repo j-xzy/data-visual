@@ -129,7 +129,6 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   handleCanvasMouseUp() {
     if (this.sideType !== SideType.None) {
-      const { choosedChartIds, charts } = this.props;
       const newCharts = this.mergeNewCharts(this.getChartAfterMouseMove);
       this.props.updateStudioState({ charts: newCharts });
     }
@@ -193,7 +192,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   getChartConfigWhileMousemove(chartId: number, postion: Coordinate) {
-    const { updateStudioState, charts, canvasScale } = this.props;
+    const { charts, canvasScale } = this.props;
     const { transformTools } = this.state;
     const transformTool = transformTools[chartId];
 

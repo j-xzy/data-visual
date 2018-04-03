@@ -17,7 +17,7 @@ export class Input extends React.Component<InputProps, undefined> {
       <>
         <InputNumber value={value}
           onChange={(value: number) => onChange(value)} />
-        <div>{name}</div>
+        <div className='name'>{name}</div>
       </>
     );
   }

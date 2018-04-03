@@ -70,7 +70,7 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
   renderIconBar(c: React.ReactElement<IPanelProps>, i: number) {
     const { icon, title } = c.props;
     return (
-      <li key={i} className={classNames(
+      <li className={classNames(
         { bright: !this.state.isCollapsed && this.state.selectKey === i })}
         onClick={() => this.handleIconClick(i)}>
         <span className={icon}>{typeof (icon) === 'undefined' && title}</span>
