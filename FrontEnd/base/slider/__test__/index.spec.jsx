@@ -4,13 +4,18 @@ import Slider from '../index';
 
 describe('<Slider />', () => {
   test('value change', () => {
-    const updateStudioState = jest.fn();
+    const onMinusClick = jest.fn();
+    const onPlusClick = jest.fn();
+
     const wrapper = mount(
-      <Slider width={200} maxValue={10} minValue={0} value={5} step={0.1} updateStudioState={updateStudioState} />
+      <Slider width={200} maxValue={10} minValue={0} value={5} step={0.1} onPlusClick={onPlusClick} onMinusClick={onMinusClick} />
     );
     wrapper.find('.scroll-icon').at(0).simulate('click');
-    expect(updateStudioState.mock.calls[0][0]).toEqual({canvasScale:4.9});
+    expect(onMinusClick.mock.calls.length).toBe(1);
+    expect(onPlusClick.mock.calls.length).toBe(0);
+
     wrapper.find('.scroll-icon').at(2).simulate('click');
-    expect(updateStudioState.mock.calls[1][0]).toEqual({canvasScale:5.1});
+    expect(onMinusClick.mock.calls.length).toBe(1);
+    expect(onPlusClick.mock.calls.length).toBe(1)
   });
 });

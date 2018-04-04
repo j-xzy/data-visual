@@ -10,7 +10,7 @@ describe('<Setting />', () => {
     const setting = Enzyme.shallow(<Setting />);
     const sidebar = setting.find(Sidebar);
     sidebar.children().forEach((child) => {
-      expect(child.type()).toEqual(Sidebar.Panel);
+       expect(child.type()).toEqual(Sidebar.Panel);
     });
   });
   test('<Setting/> contain <PageSetting /> and <ComSetting />', () => {

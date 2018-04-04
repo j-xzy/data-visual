@@ -22,3 +22,9 @@
 | onChange | 滚动时触发事件 | (value) => void
 | onMinusClick | 减按钮单击时触发事件 | () => void
 | onPlusClick | 加按钮单击时触发事件 | () => void
+
+## 依赖
+
+- antd.Slider
+
+- antd.Icon
