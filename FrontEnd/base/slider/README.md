@@ -14,10 +14,10 @@
 
 |　参数　|　说明　|　类型　| 示例　|　默认值　|
 | ---  | --- | --- | --- | --- |
-| width ? | 空间宽度 |　string　or number　| 300 | '100%' |
+| width ? | 空间宽度 | string or number　| 300 | '100%' |
 | value | 数值 | number | 15 |  |
-| minValue | 最小值 |　number　| １ |  |
-| maxValue | 最大值 |　number　|  100 |  |
+| minValue | 最小值 | number　| １ |  |
+| maxValue | 最大值 | number　|  100 |  |
 | step | 步长 | number | 0.1 | |
 | onChange | 滚动时触发事件 | (value) => void
 | onMinusClick | 减按钮单击时触发事件 | () => void
