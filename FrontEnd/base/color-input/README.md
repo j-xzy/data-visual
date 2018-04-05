@@ -7,15 +7,17 @@
 ## API
 
 ``` html
-<ColorInput defaultColor='red' />
+<ColorInput color='red' />
 ```
 
 ### ColorInput
 
 |　参数　|　说明　|　类型　| 示例　|　默认值　|
 | ---  | --- | --- | --- | --- |
-| defaultColor | 默认颜色 |　string | '#dedede' |  |
+| color | 默认颜色 |　string | '#dedede' |  |
 | isShowColorPicker ? | 是否显示调色板 | boolean | true | false  |
+| style ? | 样式 | React.CSSProperties |  |   |
+| onInputKeyDown ? | input键盘按下时触发事件 |(e: KeyboardEvent) => void　|  |  |
 | onColorPreviewClick ? | 点击颜色预览触发事件 |()=>void　|  |  |
 | onColorChange ? | 颜色发生改变时触发事件 |　(color: string) => void　|  |  |
 | onColorPickerChangeComplete ? | 调色板完成颜色选择触发事件 | colorResult: ColorResult) => void | | |

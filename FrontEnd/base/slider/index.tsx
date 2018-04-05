@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Slider as AtSlider, Icon } from 'antd';
-import { IUpdateStudioState } from '@pages/studio';
 import './style.styl';
 
 interface IProps {

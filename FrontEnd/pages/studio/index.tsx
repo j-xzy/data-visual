@@ -26,6 +26,7 @@ export interface IStudioState {
   canvasSize: CanvasSizeType;
   canvasScale: number;
   charts: Charts;
+  colors: string[];
   choosedChartIds: ReadonlyArray<number>;
   hoverChartId: number;
 }
@@ -37,6 +38,7 @@ export interface IUpdateStudioState {
 export interface IContextValue {
   canvasSize: CanvasSizeType;
   charts: Charts;
+  colors: string[];
   choosedChartIds: ReadonlyArray<number>;
   updateCanvasPos: () => void;
   updateStudioState: IUpdateStudioState;
@@ -71,6 +73,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
       canvasScale: DEFAULT_CANVASSCALE,
+      colors: ['red', 'blue', 'yellow', '#dedede', '#000', 'orange', 'black', 'white'],
       charts: [],
       choosedChartIds: [],
       hoverChartId: NO_HOVER_CHART
@@ -211,6 +214,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
         charts: this.state.charts,
+        colors: this.state.colors,
         choosedChartIds: this.state.choosedChartIds,
         updateCanvasPos: this.updateCanvasPos.bind(this),
         updateStudioState: this.updateStudioState.bind(this)

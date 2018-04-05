@@ -1,12 +1,14 @@
 .color_input_wrapper
-  display: flex
   box-sizing: border-box
-  justify-content: center
-  align-items: center
   height: 28px
+  width: 85px
   background: #fff
+  .color_colorpicker
+    position: absolute
+    z-index: 1
   .color_preview_wrapper
     position: relative
+    float: left
     width: 30px
     height: 100%
     border: 1px solid #dedede
@@ -18,10 +20,6 @@
       left: 5px
       height 16px
       width: 16px
-    .color_colorpicker
-      position: absolute
-      top: 27px
-      right: 0px
   .color_input
     height: 14px
     width: 50px
