@@ -20,6 +20,13 @@ describe('<Layer />', () => {
     });
   });
 
+  test('delete', () => {
+    root.setProps({ charts });
+    root.setProps({ choosedChartIds: [0, 3, 5] });
+    root.find('.layer_delete_wrapper').simulate('click');
+    expect(root.instance().props.charts).toEqual([{ id: 1 }, { id: 2 }, { id: 4 }]);
+  });
+
   test('change chart zIndex', () => {
     root.setProps({ charts });
 

@@ -47,6 +47,7 @@ describe('<Chart />', () => {
     wrapper.simulate('click');
     expect(chartClick.mock.calls[0][1]).toBe(id);
   });
+
   test('Change the size of the Chart will refresh', async () => {
     const chartClick = jest.fn();
     const wrapper = mount(

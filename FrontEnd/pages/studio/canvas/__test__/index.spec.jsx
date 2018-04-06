@@ -38,7 +38,7 @@ const sideTypes = [SideType.Right, SideType.Bottom, SideType.Top, SideType.Left,
 const sideNames = ['right', 'bottom', 'top', 'left', 'right-top', 'left-top', 'left-bottom', 'right-bottom', 'transform_tool'];
 const canvasScales = [0.4, 0.6, 1, 1.6, 3.3];
 const charts = [[chart1], [chart1, chart2], [chart1, chart2, chart3]];
-
+const size = { width: 800, height: 800 };
 function calculatePositionAndSize(mousePs, mouseMovePs, canvasScale, sideType, chart) {
   const delta = {
     x: (mouseMovePs.clientX - mousePs.clientX) / canvasScale,
@@ -121,7 +121,7 @@ function calculatePositionAndSize(mousePs, mouseMovePs, canvasScale, sideType, c
 describe('<Canvas />', () => {
   const OriginCanvas = Canvas.DecoratedComponent;
   const identity = el => el;
-  const root = mount(<OriginCanvas updateStudioState={updateStudioState} choosedChartIds={[]} charts={[]} connectDropTarget={identity} />);
+  const root = mount(<OriginCanvas size={size} updateStudioState={updateStudioState} choosedChartIds={[]} charts={[]} connectDropTarget={identity} />);
 
   function updateStudioState(state, callback) {
     root.setProps({ ...state }, () => { typeof callback === 'function' && callback(); })

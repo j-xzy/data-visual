@@ -6,7 +6,7 @@ import './style.styl';
 let echarts: any;
 
 export interface IChartConfig {
-  option: object;
+  option: any;
   scale: {
     x: number;
     y: number;
@@ -19,6 +19,7 @@ export interface IChartConfig {
     left: number;
     top: number;
   };
+  colorFromGlobal: boolean;
   imgSrc: string;
   id: number;
 }
@@ -43,14 +44,13 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
     this.chart.dispose();
     const { width, height } = nextProps.size;
     this.chart = echarts.init(this.element, '', { width, height });
-    this.chart.setOption(nextProps.option);
   }
 
   async componentDidMount() {
     echarts = await import('echarts');
-    const { width, height } = this.props.size;
+    const { size: { width, height }, option } = this.props;
     this.chart = echarts.init(this.element, '', { width, height });
-    this.chart.setOption(this.props.option);
+    this.chart.setOption(option);
   }
 
   componentWillUnmount() {
@@ -58,10 +58,11 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   }
 
   componentWillReceiveProps(nextProps: IChartProps) {
-    const { width, height } = nextProps.size;
+    const { size: { width, height }, option } = nextProps;
     if (height !== this.props.size.height || width !== this.props.size.width) {
       this.refreshChart(nextProps);
     }
+    this.chart.setOption(option);
   }
 
   render() {

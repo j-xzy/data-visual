@@ -77,7 +77,7 @@ export default class Layer extends React.Component<IProps, IState> {
 
     let newCharts: IChartConfig[] = [];
     charts.forEach((chart, idx) => {
-      choosedChartIds.indexOf(chart.id) === -1 && newCharts.push(chart);
+      !choosedChartIds.includes(chart.id) && newCharts.push(chart);
     });
     updateStudioState({
       charts: newCharts
@@ -132,7 +132,7 @@ export default class Layer extends React.Component<IProps, IState> {
   topZIndex(choosedChartIds: ReadonlyArray<number>, newCharts: IChartConfig[]) {
     for (let i = 0, length = newCharts.length; i < length;) {
       const id = newCharts[i].id;
-      if (choosedChartIds.indexOf(id) !== -1) {
+      if (choosedChartIds.includes(id)) {
         tools.topIndex(newCharts, i);
         length--;
       } else {
@@ -146,7 +146,7 @@ export default class Layer extends React.Component<IProps, IState> {
     if (choosedChartIds.length === 0) return;
     for (let i = newCharts.length - 1, n = 0; i >= n;) {
       const id = newCharts[i].id;
-      if (choosedChartIds.indexOf(id) !== -1) {
+      if (choosedChartIds.includes(id)) {
         tools.bottomIndex(newCharts, i);
         n++;
       } else {
@@ -159,8 +159,8 @@ export default class Layer extends React.Component<IProps, IState> {
   upZIndex(choosedChartIds: ReadonlyArray<number>, newCharts: IChartConfig[]) {
     for (let i = newCharts.length - 2; i >= 0; i--) {
       const id = newCharts[i].id;
-      if (choosedChartIds.indexOf(id) !== -1) {
-        if (choosedChartIds.indexOf(newCharts[i + 1].id) === -1)
+      if (choosedChartIds.includes(id)) {
+        if (!choosedChartIds.includes(newCharts[i + 1].id))
           tools.swap(newCharts, i, i + 1);
       }
     }
@@ -170,8 +170,8 @@ export default class Layer extends React.Component<IProps, IState> {
   downZIndex(choosedChartIds: ReadonlyArray<number>, newCharts: IChartConfig[]) {
     for (let i = 1; i < newCharts.length; i++) {
       const id = newCharts[i].id;
-      if (choosedChartIds.indexOf(id) !== -1) {
-        if (choosedChartIds.indexOf(newCharts[i - 1].id) === -1)
+      if (choosedChartIds.includes(id)) {
+        if (!choosedChartIds.includes(newCharts[i - 1].id))
           tools.swap(newCharts, i, i - 1);
       }
     }
@@ -192,7 +192,7 @@ export default class Layer extends React.Component<IProps, IState> {
     const charts = [...this.state.charts];
     const { choosedChartIds } = this.props;
     return charts.map((chart, idx) => {
-      const checked = choosedChartIds.indexOf(chart.id) !== -1;
+      const checked = choosedChartIds.includes(chart.id);
       return (
         <LayerItem
           onCheckChange={this.handleCheckChange}

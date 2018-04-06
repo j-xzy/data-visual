@@ -10,10 +10,10 @@ import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HOVER_CHART } 
 import './style.styl';
 
 export interface ICanvasProps {
-  width: number;
-  height: number;
+  size: Size;
   canvasScale: number;
   charts: ReadonlyArray<IChartConfig>;
+  colors: string[];
   updateStudioState: IUpdateStudioState;
   choosedChartIds: ReadonlyArray<number>;
   hoverChartId: number;
@@ -84,12 +84,13 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   appendChart(option: object, config: { position: Position, size: Size, imgSrc: string }, callback?: () => void) {
     const { position, size, imgSrc } = config;
+    const { updateStudioState, charts } = this.props;
     const guid = Date.now();
     const props: IChartConfig = {
-      option, position, size, imgSrc, id: guid,
-      scale: { x: 1, y: 1 }
+      option, position, size, imgSrc,
+      id: guid, scale: { x: 1, y: 1 },
+      colorFromGlobal: true
     };
-    const { updateStudioState, charts } = this.props;
     updateStudioState({
       charts: update(charts, {
         $push: [props]
@@ -183,7 +184,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     for (let i = 0, length = charts.length; i < length; i++) {
       const id = charts[i].id;
       let chart = charts[i];
-      if (choosedChartIds.indexOf(id) !== -1) {
+      if (choosedChartIds.includes(id)) {
         chart = func(id, ...rest);
       }
       newCharts.push(chart);
@@ -306,13 +307,26 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   // Re-build the mapping with each render
   renderCharts() {
-    const { charts, hoverChartId } = this.props;
+    const { charts, hoverChartId, colors } = this.props;
     this.idMapIndex.clear();
     return charts.map((chart, idx) => {
-      const { id, ...onIdProps } = chart;  // key must be chartId
+      const { id, colorFromGlobal, option, ...props } = chart;  // key must be chartId
+      let newOption = { ...option }; // shallow copy
+
+      // set map
       const isMask = hoverChartId !== NO_HOVER_CHART && hoverChartId === id;
       this.idMapIndex.set(id, idx);
-      return <Chart isMask={isMask} onChartClick={this.chartClick} {...onIdProps} key={id} id={id} index={idx} />;
+
+      // global color
+      if (colorFromGlobal) {
+        newOption.color = [...colors];
+      }
+
+      return (
+        <Chart isMask={isMask} colorFromGlobal={colorFromGlobal} option={newOption}
+          onChartClick={this.chartClick} {...props} key={id} id={id} index={idx} >
+        </Chart>
+      );
     });
   }
 
@@ -323,7 +337,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   setTransformToolsState(charts: ReadonlyArray<IChartConfig>, choosedChartIds: ReadonlyArray<number>) {
     let newTransformTools: ITransformTools = {};
     for (const chart of charts) {
-      if (choosedChartIds.indexOf(chart.id) === -1) {
+      if (!choosedChartIds.includes(chart.id)) {
         continue;
       }
       const {
@@ -354,7 +368,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   render() {
-    const { width, height, canvasScale, connectDropTarget } = this.props;
+    const { size: { width, height }, canvasScale, connectDropTarget } = this.props;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
         onMouseDown={(e) => this.handleCanvasMouseDown(e)}

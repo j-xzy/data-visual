@@ -1,4 +1,4 @@
-import {IChartPreview} from '@components/chart-preview';
+import { IChartPreview } from '@components/chart-preview';
 
 export type ChartPreviewList = IChartPreview[];
 

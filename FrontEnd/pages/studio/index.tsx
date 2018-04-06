@@ -73,7 +73,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
       canvasScale: DEFAULT_CANVASSCALE,
-      colors: ['red', 'blue', 'yellow', '#dedede', '#000', 'orange', 'black', 'white'],
+      colors: ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a'],
       charts: [],
       choosedChartIds: [],
       hoverChartId: NO_HOVER_CHART
@@ -126,7 +126,6 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     });
   }
 
-
   onKeyDown(e: KeyboardEvent) {
     if (e.key === 'Delete') {
       this.deleteChoosedChart();
@@ -147,7 +146,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.chartsClipboard = [];
 
     charts.forEach((chart, idx) => {
-      if (choosedChartIds.indexOf(chart.id) !== -1) {
+      if (choosedChartIds.includes(chart.id)) {
         let chartConfig: IChartConfig;
         const { position: { left, top }, ...config } = chart;
         const position = {
@@ -185,7 +184,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.setState(({ charts, choosedChartIds }) => {
       let newCharts: IChartConfig[] = [];
       charts.forEach((chart, idx) => {
-        choosedChartIds.indexOf(chart.id) === -1 && newCharts.push(chart);
+        !choosedChartIds.includes(chart.id) && newCharts.push(chart);
       });
       return {
         charts: newCharts
@@ -209,7 +208,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, charts, choosedChartIds, hoverChartId } = this.state;
+    const { canvasSize, canvasScale, charts, choosedChartIds, hoverChartId, colors } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
@@ -226,9 +225,9 @@ class RawStudio extends React.Component<undefined, IStudioState> {
           <div className='st_content' onClick={this.handleContentClick}>
             <div ref={(node) => this.contentNode = node} className='canvas_wrapper'>
               <Canvas
-                canvasScale={canvasScale} width={canvasSize.width} hoverChartId={hoverChartId}
-                height={canvasSize.height} charts={charts} updateStudioState={this.updateStudioState}
-                choosedChartIds={choosedChartIds} >
+                canvasScale={canvasScale} size={canvasSize} hoverChartId={hoverChartId}
+                charts={charts} updateStudioState={this.updateStudioState}
+                choosedChartIds={choosedChartIds} colors={colors}>
               </Canvas>
             </div>
             <div className='scroll-wrapper' >

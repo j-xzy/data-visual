@@ -1,10 +1,10 @@
 import * as React from 'react';
 import update from 'immutability-helper';
 import ColorInput from '@components/color-input';
-import { IUpdateStudioState } from '@pages/studio';
+
 interface IProps {
   colors: string[];
-  updateStudioState: IUpdateStudioState;
+  onColorComplete: (colors: string[]) => void;
 }
 
 interface IState {
@@ -21,10 +21,8 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
     };
   }
 
-  handleColorComplete(idx: number) {
-    this.props.updateStudioState({
-      colors: [...this.state.colors]
-    });
+  handleColorComplete() {
+    this.props.onColorComplete([...this.state.colors]);
   }
 
   handleColorChange(idx: number, color: string) {
@@ -48,7 +46,7 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
         {colors.map((color, idx) => {
           return (
             <ColorInput key={idx} color={color} onColorChange={(color) => this.handleColorChange(idx, color)}
-              onColorComplete={() => this.handleColorComplete(idx)} >
+              onColorComplete={this.handleColorComplete} >
             </ColorInput>
           );
         })}

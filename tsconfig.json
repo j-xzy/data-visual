@@ -19,7 +19,8 @@
       "@components/*": ["./FrontEnd/components/*"],
       "@container/*": ["./FrontEnd/container/*"],
       "@charts/*": ["./FrontEnd/charts/*"],
-      "@lib/*": ["./FrontEnd/lib/*"]
+      "@lib/*": ["./FrontEnd/lib/*"],
+      "@hoc/*": ["./FrontEnd/hoc/*"]
     }
   }
 }
