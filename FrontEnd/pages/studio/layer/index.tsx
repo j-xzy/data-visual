@@ -178,11 +178,7 @@ export default class Layer extends React.Component<IProps, IState> {
     return newCharts;
   }
 
-  shouldComponentUpdate(nextProps: IProps, nextState: IState) {
-    return true;
-  }
-
-  componentWillReceiveProps(nextProps: IProps) {
+  componentWillReceiveProps(nextProps: IProps, prevState: IState) {
     if (nextProps.charts !== this.props.charts) {
       this.setState({ charts: [...nextProps.charts].reverse() });
     }

@@ -16,9 +16,7 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
     super(props);
     this.handleColorComplete = this.handleColorComplete.bind(this);
     this.handleColorChange = this.handleColorChange.bind(this);
-    this.state = {
-      colors: this.props.colors
-    };
+    this.state = { colors: [] };
   }
 
   handleColorComplete() {
@@ -33,10 +31,8 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
     });
   }
 
-  componentWillReceiveProps(nextProps: IProps) {
-    this.setState({
-      colors: nextProps.colors
-    });
+  static getDerivedStateFromProps(nextProps: IProps) {
+    return { colors: nextProps.colors };
   }
 
   render() {

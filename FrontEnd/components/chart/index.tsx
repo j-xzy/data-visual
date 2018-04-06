@@ -40,9 +40,9 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
   element: HTMLDivElement;
   chart: echarts.ECharts;
 
-  refreshChart(nextProps: IChartProps) {
+  refreshChart(props: IChartProps) {
     this.chart.dispose();
-    const { width, height } = nextProps.size;
+    const { width, height } = props.size;
     this.chart = echarts.init(this.element, '', { width, height });
   }
 
@@ -57,10 +57,10 @@ export class Chart extends React.PureComponent<IChartProps, undefined> {
     this.chart.dispose();
   }
 
-  componentWillReceiveProps(nextProps: IChartProps) {
-    const { size: { width, height }, option } = nextProps;
+  componentDidUpdate(preProps: IChartProps) {
+    const { size: { width, height }, option } = preProps;
     if (height !== this.props.size.height || width !== this.props.size.width) {
-      this.refreshChart(nextProps);
+      this.refreshChart(this.props);
     }
     this.chart.setOption(option);
   }
