@@ -1,11 +1,6 @@
 import * as React from 'react';
+import { IChartPreview } from '@lib/chart';
 import './style.styl';
-
-export interface IChartPreview {
-  name: string;
-  imgSrc: string;
-  option: object;
-}
 
 export class ChartPreview extends React.Component<IChartPreview, undefined> {
   constructor(props: IChartPreview) {

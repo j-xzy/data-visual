@@ -148,12 +148,12 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     charts.forEach((chart, idx) => {
       if (choosedChartIds.includes(chart.id)) {
         let chartConfig: IChartConfig;
-        const { position: { left, top }, ...config } = chart;
+        const { position: { left, top }, option, ...props } = chart;
         const position = {
           left: left + OFFSET_POSITION.left,
           top: top + OFFSET_POSITION.top
         };
-        chartConfig = { ...config, position };
+        chartConfig = { option, position, ...props };
         this.chartsClipboard.push(chartConfig);
       }
     });

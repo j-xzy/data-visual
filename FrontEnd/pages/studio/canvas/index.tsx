@@ -2,6 +2,7 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
+import { IChartOption } from '@lib/chart';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
@@ -82,7 +83,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   sideType = SideType.None;
   idMapIndex: Map<number, number> = new Map(); // chart'id map charts's index
 
-  appendChart(option: object, config: { position: Position, size: Size, imgSrc: string }, callback?: () => void) {
+  appendChart(option: IChartOption, config: { position: Position, size: Size, imgSrc: string }, callback?: () => void) {
     const { position, size, imgSrc } = config;
     const { updateStudioState, charts } = this.props;
     const guid = Date.now();
@@ -305,13 +306,12 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     });
   }
 
-  // Re-build the mapping with each render
   renderCharts() {
     const { charts, hoverChartId, colors } = this.props;
     this.idMapIndex.clear();
     return charts.map((chart, idx) => {
       const { id, colorFromGlobal, option, ...props } = chart;  // key must be chartId
-      let newOption = { ...option }; // shallow copy
+      let nextOption = { ...option }; // shallow copy
 
       // set map
       const isMask = hoverChartId !== NO_HOVER_CHART && hoverChartId === id;
@@ -319,11 +319,11 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
       // global color
       if (colorFromGlobal) {
-        newOption.color = [...colors];
+        nextOption.color = colors;
       }
 
       return (
-        <Chart isMask={isMask} colorFromGlobal={colorFromGlobal} option={newOption}
+        <Chart isMask={isMask} colorFromGlobal={colorFromGlobal} option={nextOption}
           onChartClick={this.chartClick} {...props} key={id} id={id} index={idx} >
         </Chart>
       );
@@ -340,6 +340,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
       if (!choosedChartIds.includes(chart.id)) {
         continue;
       }
+
       const {
         position: { left, top },
         size: { width, height }, id,

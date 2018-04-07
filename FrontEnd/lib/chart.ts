@@ -1,4 +1,15 @@
-import { IChartPreview } from '@components/chart-preview';
+export interface IChartOption {
+  color: string[];
+  series: any[];
+  xAxis?: any;
+  yAxis?: any;
+}
+
+export interface IChartPreview {
+  name: string;
+  imgSrc: string;
+  option: IChartOption;
+}
 
 export type ChartPreviewList = IChartPreview[];
 
@@ -7,6 +18,7 @@ export const pieList: ChartPreviewList = [
     name: '普通饼图',
     imgSrc: require('../assets/image/normalpie.png'),
     option: {
+      color: [],
       series: [
         {
           type: 'pie',
@@ -27,6 +39,7 @@ export const barList: ChartPreviewList = [
     name: '普通柱图',
     imgSrc: require('../assets/image/normalbar.png'),
     option: {
+      color: [],
       xAxis: {
         type: 'category',
         data: ['Mon', 'Tue', 'Wed']

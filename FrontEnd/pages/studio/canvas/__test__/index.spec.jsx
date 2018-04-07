@@ -6,6 +6,7 @@ import { TransformTool, SideType } from '@components/transform-tool';
 
 const chart1 = {
   option: {},
+  colorFromGlobal: true,
   scale: { x: 1, y: 1, },
   size: { width: 500, height: 500, },
   position: { left: 0, top: 0, },
@@ -15,6 +16,7 @@ const chart1 = {
 
 const chart2 = {
   option: {},
+  colorFromGlobal: true,
   scale: { x: 1, y: 1, },
   size: { width: 300, height: 600, },
   position: { left: 100, top: 200, },
@@ -24,6 +26,7 @@ const chart2 = {
 
 const chart3 = {
   option: {},
+  colorFromGlobal: false,
   scale: { x: 1, y: 1, },
   size: { width: 350, height: 450, },
   position: { left: 120, top: 233, },
@@ -199,5 +202,41 @@ describe('<Canvas />', () => {
         });
       });
     });
+  });
+
+  test('chart will not rerender when ohter position changes', async () => {
+    root.setProps({ charts: [chart1, chart2, chart3], canvasScale: 1 });
+    for (let i = 0; i < 3; i++) {
+      root.find(Chart).at(i).instance().render = jest.fn(root.find(Chart).at(i).instance().render);
+      await root.find(Chart).at(i).instance().componentDidMount();
+    }
+    expect(root.find(Chart).at(0).instance().render.mock.calls.length).toBe(0);
+    expect(root.find(Chart).at(1).instance().render.mock.calls.length).toBe(0);
+    expect(root.find(Chart).at(2).instance().render.mock.calls.length).toBe(0);
+
+    root.find(Chart).at(0).simulate('click', { ctrlKey: false });
+    root.find(TransformTool).find('.transform_tool').simulate('mousedown', { ...mousePs });
+    root.simulate('mousemove', { ...mouseMovePs });
+
+    expect(root.find(Chart).at(0).instance().render.mock.calls.length).toBe(1);
+    expect(root.find(Chart).at(1).instance().render.mock.calls.length).toBe(0);
+    expect(root.find(Chart).at(2).instance().render.mock.calls.length).toBe(0);
+  });
+
+  test('chart will rerender when global color changes', async () => {
+    root.setProps({ charts: [chart1, chart2, chart3], canvasScale: 1 });
+    for (let i = 0; i < 3; i++) {
+      root.find(Chart).at(i).instance().render = jest.fn(root.find(Chart).at(i).instance().render);
+      await root.find(Chart).at(i).instance().componentDidMount();
+    }
+    expect(root.find(Chart).at(0).instance().render.mock.calls.length).toBe(0);
+    expect(root.find(Chart).at(1).instance().render.mock.calls.length).toBe(0);
+    expect(root.find(Chart).at(2).instance().render.mock.calls.length).toBe(0);
+
+    root.setProps({ colors: ['red', 'blue'] });
+
+    expect(root.find(Chart).at(0).instance().render.mock.calls.length).toBe(1);
+    expect(root.find(Chart).at(1).instance().render.mock.calls.length).toBe(1);
+    expect(root.find(Chart).at(2).instance().render.mock.calls.length).toBe(0); // colorFromGlobal is false
   });
 });
