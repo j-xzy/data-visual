@@ -1,8 +1,11 @@
 import * as React from 'react';
+import LazyLoader from '@hoc/lazy-loader';
 import Item from '@components/setting-item';
 import { Context as StudioContext } from '@pages/studio';
-import GlobalColorInputGroup from '@container/global-color-input-group';
+
 import CanvasSize from '@container/canvas-size';
+
+const GlobalColorInputGroup = LazyLoader(() => import('@container/global-color-input-group'), (): any => null);
 
 export default class GlobalSetting extends React.Component {
   render() {

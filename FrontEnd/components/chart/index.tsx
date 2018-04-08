@@ -51,8 +51,8 @@ export class Chart extends React.Component<IChartProps, undefined> {
   async componentDidMount() {
     echarts = await import('echarts');
     const { size: { width, height }, option } = this.props;
-   this.chart = echarts.init(this.element, '', { width, height });
-   this.chart.setOption(option);
+    this.chart = echarts.init(this.element, '', { width, height });
+    this.chart.setOption(option);
   }
 
   componentWillUnmount() {
