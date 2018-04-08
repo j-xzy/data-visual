@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ColorInputGroup from '@components/color-input-group';
+import Loadable from '@hoc/loadable';
 import { IUpdateStudioState } from '@pages/studio';
 
 interface IProps {
@@ -7,7 +7,9 @@ interface IProps {
   updateStudioState: IUpdateStudioState;
 }
 
-export default class GlobalColorInputGroup extends React.Component<IProps, undefined> {
+const ColorInputGroup = Loadable(() => import('@components/color-input-group'));
+
+export default class GlobalPalette extends React.Component<IProps, undefined> {
   constructor(props: IProps) {
     super(props);
     this.handleColorComplete = this.handleColorComplete.bind(this);

@@ -1,11 +1,9 @@
 import * as React from 'react';
-import LazyLoader from '@hoc/lazy-loader';
 import Item from '@components/setting-item';
+import GlobalPalette from '@container/global-palette';
 import { Context as StudioContext } from '@pages/studio';
 
 import CanvasSize from '@container/canvas-size';
-
-const GlobalColorInputGroup = LazyLoader(() => import('@container/global-color-input-group'), (): any => null);
 
 export default class GlobalSetting extends React.Component {
   render() {
@@ -16,7 +14,7 @@ export default class GlobalSetting extends React.Component {
             <CanvasSize updateStudioState={updateStudioState} canvasSize={canvasSize} />
           </Item>,
           <Item name='调色盘' key='colorPicker'>
-            <GlobalColorInputGroup updateStudioState={updateStudioState} colors={colors} />
+            <GlobalPalette updateStudioState={updateStudioState} colors={colors} />
           </Item>
         ])}
       </StudioContext.Consumer>

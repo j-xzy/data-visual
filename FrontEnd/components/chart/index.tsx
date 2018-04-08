@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { shallowEqual } from '@lib/tools';
+import { Controls } from '@lib/chart';
 import './style.styl';
 
 const loading = require('../../assets/image/loading.gif');
@@ -23,6 +24,7 @@ export interface IChartConfig {
   };
   colorFromGlobal: boolean;
   imgSrc: string;
+  controls: Controls;
   id: number;
 }
 

@@ -20,7 +20,8 @@
       "@container/*": ["./FrontEnd/container/*"],
       "@charts/*": ["./FrontEnd/charts/*"],
       "@lib/*": ["./FrontEnd/lib/*"],
-      "@hoc/*": ["./FrontEnd/hoc/*"]
+      "@hoc/*": ["./FrontEnd/hoc/*"],
+      "@controls/*": ["./FrontEnd/controls/*"]
     }
   }
 }

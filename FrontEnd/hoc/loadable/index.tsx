@@ -8,7 +8,7 @@ interface IState<Props> {
   Component: React.ComponentType<Props>;
 }
 
-export default function LazyLoader<Props>(loader: Loader<Props>, Loading: Loading) {
+export default function Loadable<Props>(loader: Loader<Props>, Loading: Loading = (): any => null) {
   return class extends React.Component<Props, IState<Props>> {
     constructor(props: Props) {
       super(props);

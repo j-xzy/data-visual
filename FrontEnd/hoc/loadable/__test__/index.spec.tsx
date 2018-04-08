@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
-import LazyLoader from '../index';
+import Loadable from '../index';
 import Foo from './foo';
 
 const p = 'same props';
 
 describe('Lazy loader', () => {
   test('load success', async () => {
-    const Foo = LazyLoader(() => import('./foo'), (): any => 'loading');
+    const Foo = Loadable(() => import('./foo'), (): any => 'loading');
     const root = mount(<Foo p={p} />);
 
     root.update();

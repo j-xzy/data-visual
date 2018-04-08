@@ -2,7 +2,7 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
-import { IChartOption } from '@lib/chart';
+import { IChartOption, Controls } from '@lib/chart';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
@@ -51,6 +51,9 @@ export const OFFSET_POSITION = {
   left: 10,
   top: 10
 };
+
+export const idMapIndex: Map<number, number> = new Map(); // chart'id map charts's index
+
 const DEFAULT_WIDTH = 300;
 const DEFAULT_HEIGHT = 300;
 export const CHART_MINI_SIZE = {
@@ -81,16 +84,15 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   canvasDiv: HTMLDivElement;
   lastMousePosition: Coordinate;
   sideType = SideType.None;
-  idMapIndex: Map<number, number> = new Map(); // chart'id map charts's index
 
-  appendChart(option: IChartOption, config: { position: Position, size: Size, imgSrc: string }, callback?: () => void) {
-    const { position, size, imgSrc } = config;
+  appendChart(option: IChartOption, config: { controls: Controls, position: Position, size: Size, imgSrc: string }, callback?: () => void) {
+    const { position, size, imgSrc, controls } = config;
     const { updateStudioState, charts } = this.props;
     const guid = Date.now();
     const props: IChartConfig = {
       option, position, size, imgSrc,
       id: guid, scale: { x: 1, y: 1 },
-      colorFromGlobal: true
+      colorFromGlobal: true, controls
     };
     updateStudioState({
       charts: update(charts, {
@@ -138,7 +140,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   getChartAfterMouseMove(id: number) {
-    const index = this.idMapIndex.get(id);
+    const index = idMapIndex.get(id);
     const charts = this.props.charts;
     const transformTool = this.state.transformTools[id];
     const chart = charts[index];
@@ -202,7 +204,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
       x: (postion.x - this.lastMousePosition.x) / canvasScale,
       y: (postion.y - this.lastMousePosition.y) / canvasScale
     };
-    const chartIndex = this.idMapIndex.get(chartId);
+    const chartIndex = idMapIndex.get(chartId);
     const chart = this.props.charts[chartIndex];
 
     let size = { ...transformTool.size };
@@ -271,19 +273,19 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   handleCopyClick(id: number) {
     const { charts } = this.props;
-    const index = this.idMapIndex.get(id);
-    const { option, position: { left, top }, size, imgSrc } = charts[index];
+    const index = idMapIndex.get(id);
+    const { option, position: { left, top }, size, imgSrc, controls } = charts[index];
     const position = {
       left: left + OFFSET_POSITION.left,
       top: top + OFFSET_POSITION.top
     };
-    const newChartId = this.appendChart(option, { position, size, imgSrc });
+    const newChartId = this.appendChart(option, { controls, position, size, imgSrc });
     this.props.updateStudioState({ choosedChartIds: [newChartId] });
   }
 
   handleTrashcanClick(id: number) {
     const { charts, updateStudioState } = this.props;
-    const index = this.idMapIndex.get(id);
+    const index = idMapIndex.get(id);
     updateStudioState({
       charts: update(charts, {
         $splice: [[index, 1]]
@@ -308,14 +310,14 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   renderCharts() {
     const { charts, hoverChartId, colors } = this.props;
-    this.idMapIndex.clear();
+    idMapIndex.clear();
     return charts.map((chart, idx) => {
       const { id, colorFromGlobal, option, ...props } = chart;  // key must be chartId
       let nextOption = { ...option }; // shallow copy
 
       // set map
       const isMask = hoverChartId !== NO_HOVER_CHART && hoverChartId === id;
-      this.idMapIndex.set(id, idx);
+      idMapIndex.set(id, idx);
 
       // global color
       if (colorFromGlobal) {
@@ -397,8 +399,8 @@ const boxTarget = {
         top: top - DEFAULT_HEIGHT / 2
       };
       const size = { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT };
-      const imgSrc = item.imgSrc;
-      component.appendChart(item.option, { position, size, imgSrc });
+      const { imgSrc, controls } = item;
+      component.appendChart(item.option, { controls, position, size, imgSrc });
       return;
     }
   }

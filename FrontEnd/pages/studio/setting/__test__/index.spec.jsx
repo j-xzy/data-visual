@@ -13,6 +13,7 @@ describe('<Setting />', () => {
        expect(child.type()).toEqual(Sidebar.Panel);
     });
   });
+
   test('<Setting/> contain <PageSetting /> and <ComSetting />', () => {
     // todo
   });
