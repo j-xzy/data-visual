@@ -43,7 +43,7 @@ export const pieList: ChartPreviewList = [
 export const barList: ChartPreviewList = [
   {
     name: '普通柱图',
-    controls: [],
+    controls: [ControlMap.Palette],
     imgSrc: require('../assets/image/normalbar.png'),
     option: {
       color: [],

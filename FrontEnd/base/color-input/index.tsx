@@ -4,8 +4,9 @@ import './style.styl';
 
 interface IProps {
   color: string;
-  onColorChange?: (color: string) => void;
+  disabled?: boolean;
   isShowColorPicker?: boolean;
+  onColorChange?: (color: string) => void;
   onColorPreviewClick?: () => void;
   onColorPickerChangeComplete?: (colorResult: ColorResult) => void;
   onInputKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -20,7 +21,8 @@ export default class ColorInput extends React.Component<IProps, undefined> {
   }
 
   static defaultProps = {
-    isShowColorPicker: false
+    isShowColorPicker: false,
+    disabled: false
   };
 
   handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -38,15 +40,16 @@ export default class ColorInput extends React.Component<IProps, undefined> {
 
   render() {
     const { color } = this.props;
-    const { onColorPreviewClick, isShowColorPicker, onColorPickerChangeComplete, onInputKeyDown } = this.props;
+    const { onColorPreviewClick, isShowColorPicker, onColorPickerChangeComplete, onInputKeyDown, disabled } = this.props;
+
     return (
-      <div className='color_input_wrapper'>
+      <div className={`color_input_wrapper ${disabled && 'color_input_wrapper_disable'}`}>
         <div className='color_preview_wrapper' onClick={onColorPreviewClick} >
           <span style={{ background: color }} className='color_preview'></span>
         </div>
-        <input type='text' className='color_input' value={color} onKeyDown={onInputKeyDown} onChange={this.handleInputChange} />
+        <input disabled={disabled} type='text' className='color_input' value={color} onKeyDown={onInputKeyDown} onChange={this.handleInputChange} />
         <div className='color_colorpicker'>
-          {isShowColorPicker && <ChromePicker color={color} onChangeComplete={onColorPickerChangeComplete} onChange={this.handleColorPickerChange} />}
+          {isShowColorPicker && !disabled && <ChromePicker color={color} onChangeComplete={onColorPickerChangeComplete} onChange={this.handleColorPickerChange} />}
         </div>
       </div>
     );

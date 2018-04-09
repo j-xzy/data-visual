@@ -4,6 +4,7 @@ import ColorInput from '@components/color-input';
 
 interface IProps {
   colors: string[];
+  disabled?: boolean;
   onColorComplete: (colors: string[]) => void;
 }
 
@@ -18,6 +19,10 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
     this.handleColorChange = this.handleColorChange.bind(this);
     this.state = { colors: [] };
   }
+
+  static defaultProps = {
+    disabled: false
+  };
 
   handleColorComplete() {
     this.props.onColorComplete([...this.state.colors]);
@@ -41,7 +46,7 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
       <div className='color_input_group'>
         {colors.map((color, idx) => {
           return (
-            <ColorInput key={idx} color={color} onColorChange={(color) => this.handleColorChange(idx, color)}
+            <ColorInput disabled={this.props.disabled} key={idx} color={color} onColorChange={(color) => this.handleColorChange(idx, color)}
               onColorComplete={this.handleColorComplete} >
             </ColorInput>
           );

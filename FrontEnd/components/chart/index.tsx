@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { shallowEqual } from '@lib/tools';
-import { Controls } from '@lib/chart';
+import { Controls, IChartOption } from '@lib/chart';
 import './style.styl';
 
 const loading = require('../../assets/image/loading.gif');
@@ -9,7 +9,7 @@ const loading = require('../../assets/image/loading.gif');
 let echarts: any;
 
 export interface IChartConfig {
-  option: any;
+  option: IChartOption;
   scale: {
     x: number;
     y: number;

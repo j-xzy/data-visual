@@ -59,4 +59,14 @@ describe('<ColorInput />', () => {
     root.find('.color_input').simulate('keydown', { key: 12 });
     expect(onInputKeyDown.mock.calls[0][0].key).toBe(12);
   });
+
+  test('disabled', () => {
+    const root = mount(<ColorInput color='red' isShowColorPicker={false} />);
+    
+    expect(root.find('.color_input_wrapper').prop('className').includes('color_input_wrapper_disable')).toBe(false);
+
+    root.setProps({ disabled: true });
+  
+    expect(root.find('.color_input_wrapper').prop('className').includes('color_input_wrapper_disable')).toBe(true);
+  });
 });

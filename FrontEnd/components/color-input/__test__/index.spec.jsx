@@ -48,8 +48,25 @@ describe('<ColorInput />', () => {
 
     root.find('.color_mask').simulate('click');
     root.update();
-    
+
     expect(root.find('.color_mask').prop('hidden')).toBe(true);
     expect(root.state().isShowColorPicker).toBe(false);
+  });
+
+  test('disabled', () => {
+    const root = shallow(<ColorInput color='red' />);
+
+    expect(root.find(RawColorInput).prop('disabled')).toBe(false);
+
+    root.setProps({
+      disabled: true
+    });
+
+    expect(root.find(RawColorInput).prop('disabled')).toBe(true);
+
+    root.find(RawColorInput).prop('onColorPreviewClick')();
+    root.update();
+
+    expect(root.find('.color_mask').prop('hidden')).toBe(true);
   });
 });

@@ -1,6 +1,9 @@
 .tab_wrapper
   .tab_head
     display: flex
+    :last-child:after
+      width: 0 !important
+      height 0 !important
   .tab_title
     position: relative
     flex: 1
@@ -12,9 +15,6 @@
     background: rgba(255,255,255,0.2)
     color: #fff
     cursor: pointer
-  :last-child:after
-    width: 0 !important
-    height 0 !important
   .tab_active_title
     background: rgb(255, 255, 255) !important
     color: rgba(0, 0, 0, 0.8) !important

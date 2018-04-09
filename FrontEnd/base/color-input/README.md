@@ -17,6 +17,7 @@
 | color | 颜色 | string | '#dedede' |  |
 | isShowColorPicker ? | 是否显示调色板 | boolean | true | false  |
 | style ? | 样式 | React.CSSProperties |  |   |
+| disabled ? | 是否禁用 | boolean | false | false  |
 | onInputKeyDown ? | input键盘按下时触发事件 |(e: KeyboardEvent) => void　|  |  |
 | onColorPreviewClick ? | 点击颜色预览触发事件 |()=>void　|  |  |
 | onColorChange ? | 颜色发生改变时触发事件 | (color: string) => void　|  |  |

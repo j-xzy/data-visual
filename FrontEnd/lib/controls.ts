@@ -1,10 +1,13 @@
 import * as React from 'react';
 import Loadable from '@hoc/loadable';
-import { IUpdateStudioState } from '@pages/studio';
 import { IChartConfig } from '@components/chart';
 
+export interface IUpdateChart {
+  (chartConfig: IChartConfig, callback?: () => void): void;
+}
+
 export interface IControlProps {
-  updateStudioState: IUpdateStudioState;
+  updateChart: IUpdateChart;
   chart: IChartConfig;
   colors: string[];
 }

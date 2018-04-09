@@ -28,4 +28,19 @@ describe('<ColorInputGroup />', () => {
     expect(root.state().colors).toEqual(newColors);
     expect(root.instance().props.colors).toEqual(newColors);
   });
+
+  test('disabled', () => {
+    const root = shallow(<ColorInputGroup colors={colors} />);
+    root.find(ColorInput).forEach((el) => {
+      expect(el.prop('disabled')).toBe(false);
+    });
+
+    root.setProps({
+      disabled: true
+    });
+
+    root.find(ColorInput).forEach((el) => {
+      expect(el.prop('disabled')).toBe(true);
+    });
+  });
 });

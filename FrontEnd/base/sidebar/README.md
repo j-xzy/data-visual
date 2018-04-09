@@ -34,3 +34,7 @@
 | title | 面板名称 |　string　| '名称１' | |
 | icon |　代替面板名称的图标字体 |　string | 'icon_pan' | |
 | className | 样式选择器 |　string　|  |  |
+
+## 依赖
+
+- classnames
