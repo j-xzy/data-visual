@@ -119,7 +119,6 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     });
   }
 
-
   handleSliderMinusClick() {
     this.setState(({ canvasScale }) => {
       return { canvasScale: canvasScale - 0.3 };
@@ -187,7 +186,8 @@ class RawStudio extends React.Component<undefined, IStudioState> {
         !choosedChartIds.includes(chart.id) && newCharts.push(chart);
       });
       return {
-        charts: newCharts
+        charts: newCharts,
+        choosedChartIds: []
       };
     });
   }

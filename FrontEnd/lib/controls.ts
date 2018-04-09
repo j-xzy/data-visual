@@ -9,12 +9,18 @@ export interface IControlProps {
   colors: string[];
 }
 
-export type IControl = React.ComponentClass<IControlProps>;
+export interface IControl {
+  name: string;
+  Component: React.ComponentClass<IControlProps>;
+}
 
 export interface IControlMap {
   readonly [p: string]: IControl;
 }
 
-export const ControlMap: IControlMap = {
-  Palette: Loadable(() => import('@controls/palette'))
+export const ControlMap = {
+  Palette: {
+    name: '调色盘',
+    Component: Loadable(() => import('@controls/palette'))
+  }
 };

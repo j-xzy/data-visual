@@ -26,4 +26,12 @@ describe('<Studio />', () => {
   test('wheel', () => {
     expect(1).toBe(1);
   });
+
+  test('delete charts', () => {
+    expect(1).toBe(1);
+  });
+
+  test('copy charts', () => {
+    expect(1).toBe(1);
+  });
 });

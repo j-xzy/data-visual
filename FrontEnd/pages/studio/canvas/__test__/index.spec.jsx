@@ -206,37 +206,43 @@ describe('<Canvas />', () => {
 
   test('chart will not rerender when ohter position changes', async () => {
     root.setProps({ charts: [chart1, chart2, chart3], canvasScale: 1 });
+    let renderSpys = [];
     for (let i = 0; i < 3; i++) {
-      root.find(Chart).at(i).instance().render = jest.fn(root.find(Chart).at(i).instance().render);
+      renderSpys[i] = jest.spyOn(root.find(Chart).at(i).instance(), 'render');
       await root.find(Chart).at(i).instance().componentDidMount();
     }
-    expect(root.find(Chart).at(0).instance().render.mock.calls.length).toBe(0);
-    expect(root.find(Chart).at(1).instance().render.mock.calls.length).toBe(0);
-    expect(root.find(Chart).at(2).instance().render.mock.calls.length).toBe(0);
+
+    expect(renderSpys[0].mock.calls.length).toBe(0);
+    expect(renderSpys[1].mock.calls.length).toBe(0);
+    expect(renderSpys[2].mock.calls.length).toBe(0);
 
     root.find(Chart).at(0).simulate('click', { ctrlKey: false });
     root.find(TransformTool).find('.transform_tool').simulate('mousedown', { ...mousePs });
     root.simulate('mousemove', { ...mouseMovePs });
 
-    expect(root.find(Chart).at(0).instance().render.mock.calls.length).toBe(1);
-    expect(root.find(Chart).at(1).instance().render.mock.calls.length).toBe(0);
-    expect(root.find(Chart).at(2).instance().render.mock.calls.length).toBe(0);
+    expect(renderSpys[0].mock.calls.length).toBe(1);
+    expect(renderSpys[1].mock.calls.length).toBe(0);
+    expect(renderSpys[2].mock.calls.length).toBe(0);
   });
 
   test('chart will rerender when global color changes', async () => {
     root.setProps({ charts: [chart1, chart2, chart3], canvasScale: 1 });
+    let renderSpys = [];
     for (let i = 0; i < 3; i++) {
-      root.find(Chart).at(i).instance().render = jest.fn(root.find(Chart).at(i).instance().render);
+      renderSpys[i] = jest.spyOn(root.find(Chart).at(i).instance(), 'render');
       await root.find(Chart).at(i).instance().componentDidMount();
     }
-    expect(root.find(Chart).at(0).instance().render.mock.calls.length).toBe(0);
-    expect(root.find(Chart).at(1).instance().render.mock.calls.length).toBe(0);
-    expect(root.find(Chart).at(2).instance().render.mock.calls.length).toBe(0);
+    expect(renderSpys[0].mock.calls.length).toBe(0);
+    expect(renderSpys[1].mock.calls.length).toBe(0);
+    expect(renderSpys[2].mock.calls.length).toBe(0);
 
     root.setProps({ colors: ['red', 'blue'] });
 
-    expect(root.find(Chart).at(0).instance().render.mock.calls.length).toBe(1);
-    expect(root.find(Chart).at(1).instance().render.mock.calls.length).toBe(1);
-    expect(root.find(Chart).at(2).instance().render.mock.calls.length).toBe(0); // colorFromGlobal is false
+    expect(renderSpys[0].mock.calls.length).toBe(1);
+    expect(renderSpys[1].mock.calls.length).toBe(1);
+    expect(renderSpys[2].mock.calls.length).toBe(0);  // colorFromGlobal is false
+  });
+
+  test('id map index', () => {
   });
 });

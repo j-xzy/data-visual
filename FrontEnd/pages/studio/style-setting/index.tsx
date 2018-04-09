@@ -12,8 +12,10 @@ export default class StyleSetting extends React.Component<IProps, undefined> {
   renderControls() {
     const { chart } = this.props;
     const { controls } = chart;
-    return controls.map((Control, idx) => {
-      return <Control {...this.props} key={idx} />;
+    return controls.map((control, idx) => {
+      const { name, Component } = control;
+      return <Item name={name} key={name} ><Component {...this.props} /></Item>;
+
     });
   }
 

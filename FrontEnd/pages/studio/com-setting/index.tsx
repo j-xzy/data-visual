@@ -18,6 +18,8 @@ export default class ComSetting extends React.Component {
           if (choosedChartIds.length === 1) {
             const id = choosedChartIds[0];
             const chart = charts[idMapIndex.get(id)];
+            console.log(charts);
+            console.log(choosedChartIds);
             return (
               <Tab defaultActiveId='样式'>
                 <Panel id='样式' tab='样式'>
