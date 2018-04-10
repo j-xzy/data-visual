@@ -1,41 +1,59 @@
-/// <reference path="index.d.ts" />
-
+/// <reference path="./index.d.ts"/>
 import * as React from 'react';
 import * as ace from 'brace';
-// import 'brace/mode/json';
-import 'brace/theme/idle_fingers';
+import { Mode, Theme } from './type';
+import { modes } from './modes';
+import { themes } from './themes';
 
-type Mode = 'abap' | 'abc' | 'actionscript' | 'json' | 'java';
-
-interface Modes {
-  [p: string]: any;
-}
-
-const modes: Modes = {
-  json: () => import('brace/mode/json')
-}
+export type Mode = Mode;
+export type Theme = Theme;
 
 interface IProps {
-  mode?: Mode;
+  mode: Mode;
+  theme: Theme;
+  defaultValue?: string;
+  onChange?: (text: string) => void;
   width?: string;
   height?: string;
 }
 
-export default class Editor extends React.Component<IProps, undefined> {
+export class Editor extends React.Component<IProps, undefined> {
+  constructor(props: IProps) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
 
   el: HTMLDivElement;
   editor: ace.Editor;
 
   static defaultProps = {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    defaultValue: ''
   };
 
+  handleChange(e: any) {
+    this.props.onChange(this.editor.getValue());
+  }
+
   async componentDidMount() {
+    const { mode, theme, defaultValue } = this.props;
+    await this.setEditor(mode, theme);
+    this.editor.on('change', this.handleChange);
+    this.editor.setValue(defaultValue);
+  }
+
+  async setEditor(mode: Mode, theme: Theme) {
+    await modes[mode]();
+    await themes[theme]();
     this.editor = ace.edit(this.el);
-    let a = modes['d'];
-    this.editor.getSession().setMode('ace/mode/json');
-    this.editor.setTheme('ace/theme/idle_fingers');
+    this.editor.getSession().setMode(`ace/mode/${mode}`);
+    this.editor.setTheme(`ace/theme/${theme}`);
+  }
+
+  componentDidUpdate() {
+    const { mode, theme, defaultValue } = this.props;
+    this.setEditor(mode, theme);
   }
 
   componentWillUnmount() {

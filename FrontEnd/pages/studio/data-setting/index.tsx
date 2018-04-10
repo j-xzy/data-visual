@@ -13,7 +13,7 @@ export default class DataSetting extends React.Component<IProps, undefined> {
     const { data } = chart.controls;
     return data.map((control, idx) => {
       const { name, Component } = control;
-      return <Component {...this.props} />;
+      return <Component key={name} {...this.props} />;
     });
   }
 

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Tab from '@base/tab';
 import Sidebar from '@base/sidebar';
 import GlobalSetting from '@pages/studio/global-setting';
 import ComSetting from '@pages/studio/com-setting';

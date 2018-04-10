@@ -24,6 +24,7 @@ var baseConfig = {
   output: {
     path: path.join(__dirname, '..', 'dist'),
     filename: 'bundle.js',
+    chunkFilename: "[name].[chunkhash].js",
     publicPath: '/'
   },
   resolve: {

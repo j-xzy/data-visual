@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import Loadable from '../index';
-import Foo from './foo';
 
 const p = 'same props';
 
