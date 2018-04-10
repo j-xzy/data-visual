@@ -1,4 +1,4 @@
-import { ControlMap, IControl } from '@lib/controls';
+import { ControlMap, StyleControl, DataControl } from '@lib/controls';
 
 export interface IChartOption {
   color: string[];
@@ -7,7 +7,14 @@ export interface IChartOption {
   yAxis?: any;
 }
 
-export type Controls = IControl[];
+export type StyleControls = StyleControl[];
+
+export type DataControls = DataControl[];
+
+export interface Controls {
+  style: StyleControls;
+  data: DataControls;
+}
 
 export interface IChartPreview {
   name: string;
@@ -22,7 +29,10 @@ export const pieList: ChartPreviewList = [
   {
     name: '普通饼图',
     imgSrc: require('../assets/image/normalpie.png'),
-    controls: [ControlMap.Palette],
+    controls: {
+      style: [ControlMap.Palette],
+      data: [ControlMap.DataEditor]
+    },
     option: {
       color: [],
       series: [
@@ -43,7 +53,10 @@ export const pieList: ChartPreviewList = [
 export const barList: ChartPreviewList = [
   {
     name: '普通柱图',
-    controls: [ControlMap.Palette],
+    controls: {
+      style: [ControlMap.Palette],
+      data: [ControlMap.DataEditor]
+    },
     imgSrc: require('../assets/image/normalbar.png'),
     option: {
       color: [],

@@ -2,6 +2,7 @@ import * as  React from 'react';
 import update from 'immutability-helper';
 import { Context as StudioContext } from '@pages/studio';
 import StyleSetting from '@pages/studio/style-setting';
+import DataSetting from '@pages/studio/data-setting';
 import { idMapIndex } from '@pages/studio/canvas';
 import { IChartConfig } from '@components/chart';
 import Tab from '@base/tab';
@@ -36,7 +37,7 @@ export default class ComSetting extends React.Component {
                   <StyleSetting chart={chart} colors={colors} updateChart={updateChart} />
                 </Panel>
                 <Panel id='数据' tab='数据'>
-                  <div style={{ color: '#fff' }}>数据</div>
+                  <DataSetting chart={chart} colors={colors} updateChart={updateChart} />
                 </Panel>
               </Tab>
             );
