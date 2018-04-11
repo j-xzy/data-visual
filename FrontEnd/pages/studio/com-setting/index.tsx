@@ -2,8 +2,6 @@ import * as  React from 'react';
 import { Collapse } from 'antd';
 import update from 'immutability-helper';
 import { Context as StudioContext } from '@pages/studio';
-import StyleSetting from '@pages/studio/style-setting';
-import DataSetting from '@pages/studio/data-setting';
 import { idMapIndex } from '@pages/studio/canvas';
 import { IChartConfig } from '@components/chart';
 import { IUpdateChart } from '@lib/controls';
