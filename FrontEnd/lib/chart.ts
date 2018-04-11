@@ -36,7 +36,7 @@ export const pieList: ChartPreviewList = [
     name: '普通饼图',
     imgSrc: require('../assets/image/normalpie.png'),
     controls: {
-      style: [ControlMap.Palette],
+      style: [ControlMap.Palette, ControlMap.Title],
       data: [ControlMap.DataEditor]
     },
     option: {
@@ -60,7 +60,7 @@ export const barList: ChartPreviewList = [
   {
     name: '普通柱图',
     controls: {
-      style: [ControlMap.Palette],
+      style: [ControlMap.Palette, ControlMap.Title],
       data: [ControlMap.DataEditor]
     },
     imgSrc: require('../assets/image/normalbar.png'),

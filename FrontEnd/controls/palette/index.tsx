@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Switch } from 'antd';
 import update from 'immutability-helper';
 import ColorInputGroup from '@components/color-input-group';
+import Item from '@components/setting-item';
 import { IControlProps } from '@lib/controls';
 
 import './style.styl';
@@ -30,17 +31,19 @@ export default class Palette extends React.Component<IControlProps, undefined> {
   }
 
   render() {
-    const { chart, colors: globalColor } = this.props;
+    const { chart, colors: globalColor, name } = this.props;
     const { colorFromGlobal, option: { color: chartColors } } = chart;
     let colors = colorFromGlobal || chartColors.length === 0 ? globalColor : chartColors;
     return (
-      <div>
-        <div className='palette_switch_wrapper'>
-          <span className='palette_text'>全局色系</span>
-          <Switch className={`palette_switch ${colorFromGlobal || 'palette_switch_background'}`} checked={colorFromGlobal} onChange={this.handleSwitchChange} />
+      <Item style={{ margin: '-5px 0 0 0', borderBottom: 'none' }} name={name}>
+        <div>
+          <div className='palette_switch_wrapper'>
+            <span className='palette_text'>全局色系</span>
+            <Switch className='palette_switch' checked={colorFromGlobal} onChange={this.handleSwitchChange} />
+          </div>
+          <ColorInputGroup disabled={colorFromGlobal} colors={colors} onColorComplete={this.handleColorComplete} />
         </div>
-        <ColorInputGroup disabled={colorFromGlobal} colors={colors} onColorComplete={this.handleColorComplete} />
-      </div>
+      </Item>
     );
   }
 }

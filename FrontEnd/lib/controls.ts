@@ -9,6 +9,7 @@ export interface IUpdateChart {
 export interface IControlProps {
   updateChart: IUpdateChart;
   chart: IChartConfig;
+  name: string;
   colors: string[];
 }
 
@@ -23,11 +24,11 @@ export interface DataControl {
 }
 
 
-export interface IControlMap {
-  readonly [p: string]: StyleControl | DataControl;
-}
+// export interface IControlMap {
+//   readonly [p: string]: StyleControl | DataControl;
+// }
 
-export const ControlMap: IControlMap = {
+export const ControlMap = {
   Palette: {
     name: '调色盘',
     Component: Loadable(() => import('@controls/palette'))
@@ -35,5 +36,9 @@ export const ControlMap: IControlMap = {
   DataEditor: {
     name: '数据编辑器',
     Component: Loadable(() => import('@controls/data-editor'))
+  },
+  Title: {
+    name: '标题',
+    Component: Loadable(() => import('@controls/title'))
   }
 };

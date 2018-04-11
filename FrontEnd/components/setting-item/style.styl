@@ -1,15 +1,20 @@
 .setting-item
   margin: 12px 8px 0px 8px
-  padding-bottom: 7px
+  padding-bottom: 15px
   color: #fff
   border-bottom: 1px solid rgba(255,255,255,0.4)
   .setting-item-container
-    display: inline-block
+    float: right
     width: 180px
     min-width: 180px
   .setting-item-name
     float: left
-    width: 70px
-    min-width: 70px
-    font-size: 13px
-    margin: 7px 10px 0 10px
+    width: 60px
+    min-width: 60px
+    margin: 5px 0 0 5px
+.setting-item:before,.setting-item:after 
+  content: "";
+  display: block
+  height: 0
+  visibility: hidden
+  clear: both
