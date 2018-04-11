@@ -48,7 +48,7 @@ export default class ColorInput extends React.Component<IProps, IState> {
   }
 
   handleInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    e.key === 'Enter' && this.props.onColorComplete(e.currentTarget.value);
+    e.key.toLocaleLowerCase() === 'enter' && this.props.onColorComplete(e.currentTarget.value);
   }
 
   showColorPicker() {

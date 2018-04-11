@@ -126,13 +126,17 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   onKeyDown(e: KeyboardEvent) {
-    if (e.key === 'Delete') {
+    if (e.target !== document.body) {
+      return;
+    }
+    let key = e.key.toLocaleLowerCase();
+    if (key === 'delete') {
       this.deleteChoosedChart();
     }
-    if (e.ctrlKey && e.key === 'c') {
+    if (e.ctrlKey && key === 'c') {
       this.toChartsClipboard();
     }
-    if (e.ctrlKey && e.key === 'v') {
+    if (e.ctrlKey && key === 'v') {
       this.copyChoosedChart();
     }
   }

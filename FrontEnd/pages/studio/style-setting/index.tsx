@@ -15,7 +15,6 @@ export default class StyleSetting extends React.Component<IProps, undefined> {
     return style.map((control, idx) => {
       const { name, Component } = control;
       return <Item name={name} key={name} ><Component {...this.props} /></Item>;
-
     });
   }
 

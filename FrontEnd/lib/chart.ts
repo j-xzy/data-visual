@@ -2,9 +2,15 @@ import { ControlMap, StyleControl, DataControl } from '@lib/controls';
 
 export interface IChartOption {
   color: string[];
-  series: any[];
+  series: Series[];
   xAxis?: any;
   yAxis?: any;
+}
+
+export interface Series {
+  [p: string]: any;
+  data: any[];
+  type: string;
 }
 
 export type StyleControls = StyleControl[];

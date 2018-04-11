@@ -20,7 +20,13 @@ export default class DataEditor extends React.Component<IControlProps, undefined
     try {
       const { chart, updateChart } = this.props;
       let data = JSON.parse(this.value);
-      updateChart(update(chart, { option: { series: { $set: data } } }));
+      updateChart(update(chart, {
+        option: {
+          series: {
+            0: { data: { $set: data } }
+          }
+        }
+      }));
     } catch (err) {
       console.error('数据格式错误!');
     }
@@ -28,10 +34,10 @@ export default class DataEditor extends React.Component<IControlProps, undefined
 
   render() {
     const { chart } = this.props;
-    const defaultValue = JSON.stringify(chart.option.series, null, '\t');
+    this.value = JSON.stringify(chart.option.series[0].data, null, '\t');
     return (
       <div className='data_editor_wrapper'>
-        <Editor defaultValue={defaultValue} onChange={this.handleValueChange} mode='json' theme='dracula' width='100%' height='600px' />
+        <Editor value={this.value} onChange={this.handleValueChange} mode='json' theme='dracula' width='100%' height='600px' />
         <button onClick={this.updateChart}>更新</button>
       </div>
     );

@@ -11,7 +11,7 @@ export type Theme = Theme;
 interface IProps {
   mode: Mode;
   theme: Theme;
-  defaultValue?: string;
+  value?: string;
   onChange?: (text: string) => void;
   width?: string;
   height?: string;
@@ -29,7 +29,7 @@ export class Editor extends React.Component<IProps, undefined> {
   static defaultProps = {
     width: '100%',
     height: '100%',
-    defaultValue: ''
+    value: ''
   };
 
   handleChange(e: any) {
@@ -37,10 +37,11 @@ export class Editor extends React.Component<IProps, undefined> {
   }
 
   async componentDidMount() {
-    const { mode, theme, defaultValue } = this.props;
+    const { mode, theme, value } = this.props;
     await this.setEditor(mode, theme);
+    this.editor.$blockScrolling = Infinity;
     this.editor.on('change', this.handleChange);
-    this.editor.setValue(defaultValue);
+    this.editor.setValue(value);
   }
 
   async setEditor(mode: Mode, theme: Theme) {
@@ -51,9 +52,12 @@ export class Editor extends React.Component<IProps, undefined> {
     this.editor.setTheme(`ace/theme/${theme}`);
   }
 
-  componentDidUpdate() {
-    const { mode, theme, defaultValue } = this.props;
-    this.setEditor(mode, theme);
+  async componentDidUpdate(prevProps: IProps) {
+    const { mode, theme, value } = this.props;
+    if (mode !== prevProps.mode || theme !== prevProps.theme) {
+      await this.setEditor(mode, theme);
+    }
+    this.editor.setValue(value);
   }
 
   componentWillUnmount() {
