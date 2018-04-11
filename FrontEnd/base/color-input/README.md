@@ -12,7 +12,7 @@
 
 ### ColorInput
 
-|　参数　|　说明　|　类型　| 示例　|　默认值　|
+|　参数　| 说明　| 类型　| 示例　| 默认值　|
 | ---  | --- | --- | --- | --- |
 | color | 颜色 | string | '#dedede' |  |
 | isShowColorPicker ? | 是否显示调色板 | boolean | true | false  |
