@@ -3,6 +3,7 @@ import * as React from 'react';
 export interface IPanelProps {
   tab: string;
   id: any;
+  onTabClick?: (id: any, tab: string) => void;
   children?: React.ReactNode;
 }
 

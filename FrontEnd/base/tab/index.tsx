@@ -7,6 +7,7 @@ import './index.styl';
 interface IProps {
   defaultActiveId: any;
   className?: string;
+  forceUpdate?: boolean;
 }
 
 interface IState {
@@ -19,15 +20,32 @@ export default class Tab extends React.Component<IProps, IState> {
     this.handleTabClick = this.handleTabClick.bind(this);
     this.renderHead = this.renderHead.bind(this);
     this.renderTab = this.renderTab.bind(this);
+    this.initEvents = this.initEvents.bind(this);
     this.state = {
       activeId: this.props.defaultActiveId
     };
+
+    React.Children.map(this.props.children, this.initEvents);
   }
+  static defaultProps = {
+    forceUpdate: false
+  };
 
   static Panel = Panel;
+  events: any = {};
 
-  handleTabClick(idx: number) {
-    this.setState({ activeId: idx });
+  initEvents(c: React.ReactElement<IPanelProps>) {
+    const { id, onTabClick } = c.props;
+    if (typeof onTabClick !== 'undefined') {
+      this.events[id] = onTabClick;
+    }
+  }
+
+  handleTabClick(id: number, tab: string) {
+    this.setState({ activeId: id }, () => {
+      this.props.forceUpdate && this.forceUpdate();
+      Object.keys(this.events).includes(id.toString()) && this.events[id](id, tab);
+    });
   }
 
   renderHead(c: React.ReactElement<IPanelProps>) {
@@ -36,7 +54,7 @@ export default class Tab extends React.Component<IProps, IState> {
       'tab_active_title': id === this.state.activeId
     });
     return (
-      <div onClick={() => this.handleTabClick(id)} className={cls}>{tab}</div>
+      <div onClick={() => this.handleTabClick(id, tab)} className={cls}>{tab}</div>
     );
   }
 

@@ -23,7 +23,7 @@ export default class ComSetting extends React.Component<undefined, undefined> {
   renderSetting(chart: IChartConfig, colors: string[], updateChart: IUpdateChart) {
     const { controls: { style, data } } = chart;
     return (
-      <Tab defaultActiveId='样式'>
+      <Tab defaultActiveId='样式' forceUpdate={true}>
         <Panel id='样式' tab='样式'>
           <Collapse bordered={false}>
             {style.map((control, idx) => {
