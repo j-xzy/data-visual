@@ -32,6 +32,7 @@ export default class Tab extends React.Component<IProps, IState> {
   };
 
   static Panel = Panel;
+  guid = 0;
   events: any = {};
 
   initEvents(c: React.ReactElement<IPanelProps>) {
@@ -43,7 +44,6 @@ export default class Tab extends React.Component<IProps, IState> {
 
   handleTabClick(id: number, tab: string) {
     this.setState({ activeId: id }, () => {
-      this.props.forceUpdate && this.forceUpdate();
       Object.keys(this.events).includes(id.toString()) && this.events[id](id, tab);
     });
   }
@@ -58,10 +58,11 @@ export default class Tab extends React.Component<IProps, IState> {
     );
   }
 
-  renderTab(c: React.ReactElement<IPanelProps>) {
+  renderTab(c: React.ReactElement<IPanelProps>, idx: number) {
     const display = c.props.id === this.state.activeId ? 'block' : 'none';
+    const key = this.props.forceUpdate ? this.guid++ : idx;
     return (
-      <div className='tab_content' style={{ display }}>
+      <div key={key} className='tab_content' style={{ display }}>
         {React.cloneElement(c)}
       </div>
     );

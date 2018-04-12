@@ -4,6 +4,12 @@ import Tab from '../index';
 
 const Panel = Tab.Panel;
 
+class Foo extends React.Component {
+  render() {
+    return <div>foo</div>;
+  }
+}
+
 describe('<Tab />', () => {
   test('Switch tab', () => {
     const root = mount(
@@ -42,13 +48,6 @@ describe('<Tab />', () => {
   });
 
   test('forceUpdate', () => {
-    const root = mount(
-      <Tab defaultActiveId='1' forceUpdate={true}>
-        <Panel id='1' tab='1'>1</Panel>
-        <Panel id='2' tab='2'>2</Panel>
-      </Tab>);
-    const render = jest.spyOn(root.instance(), 'render');
-    root.find('.tab_title').at(1).simulate('click');
-    expect(render.mock.calls.length).toBe(2);
+    // todo
   });
 });

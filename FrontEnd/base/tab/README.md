@@ -19,7 +19,7 @@
 | ---  | --- | --- | --- | --- |
 | defaultActiveId | 默认展示Panel的id | any | 'abc' |  |
 | className? | 元素选择器名称 | string |      |       |  |
-| forceUpdate? | 切换选项卡后强制刷新 | boolean | false | false |  
+| forceUpdate? | 切换选项卡后强制刷新子组件 | boolean | false | false |  
 
 ### Tab.Panel
 
