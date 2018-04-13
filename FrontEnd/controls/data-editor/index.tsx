@@ -2,6 +2,15 @@ import * as React from 'react';
 import { Editor } from '@base/editor';
 import update from 'immutability-helper';
 import { IControlProps } from '@lib/controls';
+import { Data, Series } from '@lib/chart';
+import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
+
+interface IEditData {
+  name: string;
+  data: Data[];
+}
+
+type EditDatas = IEditData[];
 
 export default class DataEditor extends React.Component<IControlProps, undefined> {
   constructor(props: IControlProps) {
@@ -19,22 +28,39 @@ export default class DataEditor extends React.Component<IControlProps, undefined
   updateChart() {
     try {
       const { chart, updateChart } = this.props;
-      let data = JSON.parse(this.value);
+      const series = chart.option.series;
+      let datas = JSON.parse(this.value);
+      let newSeries: Series[] = [];
+      for (let i = 0, length = datas.length; i < length; i++) {
+        const origin = series[i];
+        let data = datas[i];
+        if(typeof origin !== 'undefined' ) {
+          newSeries.push(update(origin, {
+            $merge: data
+          }));
+        } else {
+        }
+      }
       updateChart(update(chart, {
         option: {
-          series: {
-            0: { data: { $set: data } }
-          }
+          series: { $set: newSeries }
         }
       }));
     } catch (err) {
-      console.error('数据格式错误!');
+      console.error(err);
     }
   }
 
   render() {
-    const { chart } = this.props;
-    this.value = JSON.stringify(chart.option.series[0].data, null, '\t');
+    const { chart: { option: { series } } } = this.props;
+    let datas: EditDatas = [];
+    series.forEach((item) => {
+      datas.push({
+        name: item.name,
+        data: item.data
+      });
+    });
+    this.value = JSON.stringify(datas, null, '\t');
     return (
       <div className='data_editor_wrapper'>
         <Editor value={this.value} onChange={this.handleValueChange} mode='json' theme='dracula' width='100%' height='600px' />

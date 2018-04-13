@@ -3,14 +3,38 @@ import { ControlMap, StyleControl, DataControl } from '@lib/controls';
 export interface IChartOption {
   color: string[];
   series: Series[];
+  title: ITitle;
   xAxis?: any;
   yAxis?: any;
 }
 
+export interface ITitle {
+  show: boolean;
+  text: string;
+  subtext: string;
+  textStyle: ITextStyle;
+  subtextStyle: ITextStyle;
+  x: 'left' | 'right' | 'center';
+}
+
+export interface ITextStyle {
+  color: string;
+  fontSize: number;
+  fontWeight: 'normal' | 'bold' | 'lighter';
+}
+
 export interface Series {
   [p: string]: any;
-  data: any[];
+  data: Data[];
   type: string;
+  name: string;
+}
+
+export type Data = number | IDataWithName;
+
+export interface IDataWithName {
+  value: number;
+  name: string;
 }
 
 export type StyleControls = StyleControl[];
@@ -31,6 +55,23 @@ export interface IChartPreview {
 
 export type ChartPreviewList = IChartPreview[];
 
+const defaultTitle: ITitle = {
+  show: false,
+  text: '',
+  subtext: '',
+  x: 'center',
+  textStyle: {
+    color: '#000',
+    fontSize: 18,
+    fontWeight: 'normal'
+  },
+  subtextStyle: {
+    color: '#dedede',
+    fontSize: 12,
+    fontWeight: 'normal'
+  }
+};
+
 export const pieList: ChartPreviewList = [
   {
     name: '普通饼图',
@@ -41,8 +82,10 @@ export const pieList: ChartPreviewList = [
     },
     option: {
       color: [],
+      title: defaultTitle,
       series: [
         {
+          name: '',
           type: 'pie',
           radius: '55%',
           data: [
@@ -65,6 +108,7 @@ export const barList: ChartPreviewList = [
     },
     imgSrc: require('../assets/image/normalbar.png'),
     option: {
+      title: defaultTitle,
       color: [],
       xAxis: {
         type: 'category',
@@ -74,9 +118,16 @@ export const barList: ChartPreviewList = [
         type: 'value'
       },
       series: [{
+        name: '',
         data: [120, 200, 150],
         type: 'bar'
-      }]
+      },
+      {
+        name: '',
+        data: [120, 20, 150],
+        type: 'bar'
+      }
+    ]
     }
   }
 ];

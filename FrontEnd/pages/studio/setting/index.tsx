@@ -11,7 +11,7 @@ export default class Setting extends React.Component {
     return (
       <StudioContext.Consumer>
         {({ updateCanvasPos }) => (
-          <Sidebar onOpenChangeAfter={() => updateCanvasPos()} className='setting' mode='right' width='320px' height='100%'>
+          <Sidebar onOpenChangeAfter={() => updateCanvasPos()} className='setting' mode='right' width='330px' height='100%'>
             <Sidebar.Panel title='全局设置'>
               <GlobalSetting />
             </Sidebar.Panel>

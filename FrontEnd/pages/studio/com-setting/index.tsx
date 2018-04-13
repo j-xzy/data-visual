@@ -23,7 +23,7 @@ export default class ComSetting extends React.Component<undefined, undefined> {
   renderSetting(chart: IChartConfig, colors: string[], updateChart: IUpdateChart) {
     const { controls: { style, data } } = chart;
     return (
-      <Tab defaultActiveId='样式' forceUpdate={true}>
+      <Tab defaultActiveId='样式'>
         <Panel id='样式' tab='样式'>
           <Collapse bordered={false}>
             {style.map((control, idx) => {
@@ -35,7 +35,7 @@ export default class ComSetting extends React.Component<undefined, undefined> {
             })}
           </Collapse>
         </Panel>
-        <Panel id='数据' tab='数据'>
+        <Panel id='数据' tab='数据' onTabClick={() => this.forceUpdate()} >
           {data.map((control, idx) => {
             const { name, Component } = control;
             return <Component key={name} name={name} updateChart={updateChart} chart={chart} colors={colors} />;

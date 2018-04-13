@@ -80,7 +80,8 @@ export class Chart extends React.Component<IChartProps, undefined> {
     if (height !== this.props.size.height || width !== this.props.size.width) {
       this.refreshChart(this.props);
     }
-    this.chart.setOption(this.props.option);
+    // fix chart not updated sometimes. setOption(,,true);
+    this.chart.setOption(this.props.option, true, true);
   }
 
   render() {
