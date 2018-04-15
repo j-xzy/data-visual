@@ -7,6 +7,7 @@ import Leftbar from '@pages/studio/leftbar';
 import { Canvas, OFFSET_POSITION } from '@pages/studio/canvas';
 import Setting from '@pages/studio/setting';
 import { IChartConfig } from '@components/chart';
+import { defaultColor } from '@lib/chart';
 
 import './style.styl';
 
@@ -73,7 +74,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
       canvasScale: DEFAULT_CANVASSCALE,
-      colors: ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a'],
+      colors: defaultColor,
       charts: [],
       choosedChartIds: [],
       hoverChartId: NO_HOVER_CHART

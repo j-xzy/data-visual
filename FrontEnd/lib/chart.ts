@@ -30,9 +30,9 @@ export interface Series {
   name: string;
 }
 
-export type Data = number | IDataWithName;
+export type Data = number | IComplexData;
 
-export interface IDataWithName {
+export interface IComplexData {
   value: number;
   name: string;
 }
@@ -49,11 +49,14 @@ export interface Controls {
 export interface IChartPreview {
   name: string;
   imgSrc: string;
+  type: string;
   controls: Controls;
   option: IChartOption;
 }
 
 export type ChartPreviewList = IChartPreview[];
+
+export let defaultColor = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a'];
 
 const defaultTitle: ITitle = {
   show: false,
@@ -75,13 +78,14 @@ const defaultTitle: ITitle = {
 export const pieList: ChartPreviewList = [
   {
     name: '普通饼图',
+    type: 'pie',
     imgSrc: require('../assets/image/normalpie.png'),
     controls: {
       style: [ControlMap.Palette, ControlMap.Title],
       data: [ControlMap.DataEditor]
     },
     option: {
-      color: [],
+      color: defaultColor,
       title: defaultTitle,
       series: [
         {
@@ -102,6 +106,7 @@ export const pieList: ChartPreviewList = [
 export const barList: ChartPreviewList = [
   {
     name: '普通柱图',
+    type: 'bar',
     controls: {
       style: [ControlMap.Palette, ControlMap.Title],
       data: [ControlMap.DataEditor]
@@ -109,7 +114,7 @@ export const barList: ChartPreviewList = [
     imgSrc: require('../assets/image/normalbar.png'),
     option: {
       title: defaultTitle,
-      color: [],
+      color: defaultColor,
       xAxis: {
         type: 'category',
         data: ['Mon', 'Tue', 'Wed']
@@ -121,13 +126,8 @@ export const barList: ChartPreviewList = [
         name: '',
         data: [120, 200, 150],
         type: 'bar'
-      },
-      {
-        name: '',
-        data: [120, 20, 150],
-        type: 'bar'
       }
-    ]
+      ]
     }
   }
 ];

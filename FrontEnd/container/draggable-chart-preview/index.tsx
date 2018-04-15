@@ -13,6 +13,7 @@ export interface IBeginDragResult {
   option: IChartOption;
   imgSrc: string;
   controls: Controls;
+  type: string;
 }
 
 class RawDragableChartPreview extends React.Component<IProps, undefined> {
@@ -41,7 +42,8 @@ const source = {
     return {
       option: props.option,
       imgSrc: props.imgSrc,
-      controls: props.controls
+      controls: props.controls,
+      type: props.type
     };
   }
 };

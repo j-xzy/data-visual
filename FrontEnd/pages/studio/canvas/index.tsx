@@ -85,12 +85,12 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   lastMousePosition: Coordinate;
   sideType = SideType.None;
 
-  appendChart(option: IChartOption, config: { controls: Controls, position: Position, size: Size, imgSrc: string }, callback?: () => void) {
-    const { position, size, imgSrc, controls } = config;
+  appendChart(option: IChartOption, config: { controls: Controls, position: Position, size: Size, imgSrc: string, type: string }, callback?: () => void) {
+    const { position, size, imgSrc, controls, type } = config;
     const { updateStudioState, charts } = this.props;
     const guid = Date.now();
     const props: IChartConfig = {
-      option, position, size, imgSrc,
+      option, position, size, imgSrc, type,
       id: guid, scale: { x: 1, y: 1 },
       colorFromGlobal: true, controls
     };
@@ -274,12 +274,12 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   handleCopyClick(id: number) {
     const { charts } = this.props;
     const index = idMapIndex.get(id);
-    const { option, position: { left, top }, size, imgSrc, controls } = charts[index];
+    const { option, position: { left, top }, size, imgSrc, controls, type } = charts[index];
     const position = {
       left: left + OFFSET_POSITION.left,
       top: top + OFFSET_POSITION.top
     };
-    const newChartId = this.appendChart(option, { controls, position, size, imgSrc });
+    const newChartId = this.appendChart(option, { controls, position, size, imgSrc, type });
     this.props.updateStudioState({ choosedChartIds: [newChartId] });
   }
 
@@ -399,8 +399,8 @@ const boxTarget = {
         top: top - DEFAULT_HEIGHT / 2
       };
       const size = { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT };
-      const { imgSrc, controls } = item;
-      component.appendChart(item.option, { controls, position, size, imgSrc });
+      const { imgSrc, controls, type } = item;
+      component.appendChart(item.option, { controls, position, size, imgSrc, type });
       return;
     }
   }

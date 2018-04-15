@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Editor } from '@base/editor';
 import update from 'immutability-helper';
 import { IControlProps } from '@lib/controls';
-import { Data, Series } from '@lib/chart';
+import { Data, Series, IComplexData } from '@lib/chart';
 import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
 
-interface IEditData {
+interface IEditSeriesItem {
   name: string;
   data: Data[];
 }
 
-type EditDatas = IEditData[];
+type EditSeries = IEditSeriesItem[];
 
 export default class DataEditor extends React.Component<IControlProps, undefined> {
   constructor(props: IControlProps) {
@@ -27,20 +27,47 @@ export default class DataEditor extends React.Component<IControlProps, undefined
 
   updateChart() {
     try {
-      const { chart, updateChart } = this.props;
-      const series = chart.option.series;
-      let datas = JSON.parse(this.value);
+      const { updateChart, chart } = this.props;
+      const originSeries = chart.option.series;
+      const editSeries = JSON.parse(this.value) as EditSeries;
       let newSeries: Series[] = [];
-      for (let i = 0, length = datas.length; i < length; i++) {
-        const origin = series[i];
-        let data = datas[i];
-        if(typeof origin !== 'undefined' ) {
-          newSeries.push(update(origin, {
-            $merge: data
-          }));
+
+      for (let i = 0, length = editSeries.length; i < length; i++) {
+        const editSeriesItem = editSeries[i];
+        const originSeriesItem = originSeries[i];
+        let data: Data[] = [];
+
+        if (typeof originSeriesItem !== 'undefined') {
+          const editData = editSeriesItem.data;
+          const originData = originSeriesItem.data;
+
+          if (typeof originData[0] === 'number' || typeof editData[0] === 'number') {
+            data = editData;
+          } else {
+            for (let n = 0, count = editData.length; n < count; n++) {
+              const editDataItem = editData[n] as IComplexData;
+              const originDataItem = originData[n] as IComplexData;
+
+              if (typeof originDataItem !== 'undefined') {
+                data.push(update(originDataItem, {
+                  $merge: editDataItem
+                }));
+              } else {
+                data.push(editDataItem);
+              }
+            }
+          }
         } else {
+          data = editSeriesItem.data;
         }
+
+        newSeries.push({
+          name: editSeriesItem.name,
+          type: this.props.type,
+          data
+        });
       }
+
       updateChart(update(chart, {
         option: {
           series: { $set: newSeries }
@@ -53,14 +80,14 @@ export default class DataEditor extends React.Component<IControlProps, undefined
 
   render() {
     const { chart: { option: { series } } } = this.props;
-    let datas: EditDatas = [];
+    let editroSeries: EditSeries = [];
     series.forEach((item) => {
-      datas.push({
+      editroSeries.push({
         name: item.name,
         data: item.data
       });
     });
-    this.value = JSON.stringify(datas, null, '\t');
+    this.value = JSON.stringify(editroSeries, null, '\t');
     return (
       <div className='data_editor_wrapper'>
         <Editor value={this.value} onChange={this.handleValueChange} mode='json' theme='dracula' width='100%' height='600px' />

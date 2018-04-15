@@ -10,6 +10,7 @@ let echarts: any;
 
 export interface IChartConfig {
   option: IChartOption;
+  type: string;
   scale: {
     x: number;
     y: number;

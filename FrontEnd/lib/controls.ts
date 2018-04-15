@@ -10,6 +10,7 @@ export interface IControlProps {
   updateChart: IUpdateChart;
   chart: IChartConfig;
   name: string;
+  type: string;
   colors: string[];
 }
 
