@@ -31,12 +31,10 @@ export default class DataEditor extends React.Component<IControlProps, undefined
       const originSeries = chart.option.series;
       const editSeries = JSON.parse(this.value) as EditSeries;
       let newSeries: Series[] = [];
-
       for (let i = 0, length = editSeries.length; i < length; i++) {
         const editSeriesItem = editSeries[i];
         const originSeriesItem = originSeries[i];
         let data: Data[] = [];
-
         if (typeof originSeriesItem !== 'undefined') {
           const editData = editSeriesItem.data;
           const originData = originSeriesItem.data;

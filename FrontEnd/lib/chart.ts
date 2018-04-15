@@ -129,5 +129,36 @@ export const barList: ChartPreviewList = [
       }
       ]
     }
+  },
+  {
+    name: '多段柱图',
+    type: 'bar',
+    controls: {
+      style: [ControlMap.Palette, ControlMap.Title],
+      data: [ControlMap.DataEditor]
+    },
+    imgSrc: require('../assets/image/multibar.png'),
+    option: {
+      title: defaultTitle,
+      color: defaultColor,
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed']
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [{
+        name: '',
+        data: [120, 200, 150],
+        type: 'bar'
+      },
+      {
+        name: '',
+        data: [90, 230, 60],
+        type: 'bar'
+      }
+      ]
+    }
   }
 ];

@@ -4,11 +4,11 @@ import DataEditor from '../index';
 
 const chart = {
   option: {
-    series: [
-      {
-        name: 'name',
-        data: [1, 2, 3]
-      }
+    series: [{
+      name: '',
+      data: [120, 200, 150],
+      type: 'bar'
+    }
     ]
   }
 };
@@ -22,24 +22,22 @@ describe('<DataEditor />', () => {
 
   test('updateChart', () => {
     const updateChart = jest.fn();
-    const root = shallow(<DataEditor chart={chart} updateChart={updateChart} />);
+    const root = shallow(<DataEditor type={'bar'} chart={chart} updateChart={updateChart} />);
 
     root.find('button').simulate('click');
     expect(updateChart.mock.calls[0][0]).toEqual(chart);
 
-    const newChart = {
-      option: {
-        series: [
-          {
-            name: 'name',
-            data: [1]
-          }
-        ]
-      }
-    };
+    const series = [{
+      name: '',
+      data: [120],
+      type: 'bar'
+    }];
 
-    root.childAt(0).prop('onChange')(JSON.stringify(newChart));
+
+    root.childAt(0).prop('onChange')(JSON.stringify(series));
     root.find('button').simulate('click');
-    expect(updateChart.mock.calls[1][0]).toEqual(newChart);
+    expect(updateChart.mock.calls[1][0]).toEqual({
+      option: {series}
+    });
   });
 });
