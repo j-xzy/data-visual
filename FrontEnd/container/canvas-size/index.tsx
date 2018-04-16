@@ -45,7 +45,7 @@ export default class CanvasSize extends React.Component<IProps, undefined> {
     return (
       <DoubleInput>
         <Input name='宽度' value={width} onChange={(value) => this.handleWidthChange(value)} />
-        <Input name='长度' value={height} onChange={(value) => this.handleHeightChange(value)} />
+        <Input name='高度' value={height} onChange={(value) => this.handleHeightChange(value)} />
       </DoubleInput>
     );
   }

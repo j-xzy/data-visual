@@ -4,8 +4,17 @@ export interface IChartOption {
   color: string[];
   series: Series[];
   title: ITitle;
+  legend: ILegend;
   xAxis?: any;
   yAxis?: any;
+}
+
+export interface ILegend {
+  show: boolean;
+  left: number;
+  top: number;
+  data?: string[];
+  textStyle: ITextStyle;
 }
 
 export interface ITitle {
@@ -58,6 +67,17 @@ export type ChartPreviewList = IChartPreview[];
 
 export let defaultColor = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a'];
 
+export let defaultLegend: ILegend = {
+  show: true,
+  left: 0,
+  top: 0,
+  textStyle: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'normal'
+  }
+};
+
 const defaultTitle: ITitle = {
   show: false,
   text: '',
@@ -81,12 +101,13 @@ export const pieList: ChartPreviewList = [
     type: 'pie',
     imgSrc: require('../assets/image/normalpie.png'),
     controls: {
-      style: [ControlMap.Palette, ControlMap.Title],
+      style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.SizePosition],
       data: [ControlMap.DataEditor]
     },
     option: {
       color: defaultColor,
       title: defaultTitle,
+      legend: defaultLegend,
       series: [
         {
           name: '',
@@ -108,13 +129,14 @@ export const barList: ChartPreviewList = [
     name: '普通柱图',
     type: 'bar',
     controls: {
-      style: [ControlMap.Palette, ControlMap.Title],
+      style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.SizePosition],
       data: [ControlMap.DataEditor]
     },
     imgSrc: require('../assets/image/normalbar.png'),
     option: {
       title: defaultTitle,
       color: defaultColor,
+      legend: defaultLegend,
       xAxis: {
         type: 'category',
         data: ['Mon', 'Tue', 'Wed']
@@ -123,7 +145,7 @@ export const barList: ChartPreviewList = [
         type: 'value'
       },
       series: [{
-        name: '',
+        name: '图例',
         data: [120, 200, 150],
         type: 'bar'
       }
@@ -134,13 +156,14 @@ export const barList: ChartPreviewList = [
     name: '多段柱图',
     type: 'bar',
     controls: {
-      style: [ControlMap.Palette, ControlMap.Title],
+      style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.SizePosition],
       data: [ControlMap.DataEditor]
     },
     imgSrc: require('../assets/image/multibar.png'),
     option: {
       title: defaultTitle,
       color: defaultColor,
+      legend: defaultLegend,
       xAxis: {
         type: 'category',
         data: ['Mon', 'Tue', 'Wed']
@@ -149,12 +172,12 @@ export const barList: ChartPreviewList = [
         type: 'value'
       },
       series: [{
-        name: '',
+        name: '图例1',
         data: [120, 200, 150],
         type: 'bar'
       },
       {
-        name: '',
+        name: '图例2',
         data: [90, 230, 60],
         type: 'bar'
       }

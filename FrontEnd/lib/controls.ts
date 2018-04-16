@@ -41,5 +41,13 @@ export const ControlMap = {
   Title: {
     name: '标题',
     Component: Loadable(() => import('@controls/title'))
+  },
+  SizePosition: {
+    name: '尺寸位置',
+    Component: Loadable(() => import('@controls/size-position'))
+  },
+  Legend: {
+    name: '图例',
+    Component: Loadable(() => import('@controls/legend'))
   }
 };

@@ -116,6 +116,10 @@ export default class Title extends React.Component<IControlProps, IState> {
     };
   }
 
+  shouldComponentUpdate(nextProps: IControlProps) {
+    return nextProps.chart.option.title !== this.props.chart.option.title;
+  }
+
   render() {
     const { show, text, subtext, textStyle, subtextStyle, x } = this.props.chart.option.title;
     const { color, subColor } = this.state;

@@ -30,6 +30,12 @@ export default class Palette extends React.Component<IControlProps, undefined> {
     }));
   }
 
+  shouldComponentUpdate(nextProps: IControlProps) {
+    return nextProps.colors !== this.props.colors
+      || nextProps.chart.colorFromGlobal !== this.props.chart.colorFromGlobal
+      || nextProps.chart.option.color !== this.props.chart.option.color;
+  }
+
   render() {
     const { chart, colors: globalColor, name } = this.props;
     const { colorFromGlobal, option: { color: chartColors } } = chart;
