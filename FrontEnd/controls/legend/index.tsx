@@ -8,35 +8,168 @@ import { IControlProps } from '@lib/controls';
 
 import './style.styl';
 
-export default class Legend extends React.Component<IControlProps, undefined> {
+interface IState {
+  color: string;
+  data: string[];
+}
+
+export default class Legend extends React.Component<IControlProps, IState> {
   constructor(props: IControlProps) {
     super(props);
+    this.handlePositionInputChange = this.handlePositionInputChange.bind(this);
+    this.handleSwitchChange = this.handleSwitchChange.bind(this);
+    this.handleColorChange = this.handleColorChange.bind(this);
+    this.handleColorComplete = this.handleColorComplete.bind(this);
+    this.handleFontSizeChange = this.handleFontSizeChange.bind(this);
+    this.handleFontWeightChange = this.handleFontWeightChange.bind(this);
+    this.renderDataOption = this.renderDataOption.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+
+    this.state = {
+      color: '',
+      data: []
+    };
+  }
+
+  handlePositionInputChange(type: 'top' | 'left', value: number) {
+    const { chart, updateChart } = this.props;
+    updateChart(update(chart, {
+      option: {
+        legend: {
+          [type]: { $set: value }
+        }
+      }
+    }));
+  }
+
+  handleColorChange(color: string) {
+    this.setState({ color });
+  }
+
+  handleColorComplete(color: string) {
+    const { chart, updateChart } = this.props;
+    updateChart(update(chart, {
+      option: {
+        legend: {
+          textStyle: {
+            color: { $set: color }
+          }
+        }
+      }
+    }));
+  }
+
+  handleSwitchChange(checked: boolean) {
+    const { chart, updateChart } = this.props;
+    updateChart(update(chart, {
+      option: {
+        legend: {
+          show: { $set: checked }
+        }
+      }
+    }));
+  }
+
+  handleFontSizeChange(value: number) {
+    const { chart, updateChart } = this.props;
+    updateChart(update(chart, {
+      option: {
+        legend: {
+          textStyle: {
+            fontSize: { $set: value }
+          }
+        }
+      }
+    }));
+  }
+
+  handleFontWeightChange(value: string) {
+    const { chart, updateChart } = this.props;
+    updateChart(update(chart, {
+      option: {
+        legend: {
+          textStyle: {
+            fontWeight: { $set: value }
+          }
+        }
+      }
+    }));
+  }
+
+  handleSelectChange(value: string[]) {
+    const { updateChart, chart } = this.props;
+
+    updateChart(update(chart, {
+      option: {
+        legend: {
+          data: { $set: [...value] }
+        }
+      }
+    }));
+
+    this.setState({
+      data: [...value]
+    });
+  }
+
+  renderDataOption() {
+    const { series } = this.props.chart.option;
+    let data: string[] = [];
+    series.forEach((item) => {
+      let name = item.name;
+      if (name !== '') {
+        data.push(name);
+      }
+      item.data.forEach((secondItem) => {
+        if (typeof secondItem !== 'number') {
+          data.push(secondItem.name);
+        }
+      });
+    });
+    return data.map((name, idx) => {
+      return <Select.Option value={name} key={name + idx}>{name}</Select.Option>;
+    });
+  }
+
+  static getDerivedStateFromProps(nextProps: IControlProps) {
+    const { legend: { textStyle: { color }, data } } = nextProps.chart.option;
+    let legendData: string[] = [];
+    if (typeof data !== 'undefined') {
+      legendData = data;
+    }
+    return { color, data: legendData };
   }
 
   shouldComponentUpdate(nextProps: IControlProps) {
-    return true;
+    return nextProps.chart.option.legend !== this.props.chart.option.legend;
   }
 
   render() {
-    const { show, left, top, data, textStyle } = this.props.chart.option.legend;
-    const { color, fontSize, fontWeight } = textStyle;
+    const { show, left, top, textStyle } = this.props.chart.option.legend;
+    const { fontSize, fontWeight } = textStyle;
+    const { data, color } = this.state;
     return (
       <div className='legend_wrapper'>
         <Item name='显示'>
-          <Switch checked={show} />
+          <Switch checked={show} onChange={this.handleSwitchChange} />
+        </Item>
+        <Item name='图标'>
+          <Select value={data} onChange={this.handleSelectChange} style={{ width: '100%' }} mode='multiple' size='small'>
+            {this.renderDataOption()}
+          </Select>
         </Item>
         <Item name='位置'>
           <DoubleInput>
-            <DoubleInput.Input name='横轴' value={left} onChange={() => { }} />
-            <DoubleInput.Input name='纵轴' value={top} onChange={() => { }} />
+            <DoubleInput.Input name='横轴' value={left} onChange={(value) => this.handlePositionInputChange('left', value)} />
+            <DoubleInput.Input name='纵轴' value={top} onChange={(value) => this.handlePositionInputChange('top', value)} />
           </DoubleInput>
         </Item>
         <Item name='字体颜色'>
-          <ColorInput color={color} onColorChange={() => { }} onColorComplete={() => { }} />
+          <ColorInput color={color} onColorChange={this.handleColorChange} onColorComplete={this.handleColorComplete} />
         </Item>
         <Item name='字体大小'>
-          <InputNumber value={fontSize} size='small' />
-          <Select size='small' defaultValue={fontWeight} onChange={(value: string) => { }}>
+          <InputNumber value={fontSize} size='small' onChange={this.handleFontSizeChange} />
+          <Select size='small' defaultValue={fontWeight} onChange={this.handleFontWeightChange}>
             <Select.Option value='normal' >normal</Select.Option>
             <Select.Option value='lighter' >lighter</Select.Option>
             <Select.Option value='bold' >bold</Select.Option>

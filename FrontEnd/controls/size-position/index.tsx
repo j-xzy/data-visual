@@ -76,18 +76,20 @@ export default class SizePosition extends React.Component<IControlProps, undefin
     left = this.round(left), top = this.round(top),
       width = this.round(width), height = this.round(height);
     return (
-      [<Item name='尺寸' key='size'>
-        <DoubleInput>
-          <Input name='宽度' min={0} value={width} onChange={this.handleWidthChange} />
-          <Input name='高度' min={0} value={height} onChange={this.handleHeightChange} />
-        </DoubleInput>
-      </Item>,
-      <Item name='位置' key='positon'>
-        <DoubleInput>
-          <Input name='横轴' value={left} onChange={this.handleLeftChange} />
-          <Input name='纵轴' value={top} onChange={this.handleTopChange} />
-        </DoubleInput>
-      </Item>]
+      <div>
+        <Item name='尺寸'>
+          <DoubleInput>
+            <Input name='宽度' min={0} value={width} onChange={this.handleWidthChange} />
+            <Input name='高度' min={0} value={height} onChange={this.handleHeightChange} />
+          </DoubleInput>
+        </Item>
+        <Item name='位置'>
+          <DoubleInput>
+            <Input name='横轴' value={left} onChange={this.handleLeftChange} />
+            <Input name='纵轴' value={top} onChange={this.handleTopChange} />
+          </DoubleInput>
+        </Item>
+      </div>
     );
   }
 }

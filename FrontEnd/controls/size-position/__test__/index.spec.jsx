@@ -20,7 +20,6 @@ describe('<SizePosition />', () => {
   test('handleWidthChange', () => {
     const updateChart = jest.fn();
     const root = shallow(<SizePosition chart={chart} updateChart={updateChart} />);
-    
     root.find(Input).at(0).prop('onChange')(350);
     expect(updateChart.mock.calls[0][0].size.width).toBe(350);
   });
