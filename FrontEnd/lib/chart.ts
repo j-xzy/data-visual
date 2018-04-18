@@ -5,8 +5,27 @@ export interface IChartOption {
   series: Series[];
   title: ITitle;
   legend: ILegend;
-  xAxis?: any;
-  yAxis?: any;
+  xAxis?: IAxis;
+  yAxis?: IAxis;
+}
+
+export interface IAxis {
+  show: boolean;
+  name: string;
+  data?: string[];
+  type: 'value' | 'category' | 'log';
+  nameTextStyle: INameTextStyle;
+  axisLine: {
+    lineStyle: {
+      color: string;
+      width: number;
+      type: 'solid' | 'dashed' | 'dotted';
+    }
+  };
+}
+
+export interface INameTextStyle extends ITextStyle {
+  fontStyle: 'normal' | 'italic' | 'oblique';
 }
 
 export interface ILegend {
@@ -129,7 +148,7 @@ export const barList: ChartPreviewList = [
     name: '普通柱图',
     type: 'bar',
     controls: {
-      style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.SizePosition],
+      style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.SizePosition],
       data: [ControlMap.DataEditor]
     },
     imgSrc: require('../assets/image/normalbar.png'),
@@ -138,11 +157,41 @@ export const barList: ChartPreviewList = [
       color: defaultColor,
       legend: defaultLegend,
       xAxis: {
+        show: true,
+        name: '',
         type: 'category',
-        data: ['Mon', 'Tue', 'Wed']
+        data: ['Mon', 'Tue', 'Wed'],
+        nameTextStyle: {
+          color: '#333',
+          fontWeight: 'normal',
+          fontSize: 12,
+          fontStyle: 'normal'
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#333',
+            type: 'solid',
+            width: 1
+          }
+        }
       },
       yAxis: {
-        type: 'value'
+        show: true,
+        name: '',
+        type: 'value',
+        nameTextStyle: {
+          color: '#333',
+          fontWeight: 'normal',
+          fontSize: 12,
+          fontStyle: 'normal'
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#333',
+            type: 'solid',
+            width: 1
+          }
+        }
       },
       series: [{
         name: '图例',
@@ -156,7 +205,7 @@ export const barList: ChartPreviewList = [
     name: '多段柱图',
     type: 'bar',
     controls: {
-      style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.SizePosition],
+      style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.SizePosition],
       data: [ControlMap.DataEditor]
     },
     imgSrc: require('../assets/image/multibar.png'),
@@ -165,11 +214,41 @@ export const barList: ChartPreviewList = [
       color: defaultColor,
       legend: defaultLegend,
       xAxis: {
+        show: true,
+        name: '',
         type: 'category',
-        data: ['Mon', 'Tue', 'Wed']
+        data: ['Mon', 'Tue', 'Wed'],
+        nameTextStyle: {
+          color: '#333',
+          fontWeight: 'normal',
+          fontSize: 12,
+          fontStyle: 'normal'
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#333',
+            type: 'solid',
+            width: 1
+          }
+        }
       },
       yAxis: {
-        type: 'value'
+        show: true,
+        name: '',
+        type: 'value',
+        nameTextStyle: {
+          color: '#333',
+          fontWeight: 'normal',
+          fontSize: 12,
+          fontStyle: 'normal'
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#333',
+            type: 'solid',
+            width: 1
+          }
+        }
       },
       series: [{
         name: '图例1',

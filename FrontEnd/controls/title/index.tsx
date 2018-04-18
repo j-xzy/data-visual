@@ -136,7 +136,7 @@ export default class Title extends React.Component<IControlProps, IState> {
           </RadioGroup>
         </Item>
         <Item name='标题'>
-          <input className='title_input' value={text} onChange={(e) => this.handleText(e, 'text')} />
+          <input className='input' value={text} onChange={(e) => this.handleText(e, 'text')} />
         </Item>
         <Item name='标题颜色'>
           <ColorInput color={color} onColorChange={(color) => this.handleColorChange(color, 'color')} onColorComplete={(color) => this.handleColorCompleteChange(color, 'textStyle')} />
@@ -150,7 +150,7 @@ export default class Title extends React.Component<IControlProps, IState> {
           </Select>
         </Item>
         <Item name='副标题'>
-          <input className='title_input' value={subtext} onChange={(e) => this.handleText(e, 'subtext')} />
+          <input className='input' value={subtext} onChange={(e) => this.handleText(e, 'subtext')} />
         </Item>
         <Item name='副标颜色'>
           <ColorInput color={subColor} onColorChange={(color) => this.handleColorChange(color, 'subColor')} onColorComplete={(color) => this.handleColorCompleteChange(color, 'subtextStyle')} />

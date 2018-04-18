@@ -49,5 +49,13 @@ export const ControlMap = {
   Legend: {
     name: '图例',
     Component: Loadable(() => import('@controls/legend'))
+  },
+  XAxis: {
+    name: 'X轴',
+    Component: Loadable(() => import('@controls/x-axis'))
+  },
+  YAxis: {
+    name: 'Y轴',
+    Component: Loadable(() => import('@controls/y-axis'))
   }
 };
