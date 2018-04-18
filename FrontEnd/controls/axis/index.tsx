@@ -206,7 +206,9 @@ export default class Axis extends React.Component<IProps, IState> {
 
   shouldComponentUpdate(nextProps: IProps, nextState: IState) {
     const axisType = this.props.axisType;
-    return this.props.chart.option[axisType] !== nextProps.chart.option[axisType];
+    return this.props.chart.option[axisType] !== nextProps.chart.option[axisType]
+      || nextState.axisColor !== this.state.axisColor
+      || nextState.nameColor !== this.state.nameColor;
   }
 
   render() {

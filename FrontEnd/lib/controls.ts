@@ -24,7 +24,6 @@ export interface DataControl {
   Component: React.ComponentClass<IControlProps>;
 }
 
-
 // export interface IControlMap {
 //   readonly [p: string]: StyleControl | DataControl;
 // }

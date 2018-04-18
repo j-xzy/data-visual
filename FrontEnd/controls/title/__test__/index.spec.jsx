@@ -37,10 +37,10 @@ describe('<Title />', () => {
     const updateChart = jest.fn();
     const root = shallow(<Title chart={chart} updateChart={updateChart} />);
 
-    root.find('.title_input').at(0).prop('onChange')({ target: { value: 'newtext' } });
+    root.find('.input').at(0).prop('onChange')({ target: { value: 'newtext' } });
     expect(updateChart.mock.calls[0][0].option.title.text).toBe('newtext');
 
-    root.find('.title_input').at(1).prop('onChange')({ target: { value: 'newsubtext' } });
+    root.find('.input').at(1).prop('onChange')({ target: { value: 'newsubtext' } });
     expect(updateChart.mock.calls[1][0].option.title.subtext).toBe('newsubtext');
   });
 

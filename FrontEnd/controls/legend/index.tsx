@@ -10,7 +10,6 @@ import './style.styl';
 
 interface IState {
   color: string;
-  data: string[];
 }
 
 export default class Legend extends React.Component<IControlProps, IState> {
@@ -26,8 +25,7 @@ export default class Legend extends React.Component<IControlProps, IState> {
     this.handleSelectChange = this.handleSelectChange.bind(this);
 
     this.state = {
-      color: '',
-      data: []
+      color: ''
     };
   }
 
@@ -106,10 +104,6 @@ export default class Legend extends React.Component<IControlProps, IState> {
         }
       }
     }));
-
-    this.setState({
-      data: [...value]
-    });
   }
 
   renderDataOption() {
@@ -140,14 +134,14 @@ export default class Legend extends React.Component<IControlProps, IState> {
     return { color, data: legendData };
   }
 
-  shouldComponentUpdate(nextProps: IControlProps) {
-    return nextProps.chart.option.legend !== this.props.chart.option.legend;
+  shouldComponentUpdate(nextProps: IControlProps, nextState: IState) {
+    return nextProps.chart.option.legend !== this.props.chart.option.legend
+      || nextState.color !== this.state.color;
   }
 
   render() {
-    const { show, left, top, textStyle } = this.props.chart.option.legend;
+    const { show, left, top, textStyle, data } = this.props.chart.option.legend;
     const { fontSize, fontWeight } = textStyle;
-    const { data, color } = this.state;
     return (
       <div className='legend_wrapper'>
         <Item name='显示'>
@@ -165,7 +159,7 @@ export default class Legend extends React.Component<IControlProps, IState> {
           </DoubleInput>
         </Item>
         <Item name='字体颜色'>
-          <ColorInput color={color} onColorChange={this.handleColorChange} onColorComplete={this.handleColorComplete} />
+          <ColorInput color={this.state.color} onColorChange={this.handleColorChange} onColorComplete={this.handleColorComplete} />
         </Item>
         <Item name='字体大小'>
           <InputNumber value={fontSize} size='small' onChange={this.handleFontSizeChange} />
