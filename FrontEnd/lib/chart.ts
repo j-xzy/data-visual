@@ -262,5 +262,75 @@ export const barList: ChartPreviewList = [
       }
       ]
     }
+  },
+  {
+    name: '堆叠柱图',
+    type: 'bar',
+    controls: {
+      style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.SizePosition],
+      data: [ControlMap.DataEditor]
+    },
+    imgSrc: require('../assets/image/pilebar.png'),
+    option: {
+      title: defaultTitle,
+      color: defaultColor,
+      legend: defaultLegend,
+      xAxis: {
+        show: true,
+        name: '',
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed'],
+        nameTextStyle: {
+          color: '#333',
+          fontWeight: 'normal',
+          fontSize: 12,
+          fontStyle: 'normal'
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#333',
+            type: 'solid',
+            width: 1
+          }
+        }
+      },
+      yAxis: {
+        show: true,
+        name: '',
+        type: 'value',
+        nameTextStyle: {
+          color: '#333',
+          fontWeight: 'normal',
+          fontSize: 12,
+          fontStyle: 'normal'
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#333',
+            type: 'solid',
+            width: 1
+          }
+        }
+      },
+      series: [{
+        name: '邮件营销',
+        type: 'bar',
+        stack: '广告',
+        data: [120, 132, 101]
+      },
+      {
+        name: '联盟广告',
+        type: 'bar',
+        stack: '广告',
+        data: [220, 182, 191]
+      },
+      {
+        name: '视频广告',
+        type: 'bar',
+        stack: '广告',
+        data: [150, 232, 201]
+      }
+      ]
+    }
   }
 ];

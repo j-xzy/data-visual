@@ -19,6 +19,7 @@ export default class DataEditor extends React.Component<IControlProps, undefined
   }
 
   value: string;
+  seriesItemSnapShot: Series;
 
   handleValueChange(value: string) {
     this.value = value;
@@ -34,6 +35,7 @@ export default class DataEditor extends React.Component<IControlProps, undefined
       for (let i = 0, length = editSeries.length; i < length; i++) {
         const editSeriesItem = editSeries[i];
         const originSeriesItem = originSeries[i];
+        let newSeriesItem: any = {};
         let data: Data[] = [];
 
         if (typeof originSeriesItem !== 'undefined') {
@@ -56,15 +58,24 @@ export default class DataEditor extends React.Component<IControlProps, undefined
               }
             }
           }
+          newSeriesItem = update(originSeriesItem, {
+            $merge: {
+              name: editSeriesItem.name,
+              type: this.props.type,
+              data
+            }
+          });
         } else {
           data = editSeriesItem.data;
+          newSeriesItem = update(this.seriesItemSnapShot, {
+            $merge: {
+              name: editSeriesItem.name,
+              type: this.props.type,
+              data
+            }
+          });
         }
-
-        newSeries.push({
-          name: editSeriesItem.name,
-          type: this.props.type,
-          data
-        });
+        newSeries.push(newSeriesItem);
       }
 
       updateChart(update(chart, {
