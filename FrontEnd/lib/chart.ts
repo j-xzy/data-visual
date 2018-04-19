@@ -9,6 +9,12 @@ export interface IChartOption {
   yAxis?: IAxis;
 }
 
+export interface ISeriesItemTemplate extends Partial<Series> {
+  data: Data[];
+  type: string;
+  name: string;
+}
+
 export interface IAxis {
   show: boolean;
   name: string;
@@ -53,6 +59,8 @@ export interface ITextStyle {
 
 export interface Series {
   [p: string]: any;
+  stack?: string;
+  radius?: string;
   data: Data[];
   type: string;
   name: string;
@@ -80,6 +88,7 @@ export interface IChartPreview {
   type: string;
   controls: Controls;
   option: IChartOption;
+  seriesItemTemplate: ISeriesItemTemplate;
 }
 
 export type ChartPreviewList = IChartPreview[];
@@ -123,6 +132,12 @@ export const pieList: ChartPreviewList = [
       style: [ControlMap.Palette, ControlMap.Title, ControlMap.Legend, ControlMap.SizePosition],
       data: [ControlMap.DataEditor]
     },
+    seriesItemTemplate: {
+      type: 'pie',
+      name: '',
+      radius: '55%',
+      data: [{ value: 35, name: '视频' }]
+    },
     option: {
       color: defaultColor,
       title: defaultTitle,
@@ -152,6 +167,11 @@ export const barList: ChartPreviewList = [
       data: [ControlMap.DataEditor]
     },
     imgSrc: require('../assets/image/normalbar.png'),
+    seriesItemTemplate: {
+      type: 'bar',
+      name: '',
+      data: [120, 200, 150]
+    },
     option: {
       title: defaultTitle,
       color: defaultColor,
@@ -209,6 +229,11 @@ export const barList: ChartPreviewList = [
       data: [ControlMap.DataEditor]
     },
     imgSrc: require('../assets/image/multibar.png'),
+    seriesItemTemplate: {
+      type: 'bar',
+      name: '',
+      data: [120, 200, 150]
+    },
     option: {
       title: defaultTitle,
       color: defaultColor,
@@ -271,6 +296,12 @@ export const barList: ChartPreviewList = [
       data: [ControlMap.DataEditor]
     },
     imgSrc: require('../assets/image/pilebar.png'),
+    seriesItemTemplate: {
+      name: '',
+      type: 'bar',
+      stack: 'stack',
+      data: [120, 200, 150]
+    },
     option: {
       title: defaultTitle,
       color: defaultColor,
@@ -315,19 +346,19 @@ export const barList: ChartPreviewList = [
       series: [{
         name: '邮件营销',
         type: 'bar',
-        stack: '广告',
+        stack: 'stack',
         data: [120, 132, 101]
       },
       {
         name: '联盟广告',
         type: 'bar',
-        stack: '广告',
+        stack: 'stack',
         data: [220, 182, 191]
       },
       {
         name: '视频广告',
         type: 'bar',
-        stack: '广告',
+        stack: 'stack',
         data: [150, 232, 201]
       }
       ]

@@ -3,6 +3,11 @@ import { shallow } from 'enzyme';
 import DataEditor from '../index';
 
 const chart = {
+  seriesItemTemplate: {
+    name: '',
+    data: [120, 200, 150],
+    type: 'bar'
+  },
   option: {
     series: [{
       name: '',
@@ -37,6 +42,11 @@ describe('<DataEditor />', () => {
     root.childAt(0).prop('onChange')(JSON.stringify(series));
     root.find('button').simulate('click');
     expect(updateChart.mock.calls[1][0]).toEqual({
+      seriesItemTemplate: {
+        name: '',
+        data: [120, 200, 150],
+        type: 'bar'
+      },
       option: {series}
     });
   });

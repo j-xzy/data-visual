@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Editor } from '@base/editor';
 import update from 'immutability-helper';
 import { IControlProps } from '@lib/controls';
-import { Data, Series, IComplexData } from '@lib/chart';
+import { Data, Series } from '@lib/chart';
 
 interface IEditSeriesItem {
   name: string;
@@ -19,7 +19,6 @@ export default class DataEditor extends React.Component<IControlProps, undefined
   }
 
   value: string;
-  seriesItemSnapShot: Series;
 
   handleValueChange(value: string) {
     this.value = value;
@@ -28,53 +27,32 @@ export default class DataEditor extends React.Component<IControlProps, undefined
   updateChart() {
     try {
       const { updateChart, chart } = this.props;
-      const originSeries = chart.option.series;
+      const { seriesItemTemplate } = chart;
       const editSeries = JSON.parse(this.value) as EditSeries;
       let newSeries: Series[] = [];
 
       for (let i = 0, length = editSeries.length; i < length; i++) {
         const editSeriesItem = editSeries[i];
-        const originSeriesItem = originSeries[i];
-        let newSeriesItem: any = {};
-        let data: Data[] = [];
+        let newSeriesItem: Series;
+        let data: ReadonlyArray<Data>;
 
-        if (typeof originSeriesItem !== 'undefined') {
-          const editData = editSeriesItem.data;
-          const originData = originSeriesItem.data;
-
-          if (typeof originData[0] === 'number' || typeof editData[0] === 'number') {
-            data = editData;
-          } else {
-            for (let n = 0, count = editData.length; n < count; n++) {
-              const editDataItem = editData[n] as IComplexData;
-              const originDataItem = originData[n] as IComplexData;
-
-              if (typeof originDataItem !== 'undefined') {
-                data.push(update(originDataItem, {
-                  $merge: editDataItem
-                }));
-              } else {
-                data.push(editDataItem);
-              }
-            }
-          }
-          newSeriesItem = update(originSeriesItem, {
-            $merge: {
-              name: editSeriesItem.name,
-              type: this.props.type,
-              data
-            }
-          });
-        } else {
+        // merge data
+        if (typeof seriesItemTemplate.data[0] === 'number') {
           data = editSeriesItem.data;
-          newSeriesItem = update(this.seriesItemSnapShot, {
-            $merge: {
-              name: editSeriesItem.name,
-              type: this.props.type,
-              data
-            }
+        } else {
+          data = update(seriesItemTemplate.data, {
+            $merge: editSeriesItem.data
           });
         }
+
+        // merge series
+        newSeriesItem = update(seriesItemTemplate, {
+          $merge: {
+            data,
+            name: editSeriesItem.name
+          }
+        });
+
         newSeries.push(newSeriesItem);
       }
 

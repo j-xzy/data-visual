@@ -19,8 +19,8 @@ export default class ComponentPanel extends React.PureComponent {
         <Panel header='饼状图' key='1' style={panelStyle}>
           <ul>
             {
-              pieList.map(({ name, imgSrc, option, controls, type }) => {
-                return <li className='component_panel_li' key={name}><DragableChartPreview type={type} controls={controls} imgSrc={imgSrc} option={option} name={name} /></li>;
+              pieList.map(({ name, imgSrc, option, controls, type, seriesItemTemplate }) => {
+                return <li className='component_panel_li' key={name}><DragableChartPreview seriesItemTemplate={seriesItemTemplate} type={type} controls={controls} imgSrc={imgSrc} option={option} name={name} /></li>;
               })
             }
           </ul>
@@ -28,8 +28,8 @@ export default class ComponentPanel extends React.PureComponent {
         <Panel header='柱状图' key='2' style={panelStyle}>
           <ul>
             {
-              barList.map(({ name, imgSrc, option, controls, type }) => {
-                return <li className='component_panel_li' key={name}><DragableChartPreview type={type} controls={controls} imgSrc={imgSrc} option={option} name={name} /></li>;
+              barList.map(({ name, imgSrc, option, controls, type, seriesItemTemplate }) => {
+                return <li className='component_panel_li' key={name}><DragableChartPreview seriesItemTemplate={seriesItemTemplate} type={type} controls={controls} imgSrc={imgSrc} option={option} name={name} /></li>;
               })
             }
           </ul>

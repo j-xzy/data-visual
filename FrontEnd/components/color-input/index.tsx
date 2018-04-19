@@ -56,7 +56,7 @@ export default class ColorInput extends React.Component<IProps, IState> {
   }
 
   showColorPicker() {
-    if (this.props.disabled) return;  console.log('!!!!!');  console.log(this.inputRef);
+    if (this.props.disabled) return;
     let rect = this.inputRef.current.getBoundingClientRect();
     this.setState({
       isShowColorPicker: true,
