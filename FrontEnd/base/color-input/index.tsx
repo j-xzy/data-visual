@@ -4,6 +4,7 @@ import './style.styl';
 
 interface IProps {
   color: string;
+  autoPosition?: boolean;
   disabled?: boolean;
   isShowColorPicker?: boolean;
   onColorChange?: (color: string) => void;
@@ -22,7 +23,8 @@ export default class ColorInput extends React.Component<IProps, undefined> {
 
   static defaultProps = {
     isShowColorPicker: false,
-    disabled: false
+    disabled: false,
+    autoPosition: false
   };
 
   handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -40,15 +42,15 @@ export default class ColorInput extends React.Component<IProps, undefined> {
 
   render() {
     const { color } = this.props;
-    const { onColorPreviewClick, isShowColorPicker, onColorPickerChangeComplete, onInputKeyDown, disabled } = this.props;
-
+    const { onColorPreviewClick, isShowColorPicker, onColorPickerChangeComplete, onInputKeyDown, disabled, autoPosition } = this.props;
+    const colorPickerPosition = autoPosition ? 'fixed' : 'absolute';
     return (
       <div className={`color_input_wrapper ${disabled && 'color_input_wrapper_disable'}`}>
         <div className='color_preview_wrapper' onClick={onColorPreviewClick} >
           <span style={{ background: color }} className='color_preview'></span>
         </div>
         <input disabled={disabled} type='text' className='color_input' value={color} onKeyDown={onInputKeyDown} onChange={this.handleInputChange} />
-        <div className='color_colorpicker'>
+        <div className='color_colorpicker' style={{ position: colorPickerPosition }}>
           {isShowColorPicker && !disabled && <ChromePicker color={color} onChangeComplete={onColorPickerChangeComplete} onChange={this.handleColorPickerChange} />}
         </div>
       </div>

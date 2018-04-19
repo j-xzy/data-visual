@@ -71,7 +71,7 @@ export default class ColorInput extends React.Component<IProps, IState> {
     return (
       <div style={{ display: 'inline-block' }}>
         <div className='color_mask' onClick={this.hideColorPicker} hidden={!isShowColorPicker} style={{ ...MaskStyle }}></div>
-        <RawInputColor disabled={disabled} onColorChange={onColorChange} onInputKeyDown={this.handleInputKeyDown} onColorPickerChangeComplete={this.handleColorPickerChangeComplete} style={{ position: 'relative' }}
+        <RawInputColor autoPosition={true} disabled={disabled} onColorChange={onColorChange} onInputKeyDown={this.handleInputKeyDown} onColorPickerChangeComplete={this.handleColorPickerChangeComplete} style={{ position: 'relative' }}
           isShowColorPicker={isShowColorPicker} onColorPreviewClick={this.showColorPicker} color={color} >
         </RawInputColor>
       </div>
