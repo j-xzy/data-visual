@@ -81,14 +81,14 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     };
   }
 
-  private contentNode: HTMLElement;
+  private contentRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   // Note: id maybe duplicated in chartsClipboard,
   // so it will be re-assigned when copy
   private chartsClipboard: IChartConfig[] = [];
 
   updateCanvasPos() {
-    const { width, height } = document.defaultView.getComputedStyle(this.contentNode, null);
+    const { width, height } = document.defaultView.getComputedStyle(this.contentRef.current, null);
     const { canvasSize, canvasScale } = this.state;
     let canvasWidth = canvasSize.width * canvasScale,
       canvasHeight = canvasSize.height * canvasScale,
@@ -96,8 +96,8 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       paddingTop = (parseFloat(height) - canvasHeight) / 2 + 'px';
     paddingLeft = parseFloat(paddingLeft) < 0 ? '50px' : paddingLeft;
     paddingTop = parseFloat(paddingTop) < 0 ? '50px' : paddingTop;
-    this.contentNode.style.paddingLeft = paddingLeft;
-    this.contentNode.style.paddingTop = paddingTop;
+    this.contentRef.current.style.paddingLeft = paddingLeft;
+    this.contentRef.current.style.paddingTop = paddingTop;
   }
 
   updateStudioState(state: IStudioState, callback?: () => void) {
@@ -228,7 +228,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
             <Leftbar />
           </div>
           <div className='st_content' onClick={this.handleContentClick}>
-            <div ref={(node) => this.contentNode = node} className='canvas_wrapper'>
+            <div ref={this.contentRef} className='canvas_wrapper'>
               <Canvas
                 canvasScale={canvasScale} size={canvasSize} hoverChartId={hoverChartId}
                 charts={charts} updateStudioState={this.updateStudioState}

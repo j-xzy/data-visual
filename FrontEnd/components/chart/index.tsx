@@ -42,19 +42,19 @@ export class Chart extends React.Component<IChartProps, undefined> {
     this.refreshChart = this.refreshChart.bind(this);
   }
 
-  element: HTMLDivElement;
+  elRef: React.RefObject<HTMLDivElement> = React.createRef();
   chart: echarts.ECharts;
 
   refreshChart(props: IChartProps) {
     this.chart.dispose();
     const { width, height } = props.size;
-    this.chart = echarts.init(this.element, '', { width, height });
+    this.chart = echarts.init(this.elRef.current, '', { width, height });
   }
 
   async componentDidMount() {
     echarts = await import('echarts');
     const { size: { width, height }, option } = this.props;
-    this.chart = echarts.init(this.element, '', { width, height });
+    this.chart = echarts.init(this.elRef.current, '', { width, height });
     this.chart.setOption(option);
   }
 
@@ -96,7 +96,7 @@ export class Chart extends React.Component<IChartProps, undefined> {
       <div
         onClick={(e) => onChartClick(e, id)}
         className={cls}
-        style={{ ...size, ...position, position: 'absolute', transform, zIndex: index }} ref={(e) => this.element = e}>
+        style={{ ...size, ...position, position: 'absolute', transform, zIndex: index }} ref={this.elRef}>
         <img src={loading} className='chart_loading' />
       </div >
     );

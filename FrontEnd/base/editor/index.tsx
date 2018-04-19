@@ -23,7 +23,7 @@ export class Editor extends React.Component<IProps, undefined> {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  el: HTMLDivElement;
+  elRef: React.RefObject<HTMLDivElement> = React.createRef();
   editor: ace.Editor;
 
   static defaultProps = {
@@ -47,7 +47,7 @@ export class Editor extends React.Component<IProps, undefined> {
   async setEditor(mode: Mode, theme: Theme) {
     await modes[mode]();
     await themes[theme]();
-    this.editor = ace.edit(this.el);
+    this.editor = ace.edit(this.elRef.current);
     this.editor.getSession().setMode(`ace/mode/${mode}`);
     this.editor.setTheme(`ace/theme/${theme}`);
   }
@@ -66,6 +66,6 @@ export class Editor extends React.Component<IProps, undefined> {
 
   render() {
     const { width, height } = this.props;
-    return <div style={{ width, height }} ref={(e) => this.el = e}></div>;
+    return <div style={{ width, height }} ref={this.elRef}></div>;
   }
 }

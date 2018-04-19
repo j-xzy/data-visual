@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow ,mount} from 'enzyme';
 import RawColorInput from '@base/color-input';
 import ColorInput from '../index';
 
@@ -35,7 +35,7 @@ describe('<ColorInput />', () => {
   });
 
   test('toggle mask', () => {
-    const root = shallow(<ColorInput color='red' />);
+    const root = mount(<ColorInput color='red' />);
 
     expect(root.find('.color_mask').prop('hidden')).toBe(true);
     expect(root.state().isShowColorPicker).toBe(false);

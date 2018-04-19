@@ -81,7 +81,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     };
   }
 
-  canvasDiv: HTMLDivElement;
+  canvasRef: React.RefObject<HTMLDivElement> = React.createRef();
   lastMousePosition: Coordinate;
   sideType = SideType.None;
 
@@ -103,7 +103,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   getPotionByCanvas(clientX: number, clientY: number) {
-    let { left, top } = this.canvasDiv.getBoundingClientRect();
+    let { left, top } = this.canvasRef.current.getBoundingClientRect();
     const { canvasScale } = this.props;
     left = (clientX - left) / canvasScale;
     top = (clientY - top) / canvasScale;
@@ -159,6 +159,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   handleCanvasWheel(e: React.WheelEvent<HTMLDivElement>) {
+    e.preventDefault();
     const { canvasScale, updateStudioState } = this.props;
     if (e.deltaY > 0) {
       canvasScale >= MIN_SCALE_VALUE && updateStudioState({ canvasScale: canvasScale - 0.05 });
@@ -379,7 +380,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         onWheel={(e) => this.handleCanvasWheel(e)}
         onClick={(e) => this.handleClick(e)}
         onMouseUp={this.handleCanvasMouseUp}>
-        <div className='canvas' ref={(e) => this.canvasDiv = e}>
+        <div className='canvas' ref={this.canvasRef}>
           {this.renderCharts()}
           {this.renderTransformTools()}
         </div>

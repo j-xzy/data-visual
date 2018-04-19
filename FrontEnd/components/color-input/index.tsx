@@ -13,6 +13,7 @@ interface IProps {
 
 interface IState {
   isShowColorPicker: boolean;
+  colorPickStyle: React.CSSProperties;
 }
 
 const MaskStyle = {
@@ -33,9 +34,12 @@ export default class ColorInput extends React.Component<IProps, IState> {
     this.handleColorPickerChangeComplete = this.handleColorPickerChangeComplete.bind(this);
 
     this.state = {
-      isShowColorPicker: false
+      isShowColorPicker: false,
+      colorPickStyle: {}
     };
   }
+
+  inputRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   static defaultProps = {
     disabled: false
@@ -52,9 +56,17 @@ export default class ColorInput extends React.Component<IProps, IState> {
   }
 
   showColorPicker() {
-    if (!this.props.disabled) {
-      this.setState({ isShowColorPicker: true });
-    }
+    if (this.props.disabled) return;  console.log('!!!!!');  console.log(this.inputRef);
+    let rect = this.inputRef.current.getBoundingClientRect();
+    this.setState({
+      isShowColorPicker: true,
+      colorPickStyle: {
+        zIndex: 1,
+        position: 'fixed',
+        top: rect.top + 25,
+        left: rect.left - 200
+      }
+    });
   }
 
   hideColorPicker() {
@@ -67,11 +79,11 @@ export default class ColorInput extends React.Component<IProps, IState> {
 
   render() {
     const { color, onColorChange, disabled } = this.props;
-    const { isShowColorPicker } = this.state;
+    const { isShowColorPicker, colorPickStyle } = this.state;
     return (
-      <div style={{ display: 'inline-block' }}>
+      <div ref={this.inputRef} style={{ display: 'inline-block' }}>
         <div className='color_mask' onClick={this.hideColorPicker} hidden={!isShowColorPicker} style={{ ...MaskStyle }}></div>
-        <RawInputColor autoPosition={true} disabled={disabled} onColorChange={onColorChange} onInputKeyDown={this.handleInputKeyDown} onColorPickerChangeComplete={this.handleColorPickerChangeComplete} style={{ position: 'relative' }}
+        <RawInputColor colorPickerStyle={colorPickStyle} disabled={disabled} onColorChange={onColorChange} onInputKeyDown={this.handleInputKeyDown} onColorPickerChangeComplete={this.handleColorPickerChangeComplete} style={{ position: 'relative' }}
           isShowColorPicker={isShowColorPicker} onColorPreviewClick={this.showColorPicker} color={color} >
         </RawInputColor>
       </div>

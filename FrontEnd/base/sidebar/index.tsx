@@ -54,7 +54,7 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
 
   private renderReason: RenderReason = 'other';
 
-  private barNode: HTMLDivElement;
+  private barRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   public barWidth: string;
 
@@ -106,7 +106,7 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
   }
 
   componentDidMount() {
-    const style = document.defaultView.getComputedStyle(this.barNode, null);
+    const style = document.defaultView.getComputedStyle(this.barRef.current, null);
     this.barWidth = style.width;
   }
 
@@ -126,7 +126,7 @@ export default class Sidebar extends React.Component<ISidebarProps, ISidebarStat
 
     return (
       <div style={{ width: width, minWidth: width, height: height }} className={sidebarCls}>
-        <div className='sidebar_bar' ref={(node) => this.barNode = node}>
+        <div className='sidebar_bar' ref={this.barRef}>
           <ul>
             {React.Children.map(children, this.renderIconBar)}
           </ul>
