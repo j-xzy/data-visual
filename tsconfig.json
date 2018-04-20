@@ -21,7 +21,8 @@
       "@charts/*": ["./FrontEnd/charts/*"],
       "@lib/*": ["./FrontEnd/lib/*"],
       "@hoc/*": ["./FrontEnd/hoc/*"],
-      "@controls/*": ["./FrontEnd/controls/*"]
+      "@controls/*": ["./FrontEnd/controls/*"],
+      "@chart/*": ["./FrontEnd/chart/*"]
     }
   }
 }

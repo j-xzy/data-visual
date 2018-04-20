@@ -59,11 +59,19 @@ export interface ITextStyle {
 
 export interface Series {
   [p: string]: any;
-  stack?: string;
-  radius?: string;
   data: Data[];
   type: string;
   name: string;
+  label: {
+    show: boolean;
+    fontSize: number;
+    fontStyle: 'normal' | 'italic' | 'oblique';
+    fontWeight: 'normal' | 'bold' | 'bolder' | 'lighter';
+    rotate?: number;
+  },
+  stack?: string;
+  center?: [string | number, string | number];
+  radius?: [string | number, string | number];
 }
 
 export type Data = number | IComplexData;
@@ -106,7 +114,7 @@ export let defaultLegend: ILegend = {
   }
 };
 
-const defaultTitle: ITitle = {
+export let defaultTitle: ITitle = {
   show: false,
   text: '',
   subtext: '',
@@ -135,7 +143,7 @@ export const pieList: ChartPreviewList = [
     seriesItemTemplate: {
       type: 'pie',
       name: '',
-      radius: '55%',
+      radius: [0, '55%'],
       data: [{ value: 35, name: '视频' }]
     },
     option: {
@@ -146,7 +154,14 @@ export const pieList: ChartPreviewList = [
         {
           name: '',
           type: 'pie',
-          radius: '55%',
+          radius: [0, '55%'],
+          center: ['50%', '50%'],
+          label: {
+            show: true,
+            fontSize: 12,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+          },
           data: [
             { value: 35, name: '视频' },
             { value: 20, name: '邮件' },
@@ -214,6 +229,12 @@ export const barList: ChartPreviewList = [
         }
       },
       series: [{
+        label: {
+          show: false,
+          fontSize: 12,
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+        },
         name: '图例',
         data: [120, 200, 150],
         type: 'bar'
@@ -276,11 +297,23 @@ export const barList: ChartPreviewList = [
         }
       },
       series: [{
+        label: {
+          show: false,
+          fontSize: 12,
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+        },
         name: '图例1',
         data: [120, 200, 150],
         type: 'bar'
       },
       {
+        label: {
+          show: false,
+          fontSize: 12,
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+        },
         name: '图例2',
         data: [90, 230, 60],
         type: 'bar'
@@ -347,18 +380,36 @@ export const barList: ChartPreviewList = [
         name: '邮件营销',
         type: 'bar',
         stack: 'stack',
+        label: {
+          show: false,
+          fontSize: 12,
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+        },
         data: [120, 132, 101]
       },
       {
         name: '联盟广告',
         type: 'bar',
         stack: 'stack',
+        label: {
+          show: false,
+          fontSize: 12,
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+        },
         data: [220, 182, 191]
       },
       {
         name: '视频广告',
         type: 'bar',
         stack: 'stack',
+        label: {
+          show: false,
+          fontSize: 12,
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+        },
         data: [150, 232, 201]
       }
       ]

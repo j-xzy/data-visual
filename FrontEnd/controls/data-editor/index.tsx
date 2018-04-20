@@ -33,7 +33,7 @@ export default class DataEditor extends React.Component<IControlProps, undefined
 
       for (let i = 0, length = editSeries.length; i < length; i++) {
         const editSeriesItem = editSeries[i];
-        let newSeriesItem: Series;
+        let newSeriesItem: any;
         let data: ReadonlyArray<Data>;
 
         // merge data
