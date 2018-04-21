@@ -143,6 +143,11 @@ export default class Label extends React.Component<IControlProps, IState> {
     return { color };
   }
 
+  shouldComponentUpdate(nextProps: IControlProps, nextState: IState) {
+    return nextProps.chart.seriesItemTemplate.label !== this.props.chart.seriesItemTemplate.label
+      || nextState.color !== this.state.color;
+  }
+
   render() {
     const { label: { show, fontSize, fontWeight, fontStyle, rotate } } = this.props.chart.seriesItemTemplate;
     const type = this.props.chart.type;

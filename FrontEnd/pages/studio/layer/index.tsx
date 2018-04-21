@@ -80,7 +80,8 @@ export default class Layer extends React.Component<IProps, IState> {
       !choosedChartIds.includes(chart.id) && newCharts.push(chart);
     });
     updateStudioState({
-      charts: newCharts
+      charts: newCharts,
+      choosedChartIds: []
     });
   }
 
