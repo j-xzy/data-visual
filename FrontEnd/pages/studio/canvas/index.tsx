@@ -2,7 +2,7 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
-import { IChartOption, Controls } from '@lib/chart';
+import { IChartOption, Controls, ChartType } from '@charts';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
@@ -85,7 +85,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   lastMousePosition: Coordinate;
   sideType = SideType.None;
 
-  appendChart(option: IChartOption, config: { seriesItemTemplate: any, controls: Controls, position: Position, size: Size, imgSrc: string, type: string }, callback?: () => void) {
+  appendChart(option: IChartOption, config: { seriesItemTemplate: any, controls: Controls, position: Position, size: Size, imgSrc: string, type: ChartType }, callback?: () => void) {
     const { position, size, imgSrc, controls, type, seriesItemTemplate } = config;
     const { updateStudioState, charts } = this.props;
     const guid = Date.now();
@@ -113,6 +113,10 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   chartClick(e: React.MouseEvent<HTMLDivElement>, id: number) {
     const ids = this.props.choosedChartIds;
+    if (e.shiftKey === true) {
+      e.stopPropagation();
+      return;
+    }
     if (e.ctrlKey === true) {
       this.props.updateStudioState({ choosedChartIds: [...ids, id] });
     } else {

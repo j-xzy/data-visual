@@ -7,7 +7,7 @@ import Leftbar from '@pages/studio/leftbar';
 import { Canvas, OFFSET_POSITION } from '@pages/studio/canvas';
 import Setting from '@pages/studio/setting';
 import { IChartConfig } from '@components/chart';
-import { defaultColor } from '@lib/chart';
+import { defaultColor } from '@charts';
 
 import './style.styl';
 

@@ -4,9 +4,7 @@ import Item from '@components/setting-item';
 import DoubleInput from '@components/double-input';
 import ColorInput from '@components/color-input';
 import { Switch, Select, InputNumber } from 'antd';
-import { IControlProps } from '@lib/controls';
-
-import './style.styl';
+import { IControlProps } from '@controls/index';
 
 interface IState {
   color: string;
@@ -161,7 +159,7 @@ export default class Legend extends React.Component<IControlProps, IState> {
         <Item name='字体颜色'>
           <ColorInput color={this.state.color} onColorChange={this.handleColorChange} onColorComplete={this.handleColorComplete} />
         </Item>
-        <Item name='字体大小'>
+        <Item className='fontsize' name='字体大小'>
           <InputNumber value={fontSize} size='small' onChange={this.handleFontSizeChange} />
           <Select size='small' defaultValue={fontWeight} onChange={this.handleFontWeightChange}>
             <Select.Option value='normal' >normal</Select.Option>

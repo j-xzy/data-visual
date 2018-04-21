@@ -4,7 +4,7 @@ import update from 'immutability-helper';
 import { Context as StudioContext } from '@pages/studio';
 import { idMapIndex } from '@pages/studio/canvas';
 import { IChartConfig } from '@components/chart';
-import { IUpdateChart } from '@lib/controls';
+import { IUpdateChart } from '@controls/index';
 import Tab from '@base/tab';
 const Panel = Tab.Panel;
 

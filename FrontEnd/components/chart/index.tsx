@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { shallowEqual } from '@lib/tools';
-import { Controls, IChartOption, ISeriesItemTemplate } from '@lib/chart';
+import { Controls, IChartOption, ISeriesItemTemplate, ChartType } from '@charts';
 import './style.styl';
 
 const loading = require('../../assets/image/loading.gif');
@@ -11,7 +11,7 @@ let echarts: any;
 export interface IChartConfig {
   option: IChartOption;
   readonly seriesItemTemplate: Readonly<ISeriesItemTemplate>;
-  type: string;
+  type: ChartType;
   scale: {
     x: number;
     y: number;

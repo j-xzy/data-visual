@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Collapse } from 'antd';
-import { barList, pieList } from '@lib/chart';
+import { barList, pieList } from '@charts';
 import { DragableChartPreview } from '@container/draggable-chart-preview';
 
 import './style.styl';

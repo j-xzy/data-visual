@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IChartPreview } from '@lib/chart';
+import { IChartPreview } from '@charts';
 import './style.styl';
 
 export class ChartPreview extends React.Component<IChartPreview, undefined> {

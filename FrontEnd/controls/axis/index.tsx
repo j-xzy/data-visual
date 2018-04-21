@@ -3,9 +3,7 @@ import update from 'immutability-helper';
 import Item from '@components/setting-item';
 import ColorInput from '@components/color-input';
 import { Switch, InputNumber, Select } from 'antd';
-import { IControlProps } from '@lib/controls';
-
-import './style.styl';
+import { IControlProps } from '@controls/index';
 
 interface IProps extends IControlProps {
   axisType: 'xAxis' | 'yAxis';
@@ -227,7 +225,7 @@ export default class Axis extends React.Component<IProps, IState> {
         <Item name='名称颜色'>
           <ColorInput color={nameColor} onColorChange={this.handleNameColorChange} onColorComplete={this.handleNameColorComplete} />
         </Item>
-        <Item name='名称大小'>
+        <Item className='fontsize' name='名称大小'>
           <InputNumber min={1} value={nameTextStyle.fontSize} size='small' onChange={this.handleNameSizeChange} />
           <Select size='small' defaultValue={nameTextStyle.fontWeight} onChange={this.handleNameWeightChange}>
             <Select.Option value='normal' >normal</Select.Option>
@@ -246,7 +244,7 @@ export default class Axis extends React.Component<IProps, IState> {
           <ColorInput color={axisColor} onColorChange={this.handleAxisColorChange} onColorComplete={this.handleAxisColorComplete} />
         </Item>
         <Item name='轴线宽度'>
-          <InputNumber value={lineStyle.width} onChange={this.handleAxisWidth} />
+          <InputNumber size='small' value={lineStyle.width} onChange={this.handleAxisWidth} />
         </Item>
         <Item name='轴线类型'>
           <Select size='small' defaultValue={lineStyle.type} onChange={this.handleAxisStyleType}>

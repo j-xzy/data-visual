@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Editor } from '@base/editor';
 import update from 'immutability-helper';
-import { IControlProps } from '@lib/controls';
-import { Data, Series } from '@lib/chart';
+import { IControlProps } from '@controls/index';
+import { Data, Series } from '@charts';
 
 interface IEditSeriesItem {
   name: string;

@@ -3,7 +3,7 @@ import { Switch } from 'antd';
 import update from 'immutability-helper';
 import ColorInputGroup from '@components/color-input-group';
 import Item from '@components/setting-item';
-import { IControlProps } from '@lib/controls';
+import { IControlProps } from '@controls/index';
 
 import './style.styl';
 

@@ -1,11 +1,9 @@
 import * as React from 'react';
 import update from 'immutability-helper';
 import { Switch, Radio, Select, InputNumber } from 'antd';
-import { IControlProps } from '@lib/controls';
+import { IControlProps } from '@controls/index';
 import ColorInput from '@components/color-input';
 import Item from '@components/setting-item';
-
-import './style.styl';
 
 const RadioGroup = Radio.Group;
 
@@ -143,7 +141,7 @@ export default class Title extends React.Component<IControlProps, IState> {
         <Item name='标题颜色'>
           <ColorInput color={color} onColorChange={(color) => this.handleColorChange(color, 'color')} onColorComplete={(color) => this.handleColorCompleteChange(color, 'textStyle')} />
         </Item>
-        <Item name='标题大小'>
+        <Item className='fontsize' name='标题大小'>
           <InputNumber min={1} value={textStyle.fontSize} size='small' onChange={(value: number) => this.handleInputNumberChange(value, 'textStyle')} />
           <Select size='small' defaultValue={textStyle.fontWeight} onChange={(value: string) => this.handleSelectChange(value, 'textStyle')}>
             <Select.Option value='normal' >normal</Select.Option>
@@ -157,7 +155,7 @@ export default class Title extends React.Component<IControlProps, IState> {
         <Item name='副标颜色'>
           <ColorInput color={subColor} onColorChange={(color) => this.handleColorChange(color, 'subColor')} onColorComplete={(color) => this.handleColorCompleteChange(color, 'subtextStyle')} />
         </Item>
-        <Item name='副题大小'>
+        <Item className='fontsize' name='副题大小'>
           <InputNumber min={1} size='small' value={subtextStyle.fontSize} onChange={(value: number) => this.handleInputNumberChange(value, 'subtextStyle')} />
           <Select size='small' defaultValue={subtextStyle.fontWeight} onChange={(value: string) => this.handleSelectChange(value, 'subtextStyle')}>
             <Select.Option value='normal' >normal</Select.Option>

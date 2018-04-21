@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DragSource, DragSourceConnector, DragSourceMonitor, ConnectDragSource, ConnectDragPreview } from 'react-dnd';
 import { PREVIEW_CHART } from '@lib/dragtype';
-import { IChartPreview, IChartOption, Controls } from '@lib/chart';
+import { IChartPreview, IChartOption, Controls, ChartType } from '@charts';
 import { ChartPreview } from '@components/chart-preview';
 
 interface IProps extends IChartPreview {
@@ -13,7 +13,7 @@ export interface IBeginDragResult {
   option: IChartOption;
   imgSrc: string;
   controls: Controls;
-  type: string;
+  type: ChartType;
   seriesItemTemplate: any;
 }
 

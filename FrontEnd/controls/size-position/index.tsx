@@ -2,7 +2,7 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import Item from '@components/setting-item';
 import DoubleInput from '@components/double-input';
-import { IControlProps } from '@lib/controls';
+import { IControlProps } from '@controls/index';
 
 const Input = DoubleInput.Input;
 

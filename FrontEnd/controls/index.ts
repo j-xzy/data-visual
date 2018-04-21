@@ -24,10 +24,6 @@ export interface DataControl {
   Component: React.ComponentClass<IControlProps>;
 }
 
-// export interface IControlMap {
-//   readonly [p: string]: StyleControl | DataControl;
-// }
-
 export const ControlMap = {
   Palette: {
     name: '调色盘',
@@ -40,6 +36,10 @@ export const ControlMap = {
   Title: {
     name: '标题',
     Component: Loadable(() => import('@controls/title'))
+  },
+  Label: {
+    name: '标签',
+    Component: Loadable(() => import('@controls/label'))
   },
   SizePosition: {
     name: '尺寸位置',
