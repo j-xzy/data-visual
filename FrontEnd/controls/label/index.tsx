@@ -21,6 +21,10 @@ export default class Label extends React.Component<IControlProps, IState> {
     this.handleFontWeightChange = this.handleFontWeightChange.bind(this);
     this.handleFontStyle = this.handleFontStyle.bind(this);
     this.handleRotateChange = this.handleRotateChange.bind(this);
+
+    this.state = {
+      color: ''
+    };
   }
 
   getNewSeries(key: string, value: any) {

@@ -49,6 +49,10 @@ export const ControlMap = {
     name: '图例',
     Component: Loadable(() => import('@controls/legend'))
   },
+  CenterRadius: {
+    name: '中心与半径',
+    Component: Loadable(() => import('@controls/center-radius'))
+  },
   XAxis: {
     name: 'X轴',
     Component: Loadable(() => import('@controls/x-axis'))

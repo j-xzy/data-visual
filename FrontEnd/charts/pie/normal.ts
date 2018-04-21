@@ -13,13 +13,14 @@ const NormalPie: IChartPreview = {
   type: 'pie',
   imgSrc: require('@assets/image/normalpie.png'),
   controls: {
-    style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.SizePosition],
+    style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.CenterRadius, ControlMap.SizePosition],
     data: [ControlMap.DataEditor]
   },
   seriesItemTemplate: {
     type: 'pie',
     name: '',
-    radius: [0, '55%'],
+    radius: ['0%', '55%'],
+    center: ['50%', '50%'],
     data: [{ value: 35, name: '视频' }],
     label
   },
@@ -55,7 +56,7 @@ const NormalPie: IChartPreview = {
       {
         name: '',
         type: 'pie',
-        radius: [0, '55%'],
+        radius: ['0%', '55%'],
         center: ['50%', '50%'],
         label,
         data: [

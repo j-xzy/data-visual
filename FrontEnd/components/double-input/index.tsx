@@ -2,11 +2,19 @@ import * as React from 'react';
 import { Input, InputProps } from './input';
 import './style.styl';
 
-export default class DoubleInput extends React.Component<undefined, undefined> {
-  constructor(props: undefined) {
+interface IProps {
+  type?: 'percentage' | 'number';
+}
+
+export default class DoubleInput extends React.Component<IProps, undefined> {
+  constructor(props: IProps) {
     super(props);
     this.renderInput = this.renderInput.bind(this);
   }
+
+  static defaultProps = {
+    type: 'number'
+  };
 
   static Input = Input;
 
@@ -14,7 +22,7 @@ export default class DoubleInput extends React.Component<undefined, undefined> {
     if (idx > 1) return;
     return (
       <div key={idx} className='number'>
-        {React.cloneElement(c)}
+        {React.cloneElement(c, { type: this.props.type })}
       </div>
     );
   }

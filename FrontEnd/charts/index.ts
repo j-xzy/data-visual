@@ -67,8 +67,8 @@ export interface Series {
   name: string;
   label: ILabel;
   stack?: string;
-  center?: [string | number, string | number];
-  radius?: [string | number, string | number];
+  center?: [string, string];
+  radius?: [string, string];
 }
 
 export interface ILabel {
