@@ -1,5 +1,5 @@
 import { ControlMap } from '@controls/index';
-import { IChartPreview, ILabel } from '@charts';
+import { IChartPreview, ILabel, ISeriesItemTemplate } from '@charts';
 
 const label: ILabel = {
   show: false,
@@ -10,21 +10,23 @@ const label: ILabel = {
   color: '#fff'
 };
 
+const seriesItemTemplate: ISeriesItemTemplate = {
+  name: '',
+  type: 'bar',
+  stack: 'stack',
+  data: [120, 200, 150],
+  label
+};
+
 const PileBar: IChartPreview = {
   name: '堆叠柱图',
   type: 'bar',
   controls: {
-    style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.SizePosition],
+    style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.Pile, ControlMap.SizePosition],
     data: [ControlMap.DataEditor]
   },
   imgSrc: require('@assets/image/pilebar.png'),
-  seriesItemTemplate: {
-    name: '',
-    type: 'bar',
-    stack: 'stack',
-    data: [120, 200, 150],
-    label
-  },
+  seriesItemTemplate,
   option: {
     title: {
       show: false,
@@ -58,15 +60,19 @@ const PileBar: IChartPreview = {
       name: '',
       type: 'category',
       data: ['Mon', 'Tue', 'Wed'],
+      axisTick: {
+        show: true
+      },
+      position: 'bottom',
       nameTextStyle: {
-        color: '#333',
+        color: '#fff',
         fontWeight: 'normal',
         fontSize: 12,
         fontStyle: 'normal'
       },
       axisLine: {
         lineStyle: {
-          color: '#333',
+          color: 'rgba(255,255,255,0.6)',
           type: 'solid',
           width: 1
         }
@@ -76,15 +82,20 @@ const PileBar: IChartPreview = {
       show: true,
       name: '',
       type: 'value',
+      data: ['Mon', 'Tue', 'Wed'],
+      axisTick: {
+        show: true
+      },
+      position: 'left',
       nameTextStyle: {
-        color: '#333',
+        color: '#fff',
         fontWeight: 'normal',
         fontSize: 12,
         fontStyle: 'normal'
       },
       axisLine: {
         lineStyle: {
-          color: '#333',
+          color: 'rgba(255,255,255,0.6)',
           type: 'solid',
           width: 1
         }

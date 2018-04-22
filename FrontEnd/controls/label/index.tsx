@@ -42,7 +42,6 @@ export default class Label extends React.Component<IControlProps, IState> {
 
   handleShowChange(checked: boolean) {
     const { updateChart, chart } = this.props;
-    const series = chart.option.series;
     let newSeries = this.getNewSeries('show', checked);
 
     updateChart(update(chart, {
@@ -63,7 +62,6 @@ export default class Label extends React.Component<IControlProps, IState> {
 
   handleFontColorComplete(color: string) {
     const { updateChart, chart } = this.props;
-    const series = chart.option.series;
     let newSeries = this.getNewSeries('color', color);
 
     updateChart(update(chart, {
@@ -80,7 +78,6 @@ export default class Label extends React.Component<IControlProps, IState> {
 
   handleFontSizeChange(fontSize: number) {
     const { updateChart, chart } = this.props;
-    const series = chart.option.series;
     let newSeries = this.getNewSeries('fontSize', fontSize);
     updateChart(update(chart, {
       seriesItemTemplate: {
@@ -96,7 +93,6 @@ export default class Label extends React.Component<IControlProps, IState> {
 
   handleFontWeightChange(fontWeight: 'normal' | 'lighter' | 'bold') {
     const { updateChart, chart } = this.props;
-    const series = chart.option.series;
     let newSeries = this.getNewSeries('fontWeight', fontWeight);
     updateChart(update(chart, {
       seriesItemTemplate: {
@@ -112,7 +108,6 @@ export default class Label extends React.Component<IControlProps, IState> {
 
   handleFontStyle(fontStyle: 'normal' | 'italic' | 'oblique') {
     const { updateChart, chart } = this.props;
-    const series = chart.option.series;
     let newSeries = this.getNewSeries('fontStyle', fontStyle);
     updateChart(update(chart, {
       seriesItemTemplate: {
@@ -128,7 +123,6 @@ export default class Label extends React.Component<IControlProps, IState> {
 
   handleRotateChange(rotate: number) {
     const { updateChart, chart } = this.props;
-    const series = chart.option.series;
     let newSeries = this.getNewSeries('rotate', rotate);
     updateChart(update(chart, {
       seriesItemTemplate: {

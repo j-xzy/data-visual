@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Switch, InputNumber, Select } from 'antd';
+import Item from '@components/setting-item';
 import ColorInput from '@components/color-input';
 import Label from '../index';
 
@@ -108,19 +109,14 @@ describe('<Label />', () => {
 
   test('pie not have fontColor and rotate', () => {
     const updateChart = jest.fn();
-    const root = shallow(<Label updateChart={updateChart} chart={chart} />)
-
-    expect(root.find(ColorInput).length).toBe(1);
-    expect(root.find(InputNumber).length).toBe(2);
-
     let pieChart = {...chart};
     pieChart.type = 'pie';
 
-    root.setProps({
-      chart:pieChart
-    });
+    const root = shallow(<Label updateChart={updateChart} chart={pieChart} />)
 
-    expect(root.find(ColorInput).length).toBe(0);
-    expect(root.find(InputNumber).length).toBe(1);
+    root.find(Item).forEach((item)=>{
+      expect(item.prop('name')).not.toBe('字体颜色');
+      expect(item.prop('name')).not.toBe('旋转角度');
+    });
   });
 });

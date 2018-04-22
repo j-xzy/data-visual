@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Editor } from '@base/editor';
 import update from 'immutability-helper';
 import { IControlProps } from '@controls/index';
-import { Data, Series } from '@charts';
+import { Data, Series, ISeriesItemTemplate } from '@charts';
 
 interface IEditSeriesItem {
   name: string;
@@ -27,8 +27,9 @@ export default class DataEditor extends React.Component<IControlProps, undefined
   updateChart() {
     try {
       const { updateChart, chart } = this.props;
-      const { seriesItemTemplate } = chart;
+      const { seriesItemTemplate, option: { series } } = chart;
       const editSeries = JSON.parse(this.value) as EditSeries;
+
       let newSeries: Series[] = [];
 
       for (let i = 0, length = editSeries.length; i < length; i++) {
@@ -45,12 +46,28 @@ export default class DataEditor extends React.Component<IControlProps, undefined
           });
         }
 
+        let foo: ISeriesItemTemplate = {} as ISeriesItemTemplate;
+
+        for (let key in seriesItemTemplate) {
+          if (key === 'data') {
+            foo.data = [...data];
+            continue;
+          }
+          if (key === 'name') {
+            foo.name = editSeriesItem.name;
+            continue;
+          }
+
+          if (series.length > i) {
+            foo[key] = series[i][key];
+          } else {
+            foo[key] = seriesItemTemplate[key];
+          }
+        }
+
         // merge series
         newSeriesItem = update(seriesItemTemplate, {
-          $merge: {
-            data,
-            name: editSeriesItem.name
-          }
+          $merge: foo
         });
 
         newSeries.push(newSeriesItem);

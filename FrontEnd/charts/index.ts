@@ -21,7 +21,11 @@ export interface ISeriesItemTemplate extends Partial<Series> {
 export interface IAxis {
   show: boolean;
   name: string;
-  data?: string[];
+  data: string[];
+  position: 'left' | 'right' | 'top' | 'bottom';
+  axisTick: {
+    show: boolean
+  };
   type: 'value' | 'category' | 'log';
   nameTextStyle: INameTextStyle;
   axisLine: {

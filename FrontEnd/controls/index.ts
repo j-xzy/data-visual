@@ -60,5 +60,9 @@ export const ControlMap = {
   YAxis: {
     name: 'Y轴',
     Component: Loadable(() => import('@controls/y-axis'))
+  },
+  Pile: {
+    name: '堆叠',
+    Component: Loadable(() => import('@controls/pile'))
   }
 };

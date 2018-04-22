@@ -13,14 +13,15 @@ const seriesItemTemplate: ISeriesItemTemplate = {
   name: '',
   radius: ['0%', '55%'],
   center: ['50%', '50%'],
+  roseType: 'radius',
   data: [{ value: 35, name: '视频' }],
   label
 };
 
-const NormalPie: IChartPreview = {
-  name: '普通饼图',
+const NightingalePie: IChartPreview = {
+  name: '南丁格尔图',
   type: 'pie',
-  imgSrc: require('@assets/image/normalpie.png'),
+  imgSrc: require('@assets/image/nightingale.png'),
   controls: {
     style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.CenterRadius, ControlMap.SizePosition],
     data: [ControlMap.DataEditor]
@@ -61,14 +62,32 @@ const NormalPie: IChartPreview = {
         radius: ['0%', '55%'],
         center: ['50%', '50%'],
         label,
+        roseType: 'radius',
         data: [
-          { value: 35, name: '视频' },
-          { value: 20, name: '邮件' },
-          { value: 34, name: '广告' }
+          {
+            value: 20,
+            name: '视频'
+          },
+          {
+            value: 30,
+            name: '邮件'
+          },
+          {
+            value: 40,
+            name: '音频'
+          },
+          {
+            value: 50,
+            name: '广告'
+          },
+          {
+            value: 60,
+            name: '音乐'
+          }
         ]
       }
     ]
   }
 };
 
-export default NormalPie;
+export default NightingalePie;

@@ -1,5 +1,5 @@
 import { ControlMap } from '@controls/index';
-import { IChartPreview, ILabel } from '@charts';
+import { IChartPreview, ILabel, ISeriesItemTemplate } from '@charts';
 
 const label: ILabel = {
   show: false,
@@ -10,20 +10,23 @@ const label: ILabel = {
   color: '#fff'
 };
 
+const seriesItemTemplate: ISeriesItemTemplate = {
+  type: 'bar',
+  name: '',
+  data: [120, 200, 150],
+  stack: null,
+  label
+};
+
 const MultipleBar: IChartPreview = {
   name: '多段柱图',
   type: 'bar',
   controls: {
-    style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.SizePosition],
+    style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.Pile, ControlMap.SizePosition],
     data: [ControlMap.DataEditor]
   },
   imgSrc: require('@assets/image/multibar.png'),
-  seriesItemTemplate: {
-    type: 'bar',
-    name: '',
-    data: [120, 200, 150],
-    label
-  },
+  seriesItemTemplate,
   option: {
     title: {
       show: false,
@@ -56,16 +59,20 @@ const MultipleBar: IChartPreview = {
       show: true,
       name: '',
       type: 'category',
+      position: 'bottom',
       data: ['Mon', 'Tue', 'Wed'],
+      axisTick: {
+        show: true
+      },
       nameTextStyle: {
-        color: '#333',
+        color: '#fff',
         fontWeight: 'normal',
         fontSize: 12,
         fontStyle: 'normal'
       },
       axisLine: {
         lineStyle: {
-          color: '#333',
+          color: 'rgba(255,255,255,0.6)',
           type: 'solid',
           width: 1
         }
@@ -75,15 +82,20 @@ const MultipleBar: IChartPreview = {
       show: true,
       name: '',
       type: 'value',
+      data: ['Mon', 'Tue', 'Wed'],
+      axisTick: {
+        show: true
+      },
+      position: 'left',
       nameTextStyle: {
-        color: '#333',
+        color: '',
         fontWeight: 'normal',
         fontSize: 12,
         fontStyle: 'normal'
       },
       axisLine: {
         lineStyle: {
-          color: '#333',
+          color: 'rgba(255,255,255,0.6)',
           type: 'solid',
           width: 1
         }
@@ -92,12 +104,14 @@ const MultipleBar: IChartPreview = {
     series: [{
       label,
       name: '图例1',
+      stack: null,
       data: [120, 200, 150],
       type: 'bar'
     },
     {
       label,
       name: '图例2',
+      stack: null,
       data: [90, 230, 60],
       type: 'bar'
     }

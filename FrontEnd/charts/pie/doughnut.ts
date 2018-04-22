@@ -11,16 +11,16 @@ const label: ILabel = {
 const seriesItemTemplate: ISeriesItemTemplate = {
   type: 'pie',
   name: '',
-  radius: ['0%', '55%'],
+  radius: ['50%', '70%'],
   center: ['50%', '50%'],
   data: [{ value: 35, name: '视频' }],
   label
 };
 
-const NormalPie: IChartPreview = {
-  name: '普通饼图',
+const DoughnutPie: IChartPreview = {
+  name: '环形饼图',
   type: 'pie',
-  imgSrc: require('@assets/image/normalpie.png'),
+  imgSrc: require('@assets/image/doughnut.png'),
   controls: {
     style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.CenterRadius, ControlMap.SizePosition],
     data: [ControlMap.DataEditor]
@@ -58,7 +58,7 @@ const NormalPie: IChartPreview = {
       {
         name: '',
         type: 'pie',
-        radius: ['0%', '55%'],
+        radius: ['50%', '70%'],
         center: ['50%', '50%'],
         label,
         data: [
@@ -71,4 +71,4 @@ const NormalPie: IChartPreview = {
   }
 };
 
-export default NormalPie;
+export default DoughnutPie;

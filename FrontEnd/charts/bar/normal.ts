@@ -1,5 +1,5 @@
 import { ControlMap } from '@controls/index';
-import { IChartPreview, ILabel } from '@charts';
+import { IChartPreview, ILabel, ISeriesItemTemplate } from '@charts';
 
 const label: ILabel = {
   show: false,
@@ -10,20 +10,23 @@ const label: ILabel = {
   color: '#fff'
 };
 
+const seriesItemTemplate: ISeriesItemTemplate = {
+  type: 'bar',
+  name: '',
+  data: [120, 200, 150],
+  label,
+  stack: null
+};
+
 const Normalbar: IChartPreview = {
   name: '普通柱图',
   type: 'bar',
   controls: {
-    style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.SizePosition],
+    style: [ControlMap.Palette, ControlMap.Title, ControlMap.Label, ControlMap.Legend, ControlMap.XAxis, ControlMap.YAxis, ControlMap.Pile, ControlMap.SizePosition],
     data: [ControlMap.DataEditor]
   },
   imgSrc: require('@assets/image/normalbar.png'),
-  seriesItemTemplate: {
-    type: 'bar',
-    name: '',
-    data: [120, 200, 150],
-    label
-  },
+  seriesItemTemplate,
   option: {
     title: {
       show: false,
@@ -56,16 +59,20 @@ const Normalbar: IChartPreview = {
       show: true,
       name: '',
       type: 'category',
+      position: 'bottom',
       data: ['Mon', 'Tue', 'Wed'],
+      axisTick: {
+        show: true
+      },
       nameTextStyle: {
-        color: '#333',
+        color: '#fff',
         fontWeight: 'normal',
         fontSize: 12,
         fontStyle: 'normal'
       },
       axisLine: {
         lineStyle: {
-          color: '#333',
+          color: 'rgba(255,255,255,0.6)',
           type: 'solid',
           width: 1
         }
@@ -75,15 +82,20 @@ const Normalbar: IChartPreview = {
       show: true,
       name: '',
       type: 'value',
+      position: 'left',
+      data: ['Mon', 'Tue', 'Wed'],
+      axisTick: {
+        show: true
+      },
       nameTextStyle: {
-        color: '#333',
+        color: '#fff',
         fontWeight: 'normal',
         fontSize: 12,
         fontStyle: 'normal'
       },
       axisLine: {
         lineStyle: {
-          color: '#333',
+          color: 'rgba(255,255,255,0.6)',
           type: 'solid',
           width: 1
         }
@@ -93,7 +105,8 @@ const Normalbar: IChartPreview = {
       label,
       name: '图例',
       data: [120, 200, 150],
-      type: 'bar'
+      type: 'bar',
+      stack: null
     }
     ]
   }

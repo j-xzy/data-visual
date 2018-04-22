@@ -2,8 +2,10 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import Item from '@components/setting-item';
 import ColorInput from '@components/color-input';
-import { Switch, InputNumber, Select } from 'antd';
+import { Switch, InputNumber, Select, Radio } from 'antd';
 import { IControlProps } from '@controls/index';
+
+const RadioGroup = Radio.Group;
 
 interface IProps extends IControlProps {
   axisType: 'xAxis' | 'yAxis';
@@ -29,6 +31,9 @@ export default class Axis extends React.Component<IProps, IState> {
     this.handleAxisWidth = this.handleAxisWidth.bind(this);
     this.handleAxisStyleType = this.handleAxisStyleType.bind(this);
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
+    this.handleChangeType = this.handleChangeType.bind(this);
+    this.handlePositionChange = this.handlePositionChange.bind(this);
+    this.handleTickShowChange = this.handleTickShowChange.bind(this);
 
     this.state = {
       nameColor: '',
@@ -196,6 +201,49 @@ export default class Axis extends React.Component<IProps, IState> {
     return null;
   }
 
+  handleChangeType(e: any) {
+    const currType = e.target.value;
+    const { chart, updateChart, axisType: currAxisType } = this.props;
+    let otherAxisType = currAxisType === 'xAxis' ? 'yAxis' : 'xAxis';
+    let otherType = currType === 'value' ? 'category' : 'value';
+
+    updateChart(update(chart, {
+      option: {
+        [currAxisType]: {
+          type: { $set: currType }
+        },
+        [otherAxisType]: {
+          type: { $set: otherType }
+        }
+      }
+    }));
+  }
+
+  handlePositionChange(e: any) {
+    const position = e.target.value;
+    const { chart, updateChart, axisType } = this.props;
+    updateChart(update(chart, {
+      option: {
+        [axisType]: {
+          position: { $set: position }
+        }
+      }
+    }));
+  }
+
+  handleTickShowChange(checked: boolean) {
+    const { chart, updateChart, axisType } = this.props;
+    updateChart(update(chart, {
+      option: {
+        [axisType]: {
+          axisTick: {
+            show: { $set: checked }
+          }
+        }
+      }
+    }));
+  }
+
   static getDerivedStateFromProps(nextProps: IProps) {
     const axisType = nextProps.axisType;
     const { nameTextStyle, axisLine: { lineStyle } } = nextProps.chart.option[axisType];
@@ -211,12 +259,39 @@ export default class Axis extends React.Component<IProps, IState> {
 
   render() {
     const axisType = this.props.axisType;
-    const { show, nameTextStyle, axisLine: { lineStyle }, name } = this.props.chart.option[axisType];
+    const {
+      show, nameTextStyle, axisLine: { lineStyle }, name,
+      type, position, axisTick: { show: isTickShow }
+    } = this.props.chart.option[axisType];
+
     const { nameColor, axisColor } = this.state;
+
     return (
       <div className='axis_wrapper'>
         <Item name='显示'>
           <Switch checked={show} onChange={this.handleShowChange} />
+        </Item>
+        <Item name='轴类型'>
+          <RadioGroup value={type} onChange={this.handleChangeType}>
+            <Radio value='value' style={{ color: '#fff' }}>数值</Radio>
+            <Radio value='category' style={{ color: '#fff' }}>类目</Radio>
+          </RadioGroup>
+        </Item>
+        <Item name='位置'>
+          {
+            axisType === 'xAxis' &&
+            <RadioGroup value={position} onChange={this.handlePositionChange}>
+              <Radio value='bottom' style={{ color: '#fff' }}>底</Radio>
+              <Radio value='top' style={{ color: '#fff' }}>顶</Radio>
+            </RadioGroup>
+          }
+          {
+            axisType === 'yAxis' &&
+            <RadioGroup value={position} onChange={this.handlePositionChange}>
+              <Radio value='left' style={{ color: '#fff' }}>左</Radio>
+              <Radio value='right' style={{ color: '#fff' }}>右</Radio>
+            </RadioGroup>
+          }
         </Item>
         {this.renderCategoryData()}
         <Item name='名称'>
@@ -239,6 +314,9 @@ export default class Axis extends React.Component<IProps, IState> {
             <Select.Option value='italic' >italic</Select.Option>
             <Select.Option value='oblique' >oblique</Select.Option>
           </Select>
+        </Item>
+        <Item name='刻度显示'>
+          <Switch checked={isTickShow} onChange={this.handleTickShowChange} />
         </Item>
         <Item name='轴线颜色'>
           <ColorInput color={axisColor} onColorChange={this.handleAxisColorChange} onColorComplete={this.handleAxisColorComplete} />
