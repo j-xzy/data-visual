@@ -6,19 +6,18 @@ interface IItemProps {
   name: string;
   style?: React.CSSProperties;
   className?: string;
+  children: React.ReactNode;
 }
 
-export default class Item extends React.Component<IItemProps, undefined> {
-  render() {
-    return (
-      <div style={this.props.style} className={`setting-item ${this.props.className}`}>
-        <span className='setting-item-name'>
-          {this.props.name}
-        </span>
-        <div className='setting-item-container'>
-          {this.props.children}
-        </div>
+export default function Item(props: IItemProps) {
+  return (
+    <div style={props.style} className={`setting-item ${props.className}`}>
+      <span className='setting-item-name'>
+        {props.name}
+      </span>
+      <div className='setting-item-container'>
+        {props.children}
       </div>
-    );
-  }
+    </div>
+  );
 }

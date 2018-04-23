@@ -80,4 +80,17 @@ describe('Pile', () => {
     root.update();
     expect(root.find(Select).prop('value')).toBe(0);
   });
+
+  test('stack === undefined ', () => {
+    const updateChart = jest.fn();
+    const newChart = {
+      option: {
+        series: [{}]
+      }
+    };
+    const root = shallow(<Pile chart={newChart} />);
+
+    expect(root.find(Switch).prop('checked')).toBe(false);
+    expect(root.find('input').length).toBe(0);
+  });
 });

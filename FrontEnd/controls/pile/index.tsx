@@ -67,6 +67,12 @@ export default class Pile extends React.Component<IControlProps, IState> {
     if (nextProps.chart.option.series.length <= prevState.select) {
       return { select: 0 };
     }
+    return null;
+  }
+
+  shouldComponentUpdate(nextProps: IControlProps, nextState: IState) {
+    return nextState.select !== this.state.select
+      || nextProps.chart.option.series[this.state.select] !== this.props.chart.option.series[this.state.select];
   }
 
   render() {
@@ -78,6 +84,10 @@ export default class Pile extends React.Component<IControlProps, IState> {
 
     const seriesItem = series[this.state.select];
     let stack = seriesItem.stack;
+
+    if (typeof stack === 'undefined') {
+      stack = null;
+    }
 
     return (
       <div>

@@ -104,6 +104,7 @@ const PlusMinusBar: IChartPreview = {
     series: [{
       name: '利润',
       type: 'bar',
+      stack: null,
       data: [200, 170, 240, 244, 200],
       label
     },
