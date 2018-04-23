@@ -4,6 +4,8 @@
 
 live deom:  https://wu38607.github.io/data-visual/gitpage/index.html
 
+推荐使用Chrome浏览
+
 ## todo
 
 - [x] 拖拽生成
