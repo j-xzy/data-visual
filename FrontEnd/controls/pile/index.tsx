@@ -5,8 +5,7 @@ import Item from '@components/setting-item';
 import { IControlProps } from '@controls/index';
 
 interface IState {
-  select: number;
-  selectValue: any;
+  select: any;
 }
 
 export default class Pile extends React.Component<IControlProps, IState> {
@@ -17,15 +16,13 @@ export default class Pile extends React.Component<IControlProps, IState> {
     this.handleInputChange = this.handleInputChange.bind(this);
 
     this.state = {
-      select: 0,
-      selectValue: '系列1'
+      select: 0
     };
   }
 
   handleSeriesChange(value: any) {
     this.setState({
-      select: parseInt(value),
-      selectValue: value
+      select: value
     });
   }
 
@@ -66,8 +63,10 @@ export default class Pile extends React.Component<IControlProps, IState> {
     });
   }
 
-  static getDerivedStateFromProps() {
-    return { select: 0, selectValue: '系列1' };
+  static getDerivedStateFromProps(nextProps: IControlProps, prevState: IState) {
+    if (nextProps.chart.option.series.length <= prevState.select) {
+      return { select: 0 };
+    }
   }
 
   render() {
@@ -83,7 +82,7 @@ export default class Pile extends React.Component<IControlProps, IState> {
     return (
       <div>
         <Item name='选择系列'>
-          <Select size='small' value={this.state.selectValue} onChange={this.handleSeriesChange}>
+          <Select size='small' value={this.state.select} onChange={this.handleSeriesChange}>
             {this.renderSeries()}
           </Select>
         </Item>

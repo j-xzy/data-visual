@@ -59,4 +59,25 @@ describe('Pile', () => {
     const root = shallow(<Pile chart={newChart} />);
     expect(root.html().includes('系列为空')).toBe(true);
   });
+
+  test('select > series.length ', () => {
+    const updateChart = jest.fn();
+    const root = shallow(<Pile chart={chart} updateChart={updateChart} />);
+
+    root.find(Select).prop('onChange')(2);
+    root.update();
+    expect(root.find(Select).prop('value')).toBe(2);
+
+    let newChart = {
+      option: {
+        series: [{ stack: 'foo' }]
+      }
+    };
+
+    root.setProps({
+      chart: newChart
+    });
+    root.update();
+    expect(root.find(Select).prop('value')).toBe(0);
+  });
 });
