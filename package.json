@@ -11,6 +11,7 @@
     "server": "nodemon -e js -w ./Server -x node ./Server/app.js",
     "build": "webpack-cli --config ./build/webpack.prod.js",
     "test": "jest --config jest.config.js",
+    "site": "webpack-cli --config ./build/webpack.site.js",
     "analyze": "webpack-cli --config ./build/webpack.analyze.js",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },

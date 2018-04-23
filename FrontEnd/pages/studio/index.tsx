@@ -6,6 +6,7 @@ import Slider from '@base/slider';
 import Leftbar from '@pages/studio/leftbar';
 import { Canvas, OFFSET_POSITION } from '@pages/studio/canvas';
 import Setting from '@pages/studio/setting';
+import Banner from '@pages/studio/banner';
 import { IChartConfig } from '@components/chart';
 import { defaultColor } from '@charts';
 
@@ -223,6 +224,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
         updateCanvasPos: this.updateCanvasPos.bind(this),
         updateStudioState: this.updateStudioState.bind(this)
       }}>
+        <Banner charts={charts} canvasSize={canvasSize} />
         <div className='studio'>
           <div className='leftbar_container'>
             <Leftbar />
