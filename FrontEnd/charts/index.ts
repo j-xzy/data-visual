@@ -4,31 +4,30 @@ export interface IChartOption {
   color: string[];
   series: Series[];
   title: ITitle;
-  legend: ILegend;
+  legend?: ILegend;
   xAxis?: IAxis;
   yAxis?: IAxis;
 }
 
-export type ChartType = 'bar' | 'pie';
+export type ChartType = 'bar' | 'pie' | 'scatter' | 'line';
 
 export interface ISeriesItemTemplate extends Partial<Series> {
   data: Data[];
   type: string;
   name: string;
-  label: ILabel;
 }
 
 export interface IAxis {
-  show: boolean;
-  name: string;
-  data: string[];
-  position: 'left' | 'right' | 'top' | 'bottom';
-  axisTick: {
+  show?: boolean;
+  name?: string;
+  data?: string[];
+  position?: 'left' | 'right' | 'top' | 'bottom';
+  axisTick?: {
     show: boolean
   };
-  type: 'value' | 'category' | 'log';
-  nameTextStyle: INameTextStyle;
-  axisLine: {
+  type?: 'value' | 'category' | 'log';
+  nameTextStyle?: INameTextStyle;
+  axisLine?: {
     lineStyle: {
       color: string;
       width: number;
@@ -69,8 +68,9 @@ export interface Series {
   data: Data[];
   type: string;
   name: string;
-  label: ILabel;
+  label?: ILabel;
   stack?: string;
+  areaStyle?: { normal: any };
   center?: [string, string];
   radius?: [string, string];
 }
@@ -84,7 +84,7 @@ export interface ILabel {
   color?: string;
 }
 
-export type Data = number | IComplexData;
+export type Data = number | IComplexData | number[];
 
 export interface IComplexData {
   value: number;
@@ -115,3 +115,5 @@ export let defaultColor = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae'
 
 export { pieList } from './pie';
 export { barList } from './bar';
+export { lineList } from './line';
+export { scatterList } from './scatter';

@@ -5,6 +5,7 @@ import DoubleInput from '@components/double-input';
 import ColorInput from '@components/color-input';
 import { Switch, Select, InputNumber } from 'antd';
 import { IControlProps } from '@controls/index';
+import { IComplexData } from '@charts';
 
 interface IState {
   color: string;
@@ -114,7 +115,7 @@ export default class Legend extends React.Component<IControlProps, IState> {
       }
       item.data.forEach((secondItem) => {
         if (typeof secondItem !== 'number') {
-          data.push(secondItem.name);
+          data.push((secondItem as IComplexData).name);
         }
       });
     });

@@ -38,7 +38,8 @@ export default class DataEditor extends React.Component<IControlProps, undefined
         let data: ReadonlyArray<Data>;
 
         // merge data
-        if (typeof seriesItemTemplate.data[0] === 'number') {
+        if (typeof seriesItemTemplate.data[0] === 'number'
+          || Object.prototype.toString.call(seriesItemTemplate.data[0]) === '[object Array]') {
           data = editSeriesItem.data;
         } else {
           data = update(seriesItemTemplate.data, {
