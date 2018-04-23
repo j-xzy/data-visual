@@ -1,12 +1,5 @@
 import { ControlMap } from '@controls/index';
-import { IChartPreview, ILabel, ISeriesItemTemplate } from '@charts';
-
-const label: ILabel = {
-  show: true,
-  fontSize: 12,
-  fontStyle: 'normal',
-  fontWeight: 'normal'
-};
+import { IChartPreview, ISeriesItemTemplate } from '@charts';
 
 const seriesItemTemplate: ISeriesItemTemplate = {
   type: 'scatter',
