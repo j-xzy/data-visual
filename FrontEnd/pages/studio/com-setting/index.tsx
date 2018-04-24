@@ -25,21 +25,25 @@ export default class ComSetting extends React.Component<undefined, undefined> {
     return (
       <Tab defaultActiveId='样式'>
         <Panel id='样式' tab='样式'>
-          <Collapse bordered={false}>
-            {style.map((control, idx) => {
-              const { name, Component } = control;
-              return (
-                <Collapse.Panel key={name} header={name} style={panelStyle}>
-                  <Component type={type} name={name} updateChart={updateChart} chart={chart} colors={colors} />
-                </Collapse.Panel>);
-            })}
-          </Collapse>
+          <div style={{ height: 'calc(100vh - 106px)' }}>
+            <Collapse bordered={false}>
+              {style.map((control, idx) => {
+                const { name, Component } = control;
+                return (
+                  <Collapse.Panel key={name} header={name} style={panelStyle}>
+                    <Component type={type} name={name} updateChart={updateChart} chart={chart} colors={colors} />
+                  </Collapse.Panel>);
+              })}
+            </Collapse>
+          </div>
         </Panel>
         <Panel id='数据' tab='数据' onTabClick={() => this.forceUpdate()} >
-          {data.map((control, idx) => {
-            const { name, Component } = control;
-            return <Component type={type} key={name} name={name} updateChart={updateChart} chart={chart} colors={colors} />;
-          })}
+          <div style={{ height: 'calc(100vh - 106px)' }}>
+            {data.map((control, idx) => {
+              const { name, Component } = control;
+              return <Component type={type} key={name} name={name} updateChart={updateChart} chart={chart} colors={colors} />;
+            })}
+          </div>
         </Panel>
       </Tab>
     );

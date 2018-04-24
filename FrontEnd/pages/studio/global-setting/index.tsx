@@ -9,14 +9,16 @@ export default class GlobalSetting extends React.Component {
   render() {
     return (
       <StudioContext.Consumer>
-        {({ updateStudioState, canvasSize, colors, charts }) => ([
-          <Item name='屏幕大小' key='pageSize'>
-            <CanvasSize updateStudioState={updateStudioState} canvasSize={canvasSize} />
-          </Item>,
+        {({ updateStudioState, canvasSize, colors, charts }) => (
+          <div style={{ height: 'calc(100vh - 106px)' }}>
+            <Item name='屏幕大小' key='pageSize'>
+              <CanvasSize updateStudioState={updateStudioState} canvasSize={canvasSize} />
+            </Item>,
           <Item name='调色盘' key='colorPicker'>
-            <GlobalPalette charts={charts} updateStudioState={updateStudioState} colors={colors} />
-          </Item>
-        ])}
+              <GlobalPalette charts={charts} updateStudioState={updateStudioState} colors={colors} />
+            </Item>
+          </div>
+        )}
       </StudioContext.Consumer>
     );
   }
