@@ -20,6 +20,8 @@ live deom:  https://wu38607.github.io/data-visual/site/index.html
 - [ ] 预览
 - [ ] 发布
 
+- [ ] 响应式工具
+
 - [ ] 数据库查询数据
 
 - [ ] 图表联动

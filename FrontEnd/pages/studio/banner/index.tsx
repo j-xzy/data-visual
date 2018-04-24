@@ -22,9 +22,9 @@ export default class Banner extends React.Component<IBannerProps, undefined> {
 
   handlePreviewClick() {
     const { canvasSize, charts } = this.props;
-    const previeWindow = window.open('preview/index.html');
+    const previeWindow: any = window.open('preview/index.html');
     previeWindow.onload = () => {
-      console.log(previeWindow);
+      previeWindow.init(charts, canvasSize);
     };
   }
 

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src='./echarts.common.min.js'></script>
+  <title>预览</title>
+</head>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    position: fixed;
+    background: #0c2a42;
+  }
+</style>
+
+<body>
+  <div id='root'></div>
+</body>
+<script>
+  let root = document.getElementById('root');
+  function init(charts, canvasSize) {
+    // init canvas size
+    root.style.width = canvasSize.width + 'px';
+    root.style.height = canvasSize.height + 'px';
+
+    // init charts
+    charts.forEach((chart) => {
+      setChart(chart);
+    });
+  }
+
+  function setChart(chart) {
+    let div = document.createElement('div');
+
+    div.style.position = 'absolute';
+    div.style.left = chart.position.left + 'px';
+    div.style.top = chart.position.top + 'px';
+    div.style.width = chart.size.width + 'px';
+    div.style.height = chart.size.height + 'px';
+
+    let myChart = echarts.init(div);
+    myChart.setOption(chart.option);
+
+    root.appendChild(div);
+  }
+</script>
+
+</html>

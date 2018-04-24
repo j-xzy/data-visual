@@ -7,6 +7,7 @@ const baseConfig = require('./webpack.base');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = merge(baseConfig, {
   mode: 'production',
@@ -65,6 +66,9 @@ module.exports = merge(baseConfig, {
         minifyCSS: true,
         minifyJS: true
       }
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: path.join(__dirname, '..', 'FrontEnd/preview'), to: 'preview' },
+    ])
   ]
 });

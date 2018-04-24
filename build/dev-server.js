@@ -34,6 +34,8 @@ const devMiddleware = require('webpack-dev-middleware')(compiler, {
 });
 app.use(devMiddleware);
 
+app.use(express.static('FrontEnd'));
+
 server.listen('8080', () => {
   opn('http://localhost:8080');
 });
