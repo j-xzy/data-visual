@@ -47,6 +47,8 @@ export class Chart extends React.Component<IChartProps, undefined> {
   chart: echarts.ECharts;
 
   refreshChart(props: IChartProps) {
+    if (!this.chart)
+      return;
     this.chart.dispose();
     const { width, height } = props.size;
     this.chart = echarts.init(this.elRef.current, '', { width, height });
@@ -82,7 +84,7 @@ export class Chart extends React.Component<IChartProps, undefined> {
     if (height !== this.props.size.height || width !== this.props.size.width) {
       this.refreshChart(this.props);
     }
-    if (typeof this.chart === 'undefined')
+    if (!this.chart)
       return;
     // fix chart not updated sometimes. setOption(,,true);
     this.chart.setOption(this.props.option, true, true);
