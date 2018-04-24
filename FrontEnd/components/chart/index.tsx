@@ -62,6 +62,8 @@ export class Chart extends React.Component<IChartProps, undefined> {
   }
 
   componentWillUnmount() {
+    if (!this.chart)
+      return;
     this.chart.dispose();
   }
 
