@@ -17,7 +17,7 @@ live deom:  https://wu38607.github.io/data-visual/site/index.html
 - [x] 散点图 (待完善)
 - [ ] 地图
 
-- [ ] 预览
+- [x] 预览
 - [ ] 发布
 
 - [ ] 响应式工具
