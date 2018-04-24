@@ -33,12 +33,14 @@ export class Editor extends React.Component<IProps, undefined> {
   };
 
   handleChange(e: any) {
+    if (!this.editor) return;
     this.props.onChange(this.editor.getValue());
   }
 
   async componentDidMount() {
     const { mode, theme, value } = this.props;
     await this.setEditor(mode, theme);
+    if (!this.editor) return;
     this.editor.$blockScrolling = Infinity;
     this.editor.on('change', this.handleChange);
     this.editor.setValue(value);
@@ -57,10 +59,12 @@ export class Editor extends React.Component<IProps, undefined> {
     if (mode !== prevProps.mode || theme !== prevProps.theme) {
       await this.setEditor(mode, theme);
     }
+    if (!this.editor) return;
     this.editor.setValue(value);
   }
 
   componentWillUnmount() {
+    if (!this.editor) return;
     this.editor.destroy();
   }
 
