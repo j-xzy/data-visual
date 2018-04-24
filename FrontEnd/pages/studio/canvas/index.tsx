@@ -87,8 +87,12 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   appendChart(option: IChartOption, config: { seriesItemTemplate: ISeriesItemTemplate, controls: Controls, position: Position, size: Size, imgSrc: string, type: ChartType }, callback?: () => void) {
     const { position, size, imgSrc, controls, type, seriesItemTemplate } = config;
-    const { updateStudioState, charts } = this.props;
+    const { updateStudioState, charts, colors } = this.props;
     const guid = Date.now();
+
+    // from global color
+    option.color = colors;
+
     const props: IChartConfig = {
       option, position, size, imgSrc,
       type, seriesItemTemplate,

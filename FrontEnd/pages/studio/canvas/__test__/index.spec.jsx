@@ -228,10 +228,10 @@ describe('<Canvas />', () => {
   test('press shift', async () => {
     root.setProps({ charts: [chart1], canvasScale: 1 });
     await root.find(Chart).at(0).instance().componentDidMount();
-    
+
     root.find(Chart).at(0).simulate('click', { shiftKey: true });
     expect(root.find(TransformTool).length).toBe(0);
-    
+
     root.find(Chart).at(0).simulate('click', { shiftKey: false });
     expect(root.find(TransformTool).length).toBe(1);
   });
