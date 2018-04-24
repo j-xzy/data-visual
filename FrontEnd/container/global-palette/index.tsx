@@ -1,9 +1,12 @@
 import * as React from 'react';
+import update from 'immutability-helper';
 import Loadable from '@hoc/loadable';
+import { IChartConfig } from '@components/chart';
 import { IUpdateStudioState } from '@pages/studio';
 
 interface IProps {
   colors: string[];
+  charts: ReadonlyArray<IChartConfig>;
   updateStudioState: IUpdateStudioState;
 }
 
@@ -16,7 +19,22 @@ export default class GlobalPalette extends React.Component<IProps, undefined> {
   }
 
   handleColorComplete(colors: string[]) {
-    this.props.updateStudioState({ colors });
+    const { charts } = this.props;
+    let newCharts: IChartConfig[] = [];
+
+    charts.forEach((chart) => {
+      if (chart.colorFromGlobal) {
+        newCharts.push(update(chart, {
+          option: {
+            color: { $set: colors }
+          }
+        }));
+      } else {
+        newCharts.push(chart);
+      }
+    });
+
+    this.props.updateStudioState({ colors, charts: newCharts });
   }
 
   render() {

@@ -24,8 +24,13 @@ export default class Palette extends React.Component<IControlProps, undefined> {
   }
 
   handleSwitchChange(checked: boolean) {
-    const { updateChart, chart } = this.props;
+    const { updateChart, chart, colors } = this.props;
+    let newColors = [...chart.option.color];
+    checked && (newColors = [...colors]);
     updateChart(update(chart, {
+      option: {
+        color: { $set: newColors }
+      },
       colorFromGlobal: { $set: checked }
     }));
   }

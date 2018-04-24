@@ -225,24 +225,6 @@ describe('<Canvas />', () => {
     expect(renderSpys[2].mock.calls.length).toBe(0);
   });
 
-  test('chart will rerender when global color changes', async () => {
-    root.setProps({ charts: [chart1, chart2, chart3], canvasScale: 1 });
-    let renderSpys = [];
-    for (let i = 0; i < 3; i++) {
-      renderSpys[i] = jest.spyOn(root.find(Chart).at(i).instance(), 'render');
-      await root.find(Chart).at(i).instance().componentDidMount();
-    }
-    expect(renderSpys[0].mock.calls.length).toBe(0);
-    expect(renderSpys[1].mock.calls.length).toBe(0);
-    expect(renderSpys[2].mock.calls.length).toBe(0);
-
-    root.setProps({ colors: ['red', 'blue'] });
-
-    expect(renderSpys[0].mock.calls.length).toBe(1);
-    expect(renderSpys[1].mock.calls.length).toBe(1);
-    expect(renderSpys[2].mock.calls.length).toBe(0);  // colorFromGlobal is false
-  });
-
   test('press shift', async () => {
     root.setProps({ charts: [chart1], canvasScale: 1 });
     await root.find(Chart).at(0).instance().componentDidMount();

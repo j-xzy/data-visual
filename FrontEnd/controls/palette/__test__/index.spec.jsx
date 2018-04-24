@@ -40,6 +40,12 @@ describe('<Palette />', () => {
     newChart.colorFromGlobal = false;
     newChart.option.color = [];
     expect(updateChart.mock.calls[1][0]).toEqual(newChart);
+
+    // again to globalcolor
+    root.find('.palette_switch').prop('onChange')(true);
+    newChart.colorFromGlobal = true;
+    newChart.option.color = ['red', 'blue', 'green'];
+    expect(updateChart.mock.calls[2][0]).toEqual(newChart);
   });
 
   test('color', () => {

@@ -315,24 +315,17 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   renderCharts() {
-    const { charts, hoverChartId, colors } = this.props;
+    const { charts, hoverChartId } = this.props;
     idMapIndex.clear();
     return charts.map((chart, idx) => {
-      const { id, colorFromGlobal, option, ...props } = chart;  // key must be chartId
-      let nextOption = { ...option }; // shallow copy
+      const { id } = chart;  // key must be chartId
 
       // set map
       const isMask = hoverChartId !== NO_HOVER_CHART && hoverChartId === id;
       idMapIndex.set(id, idx);
 
-      // global color
-      if (colorFromGlobal) {
-        nextOption.color = colors;
-      }
-
       return (
-        <Chart isMask={isMask} colorFromGlobal={colorFromGlobal} option={nextOption}
-          onChartClick={this.chartClick} {...props} key={id} id={id} index={idx} >
+        <Chart  {...chart} onChartClick={this.chartClick} id={id} key={id} isMask={isMask} index={idx} >
         </Chart>
       );
     });
