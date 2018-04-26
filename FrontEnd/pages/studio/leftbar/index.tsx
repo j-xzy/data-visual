@@ -13,9 +13,7 @@ export default class LeftBar extends React.Component {
         {({ updateCanvasPos, charts, updateStudioState, choosedChartIds }) => (
           <Sidebar onOpenChangeAfter={() => updateCanvasPos()} className='leftbar' mode='left' width='200px' height='100%'>
             <Sidebar.Panel className='component_panel' title='组件'>
-              <div style={{ height: 'calc(100vh - 75px)' }}>
-                <ComponentPanel />
-              </div>
+              <ComponentPanel />
             </Sidebar.Panel>
             <Sidebar.Panel className='layer_panel' title='图层'>
               <Layer choosedChartIds={choosedChartIds} updateStudioState={updateStudioState} charts={charts} />

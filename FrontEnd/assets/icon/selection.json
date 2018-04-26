@@ -31,8 +31,8 @@
         }
       ],
       "properties": {
-        "order": 3,
-        "id": 9,
+        "order": 49,
+        "id": 11,
         "name": "bottom",
         "prevSize": 32,
         "code": 59648
@@ -73,8 +73,8 @@
         {}
       ],
       "properties": {
-        "order": 2,
-        "id": 8,
+        "order": 50,
+        "id": 10,
         "name": "copy",
         "prevSize": 32,
         "code": 59649
@@ -113,8 +113,8 @@
         }
       ],
       "properties": {
-        "order": 4,
-        "id": 7,
+        "order": 51,
+        "id": 9,
         "name": "down",
         "prevSize": 32,
         "code": 59650
@@ -155,8 +155,8 @@
         {}
       ],
       "properties": {
-        "order": 5,
-        "id": 6,
+        "order": 52,
+        "id": 8,
         "name": "menu",
         "prevSize": 32,
         "code": 59651
@@ -195,8 +195,8 @@
         }
       ],
       "properties": {
-        "order": 6,
-        "id": 5,
+        "order": 53,
+        "id": 7,
         "name": "preview",
         "prevSize": 32,
         "code": 59652
@@ -236,8 +236,8 @@
         }
       ],
       "properties": {
-        "order": 7,
-        "id": 4,
+        "order": 54,
+        "id": 6,
         "name": "publish",
         "prevSize": 32,
         "code": 59653
@@ -270,8 +270,8 @@
         {}
       ],
       "properties": {
-        "order": 8,
-        "id": 3,
+        "order": 55,
+        "id": 5,
         "name": "resize",
         "prevSize": 32,
         "code": 59654
@@ -279,6 +279,86 @@
       "setIdx": 0,
       "setId": 2,
       "iconIdx": 6
+    },
+    {
+      "icon": {
+        "paths": [
+          "M264.152 64.303v373.080l447.697-0v-373.080h-447.697zM662.105 114.047v273.591h-348.209v-273.591h348.209zM711.849 586.615h-447.697v373.081h447.697v-373.081zM313.896 909.953v-273.591h348.21v273.591h-348.21zM885.954 561.742c27.471 0 49.744-22.248 49.744-49.743 0-27.446-22.273-49.744-49.744-49.744-18.404 0-34.462 10.014-43.066 24.872l-709.774 0c-8.604-14.858-24.663-24.872-43.066-24.872-27.472 0-49.744 22.298-49.744 49.744 0 27.495 22.273 49.743 49.744 49.743 18.412 0 34.477-10.001 43.079-24.872l709.748-0c8.601 14.872 24.666 24.872 43.079 24.872z"
+        ],
+        "attrs": [
+          {
+            "fill": "rgb(255, 255, 255)"
+          }
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "grid": 0,
+        "tags": [
+          "split-horizontal"
+        ],
+        "colorPermutations": {
+          "25525525518181811": [
+            {
+              "f": 1
+            }
+          ]
+        }
+      },
+      "attrs": [
+        {
+          "fill": "rgb(255, 255, 255)"
+        }
+      ],
+      "properties": {
+        "order": 56,
+        "id": 4,
+        "name": "split-horizontal",
+        "prevSize": 32,
+        "code": 59655
+      },
+      "setIdx": 0,
+      "setId": 2,
+      "iconIdx": 7
+    },
+    {
+      "icon": {
+        "paths": [
+          "M64.303 735.848h373.080l-0-447.697h-373.080v447.697zM114.047 337.895h273.591v348.209h-273.591v-348.209zM586.615 288.151v447.697h373.081v-447.697h-373.081zM909.953 686.104h-273.591v-348.21h273.591v348.21zM561.742 114.046c0-27.471-22.248-49.744-49.743-49.744-27.446 0-49.744 22.273-49.744 49.744 0 18.404 10.014 34.462 24.872 43.066l0 709.774c-14.858 8.604-24.872 24.663-24.872 43.066 0 27.472 22.298 49.744 49.744 49.744 27.495 0 49.743-22.273 49.743-49.744 0-18.412-10.001-34.477-24.872-43.079l-0-709.748c14.872-8.601 24.872-24.666 24.872-43.079z"
+        ],
+        "attrs": [
+          {
+            "fill": "rgb(255, 255, 255)"
+          }
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "grid": 0,
+        "tags": [
+          "split-vertical"
+        ],
+        "colorPermutations": {
+          "25525525518181811": [
+            {
+              "f": 1
+            }
+          ]
+        }
+      },
+      "attrs": [
+        {
+          "fill": "rgb(255, 255, 255)"
+        }
+      ],
+      "properties": {
+        "order": 57,
+        "id": 3,
+        "name": "split-vertical",
+        "prevSize": 32,
+        "code": 59656
+      },
+      "setIdx": 0,
+      "setId": 2,
+      "iconIdx": 8
     },
     {
       "icon": {
@@ -310,15 +390,15 @@
         }
       ],
       "properties": {
-        "order": 9,
+        "order": 58,
         "id": 2,
         "name": "top",
         "prevSize": 32,
-        "code": 59655
+        "code": 59657
       },
       "setIdx": 0,
       "setId": 2,
-      "iconIdx": 7
+      "iconIdx": 9
     },
     {
       "icon": {
@@ -352,15 +432,15 @@
         {}
       ],
       "properties": {
-        "order": 10,
+        "order": 59,
         "id": 1,
         "name": "trashcan",
         "prevSize": 32,
-        "code": 59656
+        "code": 59658
       },
       "setIdx": 0,
       "setId": 2,
-      "iconIdx": 8
+      "iconIdx": 10
     },
     {
       "icon": {
@@ -392,15 +472,15 @@
         }
       ],
       "properties": {
-        "order": 11,
+        "order": 60,
         "id": 0,
         "name": "up",
         "prevSize": 32,
-        "code": 59657
+        "code": 59659
       },
       "setIdx": 0,
       "setId": 2,
-      "iconIdx": 9
+      "iconIdx": 11
     }
   ],
   "height": 1024,
@@ -434,6 +514,7 @@
     },
     "historySize": 50,
     "showCodes": true,
-    "gridSize": 16
+    "gridSize": 16,
+    "showLiga": false
   }
 }
