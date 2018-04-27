@@ -3,13 +3,19 @@ import { DragSource, DragSourceConnector, DragSourceMonitor, ConnectDragSource, 
 import { SPLIT } from '@lib/dragtype';
 import './style.styl';
 
+export type Mode = 'vertical' | 'horizontal';
+
 interface IProps extends ISplitProps {
   connectDragSource: ConnectDragSource;
   connectDragPreview: ConnectDragPreview;
 }
 
+export interface IDraggableSplitResult {
+  mode: Mode;
+}
+
 interface ISplitProps {
-  mode: 'vertical' | 'horizontal';
+  mode: Mode;
 }
 
 class Split extends React.Component<IProps, undefined> {
@@ -29,6 +35,7 @@ class Split extends React.Component<IProps, undefined> {
 const source = {
   beginDrag(props: IProps) {
     return {
+      mode: props.mode
     };
   }
 };

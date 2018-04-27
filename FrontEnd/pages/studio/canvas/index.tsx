@@ -1,12 +1,14 @@
 import * as React from 'react';
 import update from 'immutability-helper';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
-import { PREVIEW_CHART } from '@lib/dragtype';
+import { PREVIEW_CHART, SPLIT } from '@lib/dragtype';
 import { IChartOption, Controls, ChartType, ISeriesItemTemplate } from '@charts';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
 import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HOVER_CHART } from '@pages/studio';
+import { IDraggableSplitResult } from '@container/draggable-split';
+import SplitContainer from '@container/split-container';
 
 import './style.styl';
 
@@ -383,8 +385,9 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         onClick={(e) => this.handleClick(e)}
         onMouseUp={this.handleCanvasMouseUp}>
         <div className='canvas' ref={this.canvasRef}>
-          {this.renderCharts()}
-          {this.renderTransformTools()}
+          <SplitContainer mode='horizontal' />
+          {/* {this.renderCharts()}
+          {this.renderTransformTools()} */}
         </div>
       </div>
     );
@@ -406,6 +409,10 @@ const boxTarget = {
       component.appendChart(item.option, { seriesItemTemplate, controls, position, size, imgSrc, type });
       return;
     }
+    if (monitor.getItemType() === SPLIT) {
+      const item = monitor.getItem() as IDraggableSplitResult;
+      return;
+    }
   }
 };
 
@@ -415,4 +422,4 @@ function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
   };
 }
 
-export const Canvas = DropTarget<ICanvasProps>(PREVIEW_CHART, boxTarget, collect)(RawCanvas);
+export const Canvas = DropTarget<ICanvasProps>([PREVIEW_CHART, SPLIT], boxTarget, collect)(RawCanvas);
