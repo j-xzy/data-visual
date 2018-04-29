@@ -60,7 +60,7 @@ export default class ComponentPanel extends React.PureComponent {
             </Panel>
           </Collapse>
         </div>
-        <div className='split_container'>
+        <div className='split'>
           <DragableSplit mode='vertical' />
           <DragableSplit mode='horizontal' />
         </div>

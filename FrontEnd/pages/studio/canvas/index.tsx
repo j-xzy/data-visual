@@ -28,6 +28,7 @@ type ITransformTools = {
 
 interface ICanvasState {
   transformTools: ITransformTools;
+  splitContainer: 'none' | 'horizontal' | 'vertical';
 }
 
 interface IRawCanvasProps extends ICanvasProps {
@@ -79,7 +80,8 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     this.getChartConfigWhileMousemove = this.getChartConfigWhileMousemove.bind(this);
 
     this.state = {
-      transformTools: {} // depends on props.choosedChartIds
+      transformTools: {}, // depends on props.choosedChartIds
+      splitContainer: 'none'
     };
   }
 
@@ -97,7 +99,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
     const props: IChartConfig = {
       option, position, size, imgSrc,
-      type, seriesItemTemplate,
+      type, seriesItemTemplate, mode: 'absolute',
       id: guid, scale: { x: 1, y: 1 },
       colorFromGlobal: true, controls
     };
@@ -376,7 +378,8 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   render() {
-    const { size: { width, height }, canvasScale, connectDropTarget } = this.props;
+    const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState, charts, hoverChartId } = this.props;
+    const { splitContainer } = this.state;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
         onMouseDown={(e) => this.handleCanvasMouseDown(e)}
@@ -385,9 +388,13 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         onClick={(e) => this.handleClick(e)}
         onMouseUp={this.handleCanvasMouseUp}>
         <div className='canvas' ref={this.canvasRef}>
-          <SplitContainer mode='horizontal' />
-          {/* {this.renderCharts()}
-          {this.renderTransformTools()} */}
+          {
+            splitContainer !== 'none'
+            && <SplitContainer hoverChartId={hoverChartId} charts={charts}
+              updateStudioState={updateStudioState} mode={splitContainer} />
+          }
+          {this.renderCharts()}
+          {this.renderTransformTools()}
         </div>
       </div>
     );
@@ -397,6 +404,8 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 const boxTarget = {
   drop(pros: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
     if (monitor.getItemType() === PREVIEW_CHART) {
+      if (component.state.splitContainer !== 'none') return;
+
       const item = monitor.getItem() as IDraggableChartPreivewResult;
       const { x, y } = monitor.getClientOffset();
       let { left, top } = component.getPotionByCanvas(x, y);
@@ -405,12 +414,19 @@ const boxTarget = {
         top: top - DEFAULT_HEIGHT / 2
       };
       const size = { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT };
-      const { imgSrc, controls, type, seriesItemTemplate } = item;
-      component.appendChart(item.option, { seriesItemTemplate, controls, position, size, imgSrc, type });
+      const { imgSrc, controls, type, seriesItemTemplate, option } = item;
+
+      component.appendChart(option, { seriesItemTemplate, controls, position, size, imgSrc, type });
       return;
     }
+
     if (monitor.getItemType() === SPLIT) {
+      if (monitor.didDrop()) return;
+
       const item = monitor.getItem() as IDraggableSplitResult;
+      component.setState({
+        splitContainer: item.mode
+      });
       return;
     }
   }

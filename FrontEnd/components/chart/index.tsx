@@ -12,6 +12,7 @@ export interface IChartConfig {
   option: IChartOption;
   readonly seriesItemTemplate: Readonly<ISeriesItemTemplate>;
   type: ChartType;
+  mode: 'responsive' | 'absolute';
   scale: {
     x: number;
     y: number;
@@ -93,17 +94,17 @@ export class Chart extends React.Component<IChartProps, undefined> {
   }
 
   render() {
-    const { size, position, scale, index, isMask, onChartClick, id } = this.props;
+    const { size, position, scale, index, isMask, onChartClick, id, mode } = this.props;
     const cls = classNames('chart-container', {
       'chart-container-mask': isMask
     });
     const transform = `scale(${scale.x},${scale.y})`;
+    const positionType = mode === 'absolute' ? 'absolute' : 'static';
 
     return (
       <div
-        onClick={(e) => onChartClick(e, id)}
-        className={cls}
-        style={{ ...size, ...position, position: 'absolute', transform, zIndex: index }} ref={this.elRef}>
+        onClick={(e) => onChartClick(e, id)} className={cls}
+        style={{ ...size, ...position, position: positionType, transform, zIndex: index }} ref={this.elRef}>
         <img src={loading} className='chart_loading' />
       </div >
     );

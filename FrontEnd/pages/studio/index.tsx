@@ -169,7 +169,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     let chartsClipboardCopyed: IChartConfig[] = [];
     for (let i = 0, length = this.chartsClipboard.length; i < length; i++) {
       chartsClipboardCopyed.push(Object.assign({}, this.chartsClipboard[i]));
-      chartsClipboardCopyed[i].id = Date.now() + 1000000 * (i + 1);
+      chartsClipboardCopyed[i].id = Date.now() + 1525010857275 + i;
     }
     this.setState({
       charts: update(this.state.charts, {
