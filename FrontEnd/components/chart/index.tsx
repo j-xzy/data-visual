@@ -99,7 +99,12 @@ export class Chart extends React.Component<IChartProps, undefined> {
       'chart-container-mask': isMask
     });
     const transform = `scale(${scale.x},${scale.y})`;
-    const positionType = mode === 'absolute' ? 'absolute' : 'static';
+
+    let positionType: any = 'relative';
+
+    if (mode === 'absolute') {
+      positionType = 'absolute';
+    }
 
     return (
       <div

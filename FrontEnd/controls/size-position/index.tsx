@@ -74,7 +74,7 @@ export default class SizePosition extends React.Component<IControlProps, undefin
   render() {
     let { position: { left, top }, size: { width, height } } = this.props.chart;
     left = this.round(left), top = this.round(top),
-      width = this.round(width), height = this.round(height);
+      width = this.round(width as number), height = this.round(height as number);
     return (
       <div>
         <Item name='尺寸'>

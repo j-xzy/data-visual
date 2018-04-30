@@ -69,4 +69,8 @@ describe('<Chart />', () => {
     nextChart = wrapper.instance().chart;
     expect(lastChart).not.toEqual(nextChart);
   });
+
+  test('mode === "responsive"', () => {
+    // todo
+  });
 });

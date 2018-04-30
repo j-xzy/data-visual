@@ -6,7 +6,7 @@ import { IChartOption, Controls, ChartType, ISeriesItemTemplate } from '@charts'
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
-import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HOVER_CHART } from '@pages/studio';
+import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HOVER_CHART, idMapIndex } from '@pages/studio';
 import { IDraggableSplitResult } from '@container/draggable-split';
 import SplitContainer from '@container/split-container';
 
@@ -54,8 +54,6 @@ export const OFFSET_POSITION = {
   left: 10,
   top: 10
 };
-
-export const idMapIndex: Map<number, number> = new Map(); // chart'id map charts's index
 
 const DEFAULT_WIDTH = 300;
 const DEFAULT_HEIGHT = 300;
@@ -218,6 +216,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
       x: (postion.x - this.lastMousePosition.x) / canvasScale,
       y: (postion.y - this.lastMousePosition.y) / canvasScale
     };
+
     const chartIndex = idMapIndex.get(chartId);
     const chart = this.props.charts[chartIndex];
 
@@ -324,13 +323,10 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   renderCharts() {
     const { charts, hoverChartId } = this.props;
-    idMapIndex.clear();
     return charts.map((chart, idx) => {
       const { id } = chart;  // key must be chartId
 
-      // set map
       const isMask = hoverChartId !== NO_HOVER_CHART && hoverChartId === id;
-      idMapIndex.set(id, idx);
 
       return (
         <Chart  {...chart} onChartClick={this.chartClick} id={id} key={id} isMask={isMask} index={idx} >
@@ -346,7 +342,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   setTransformToolsState(charts: ReadonlyArray<IChartConfig>, choosedChartIds: ReadonlyArray<number>) {
     let newTransformTools: ITransformTools = {};
     for (const chart of charts) {
-      if (!choosedChartIds.includes(chart.id)) {
+      if (!choosedChartIds.includes(chart.id) || chart.mode === 'responsive') {
         continue;
       }
 
@@ -373,9 +369,34 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     });
   }
 
-  componentWillReceiveProps(nextProps: ICanvasProps) {
-    this.setTransformToolsState(nextProps.charts, nextProps.choosedChartIds);
+  static getDerivedStateFromProps(nextProps: ICanvasProps) {
+    const { charts, choosedChartIds } = nextProps;
+    let newTransformTools: ITransformTools = {};
+    for (const chart of charts) {
+      if (!choosedChartIds.includes(chart.id) || chart.mode === 'responsive') {
+        continue;
+      }
+
+      const {
+        position: { left, top },
+        size: { width, height }, id,
+        scale: { x: scaleX, y: scaleY }
+      } = chart;
+
+      const toolSize = {
+        width: scaleX * width,
+        height: scaleY * height
+      };
+
+      const toolPosition = {
+        left: left - width * (scaleX - 1) / 2,
+        top: top - height * (scaleY - 1) / 2
+      };
+      newTransformTools[id] = { position: toolPosition, size: toolSize, id };
+    }
+    return { transformTools: newTransformTools };
   }
+
 
   render() {
     const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState, charts, hoverChartId } = this.props;
@@ -393,8 +414,14 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
             && <SplitContainer hoverChartId={hoverChartId} charts={charts}
               updateStudioState={updateStudioState} mode={splitContainer} />
           }
-          {this.renderCharts()}
-          {this.renderTransformTools()}
+          {
+            splitContainer === 'none'
+            && this.renderCharts()
+          }
+          {
+            splitContainer === 'none'
+            && this.renderTransformTools()
+          }
         </div>
       </div>
     );
@@ -402,11 +429,12 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 }
 
 const boxTarget = {
-  drop(pros: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
+  drop(props: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
     if (monitor.getItemType() === PREVIEW_CHART) {
       if (component.state.splitContainer !== 'none') return;
 
       const item = monitor.getItem() as IDraggableChartPreivewResult;
+
       const { x, y } = monitor.getClientOffset();
       let { left, top } = component.getPotionByCanvas(x, y);
       const position = {
@@ -423,10 +451,16 @@ const boxTarget = {
     if (monitor.getItemType() === SPLIT) {
       if (monitor.didDrop()) return;
 
+      if (props.charts.length > 0) {
+        alert('请先删除自由布局图表');
+        return;
+      }
+
       const item = monitor.getItem() as IDraggableSplitResult;
       component.setState({
         splitContainer: item.mode
       });
+
       return;
     }
   }

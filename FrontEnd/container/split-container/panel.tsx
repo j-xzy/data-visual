@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { findDOMNode } from 'react-dom';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { SPLIT, PREVIEW_CHART } from '@lib/dragtype';
@@ -68,8 +69,19 @@ const PanelTarget = {
 
     if (monitor.getItemType() === PREVIEW_CHART) {
       const item = monitor.getItem() as IDraggableChartPreivewResult;
-      const { imgSrc, controls, type, seriesItemTemplate, option } = item;
-      props.appendChart({ ...item, mode: 'responsive', scale: { x: 1, y: 1 }, size: { width: 1, height: 1 }, position: { top: 1, left: 1 }, colorFromGlobal: false, id: props.id });
+      const style = window.getComputedStyle((findDOMNode(component) as Element), null);
+      let width = parseFloat(style.width);
+      let height = parseFloat(style.height);
+
+      props.appendChart({
+        ...item,
+        mode: 'responsive',
+        scale: { x: 1, y: 1 },
+        size: { width, height },
+        position: { top: 0, left: 0 },
+        colorFromGlobal: false,
+        id: props.id
+      });
     }
   }
 };

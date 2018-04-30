@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { DragDropContext } from 'react-dnd';
+import { Alert } from 'antd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import Slider from '@base/slider';
@@ -58,6 +59,9 @@ export const MAX_SCALE_VALUE = 10;
 
 export const Context: React.Context<IContextValue> = React.createContext();
 
+// chart'id map charts's index
+export const idMapIndex: Map<number, number> = new Map();
+
 class RawStudio extends React.Component<undefined, IStudioState> {
   constructor() {
     super(undefined);
@@ -102,6 +106,13 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   updateStudioState(state: IStudioState, callback?: () => void) {
+    // re-build map
+    if (state.charts) {
+      idMapIndex.clear();
+      state.charts.forEach((chart, idx) => {
+        idMapIndex.set(chart.id, idx);
+      });
+    }
     this.setState({ ...state }, () => { typeof callback === 'function' && callback(); });
   }
 

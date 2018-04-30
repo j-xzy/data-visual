@@ -1,4 +1,5 @@
 import * as React from 'react';
+import update from 'immutability-helper';
 import Panel from './panel';
 import { Mode } from '@container/draggable-split';
 import { IUpdateStudioState } from '@pages/studio';
@@ -109,8 +110,13 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     return { topDelta, leftDelta };
   }
 
-  appendChart(id: number, chart: IChartConfig) {
+  appendChart(chart: IChartConfig) {
     const { updateStudioState, charts } = this.props;
+    updateStudioState({
+      charts: update(charts, {
+        $push: [chart]
+      })
+    });
   }
 
   render(): JSX.Element {
@@ -152,7 +158,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
       <div className='split_container' onMouseMove={this.handleMove} ref={this.elRef} style={{ flexDirection }} >
         <Panel size={firstPanelSize} borderType={mode === 'vertical' ? 'right' : 'bottom'}
           onDrop={this.handleFirstDrop} hoverChartId={hoverChartId} chart={firshtChart} id={this.firstPanelId}
-          appendChart={(chart) => this.appendChart(this.firstPanelId, chart)}>
+          appendChart={this.appendChart}>
           {
             firstPanelMode !== 'none'
             && <SplitContainer charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={firstPanelMode} />
@@ -160,7 +166,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
         </Panel>
         <MiddleLine style={middleStyle} onDown={this.handleDown} />
         <Panel size={secondPanelSize} hoverChartId={hoverChartId} onDrop={this.handleSecondDrop} id={this.secondPanelId} chart={secondChart}
-          appendChart={(chart) => this.appendChart(this.firstPanelId, chart)}>
+          appendChart={this.appendChart}>
           {
             secondtPanelMode !== 'none'
             && <SplitContainer charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={secondtPanelMode} />
