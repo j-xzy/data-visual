@@ -411,7 +411,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         <div className='canvas' ref={this.canvasRef}>
           {
             splitContainer !== 'none'
-            && <SplitContainer hoverChartId={hoverChartId} charts={charts}
+            && <SplitContainer canvasScale={canvasScale} hoverChartId={hoverChartId} charts={charts}
               updateStudioState={updateStudioState} mode={splitContainer} />
           }
           {

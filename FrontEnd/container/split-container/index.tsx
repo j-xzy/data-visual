@@ -2,21 +2,21 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import Panel from './panel';
 import { Mode } from '@container/draggable-split';
-import { IUpdateStudioState } from '@pages/studio';
+import { IUpdateStudioState, idMapIndex } from '@pages/studio';
 import { IChartConfig } from '@components/chart';
 
 import './style.styl';
 
-type Size = {
-  width?: string;
-  height?: string;
-};
+interface Size<T extends number | string> {
+  width?: T;
+  height?: T;
+}
 
 interface IState {
   firstPanelMode: Mode | 'none';
   secondtPanelMode: Mode | 'none';
-  firstPanelSize: Size;
-  secondPanelSize: Size;
+  firstPanelSize: Size<string>;
+  secondPanelSize: Size<string>;
   topDelta: number;
   leftDelta: number;
 }
@@ -26,6 +26,7 @@ interface IProps {
   updateStudioState: IUpdateStudioState;
   charts: ReadonlyArray<IChartConfig>;
   hoverChartId: number;
+  canvasScale: number;
 }
 
 export default class SplitContainer extends React.Component<IProps, IState> {
@@ -33,9 +34,10 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     super(props);
     this.handleFirstDrop = this.handleFirstDrop.bind(this);
     this.handleSecondDrop = this.handleSecondDrop.bind(this);
-    this.handleMove = this.handleMove.bind(this);
-    this.handleDown = this.handleDown.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMousDown = this.handleMousDown.bind(this);
     this.appendChart = this.appendChart.bind(this);
+    this.handleChangeSize = this.handleChangeSize.bind(this);
 
     let size = { width: '100%', height: '100%' };
     props.mode === 'horizontal' ? size.height = '50%' : size.width = '50%';
@@ -49,13 +51,15 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     };
 
     this.firstPanelId = Date.now();
-    this.secondPanelId = Date.now() + 0.1;
+    this.secondPanelId = Date.now() + 1;
   }
 
   isOnChangeSize = false;
   elRef: React.RefObject<HTMLDivElement> = React.createRef();
-  firstPanelId: number;
-  secondPanelId: number;
+  firstContainerRef: React.RefObject<SplitContainer> = React.createRef();
+  secondContainerRef: React.RefObject<SplitContainer> = React.createRef();
+  firstPanelId: number; // chart's id
+  secondPanelId: number; // chart's id
 
   handleFirstDrop(mode: Mode) {
     this.setState({
@@ -69,32 +73,91 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     });
   }
 
-  handleMove(e: React.MouseEvent<HTMLDivElement>) {
+  handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (e.buttons !== 1 || !this.isOnChangeSize) {
       this.isOnChangeSize = false;
       return;
     }
+
     let x = e.clientX, y = e.clientY;
     let rect = this.elRef.current.getBoundingClientRect();
     let width = rect.width, height = rect.height,
       top = rect.top, left = rect.left;
 
+    // set panel position and size
+    let firstPanelSize = { ...this.state.firstPanelSize };
+    let secondPanelSize = { ...this.state.secondPanelSize };
+    let ratio: number;
+    let flag: 'height' | 'width';
+
     if (this.props.mode === 'horizontal') {
-      let ratio = (y - top) / height * 100;
-      this.setState({
-        firstPanelSize: { height: ratio + '%' },
-        secondPanelSize: { height: 100 - ratio + '%' }
-      });
+      ratio = (y - top) / height * 100;
+      flag = 'height';
     } else {
-      let ratio = (x - left) / width * 100;
-      this.setState({
-        firstPanelSize: { width: ratio + '%' },
-        secondPanelSize: { width: 100 - ratio + '%' }
-      });
+      ratio = (x - left) / width * 100;
+      flag = 'width';
+    }
+    firstPanelSize[flag] = ratio + '%';
+    secondPanelSize[flag] = 100 - ratio + '%';
+
+    this.setState({ firstPanelSize, secondPanelSize });
+
+    let newCharts: IChartConfig[] = [...this.props.charts];
+    this.handleChangeSize(newCharts); // recursion
+  }
+
+  handleChangeSize(newCharts: IChartConfig[]) {
+    const { charts, updateStudioState } = this.props;
+
+    let firshtChartIdx = idMapIndex.get(this.firstPanelId);
+    let secondChartIdx = idMapIndex.get(this.secondPanelId);
+
+    if (typeof firshtChartIdx !== 'undefined') {
+      let chart = this.getChartPositionAndScale('first', charts[firshtChartIdx]);
+      newCharts[firshtChartIdx] = chart;
+    }
+
+    if (typeof secondChartIdx !== 'undefined') {
+      let chart = this.getChartPositionAndScale('second', charts[secondChartIdx]);
+      newCharts[secondChartIdx] = chart;
+    }
+
+    this.firstContainerRef.current && this.firstContainerRef.current.handleChangeSize(newCharts);
+    this.secondContainerRef.current && this.secondContainerRef.current.handleChangeSize(newCharts);
+
+    if (!this.firstContainerRef.current && !this.secondContainerRef.current) {
+      updateStudioState({ charts: newCharts });
     }
   }
 
-  handleDown() {
+  getChartPositionAndScale(firstOrSecond: 'first' | 'second', chart: IChartConfig) {
+    const panelSizeType = firstOrSecond === 'first' ? 'firstPanelSize' : 'secondPanelSize';
+    const { width, height } = this.state[panelSizeType];
+
+    const rect = this.elRef.current.getBoundingClientRect();
+    let radioWidth = rect.width / 100, radioHeight = rect.height / 100;
+
+    const panelSize = {
+      width: radioWidth * parseFloat(width),
+      height: radioHeight * parseFloat(height)
+    };
+
+    const chartScale = {
+      x: panelSize.width / chart.size.width / this.props.canvasScale,
+      y: panelSize.height / chart.size.height / this.props.canvasScale
+    };
+    const chartPosition = {
+      left: chart.size.width * (chartScale.x - 1) / 2,
+      top: chart.size.height * (chartScale.y - 1) / 2
+    };
+
+    return update(chart, {
+      position: { $merge: chartPosition },
+      scale: { $set: chartScale }
+    });
+  }
+
+  handleMousDown() {
     this.isOnChangeSize = true;
   }
 
@@ -143,33 +206,25 @@ export default class SplitContainer extends React.Component<IProps, IState> {
       middleStyle.cursor = 'ew-resize';
     }
 
-    // find chart by id
-    let firshtChart: IChartConfig, secondChart: IChartConfig;
-    for (let i = 0, length = charts.length; i < length; i++) {
-      if (charts[i].id === this.firstPanelId) {
-        firshtChart = charts[i];
-      }
-      if (charts[i].id === this.secondPanelId) {
-        secondChart = charts[i];
-      }
-    }
+    let firshtChart = charts[idMapIndex.get(this.firstPanelId)];
+    let secondChart = charts[idMapIndex.get(this.secondPanelId)];
 
     return (
-      <div className='split_container' onMouseMove={this.handleMove} ref={this.elRef} style={{ flexDirection }} >
+      <div className='split_container' onMouseMove={this.handleMouseMove} ref={this.elRef} style={{ flexDirection }} >
         <Panel size={firstPanelSize} borderType={mode === 'vertical' ? 'right' : 'bottom'}
           onDrop={this.handleFirstDrop} hoverChartId={hoverChartId} chart={firshtChart} id={this.firstPanelId}
           appendChart={this.appendChart}>
           {
             firstPanelMode !== 'none'
-            && <SplitContainer charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={firstPanelMode} />
+            && <SplitContainer canvasScale={this.props.canvasScale} ref={this.firstContainerRef} charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={firstPanelMode} />
           }
         </Panel>
-        <MiddleLine style={middleStyle} onDown={this.handleDown} />
+        <MiddleLine style={middleStyle} onDown={this.handleMousDown} />
         <Panel size={secondPanelSize} hoverChartId={hoverChartId} onDrop={this.handleSecondDrop} id={this.secondPanelId} chart={secondChart}
           appendChart={this.appendChart}>
           {
             secondtPanelMode !== 'none'
-            && <SplitContainer charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={secondtPanelMode} />
+            && <SplitContainer canvasScale={this.props.canvasScale} ref={this.secondContainerRef} charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={secondtPanelMode} />
           }
         </Panel>
       </div>
