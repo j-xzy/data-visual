@@ -62,6 +62,7 @@ export const Context: React.Context<IContextValue> = React.createContext();
 // chart'id map charts's index
 export const idMapIndex: Map<number, number> = new Map();
 
+// important: must use updateStudioState method to change state !!!
 class RawStudio extends React.Component<undefined, IStudioState> {
   constructor() {
     super(undefined);
@@ -105,7 +106,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.contentRef.current.style.paddingTop = paddingTop;
   }
 
-  updateStudioState(state: IStudioState, callback?: () => void) {
+  updateStudioState: IUpdateStudioState = (state: IStudioState, callback?: () => void) => {
     // re-build map
     if (state.charts) {
       idMapIndex.clear();
@@ -117,25 +118,21 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   handleContentClick() {
-    this.setState({ choosedChartIds: [] });
+    this.updateStudioState({ choosedChartIds: [] });
   }
 
   handleSliderChange(value: number) {
-    this.setState({
-      canvasScale: value
-    });
+    this.updateStudioState({ canvasScale: value });
   }
 
   handleSliderPlusClick() {
-    this.setState(({ canvasScale }) => {
-      return { canvasScale: canvasScale + 0.3 };
-    });
+    let canvasScale = this.state.canvasScale;
+    this.updateStudioState({ canvasScale: canvasScale + 0.3 });
   }
 
   handleSliderMinusClick() {
-    this.setState(({ canvasScale }) => {
-      return { canvasScale: canvasScale - 0.3 };
-    });
+    let canvasScale = this.state.canvasScale;
+    this.updateStudioState({ canvasScale: canvasScale - 0.3 });
   }
 
   onKeyDown(e: KeyboardEvent) {
@@ -182,7 +179,8 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       chartsClipboardCopyed.push(Object.assign({}, this.chartsClipboard[i]));
       chartsClipboardCopyed[i].id = Date.now() + 1525010857275 + i;
     }
-    this.setState({
+
+    this.updateStudioState({
       charts: update(this.state.charts, {
         $push: chartsClipboardCopyed
       }),
@@ -197,16 +195,12 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   deleteChoosedChart() {
     if (this.state.choosedChartIds.length === 0)
       return;
-    this.setState(({ charts, choosedChartIds }) => {
-      let newCharts: IChartConfig[] = [];
-      charts.forEach((chart, idx) => {
-        !choosedChartIds.includes(chart.id) && newCharts.push(chart);
-      });
-      return {
-        charts: newCharts,
-        choosedChartIds: []
-      };
+    let newCharts: IChartConfig[] = [];
+    const { charts, choosedChartIds } = this.state;
+    charts.forEach((chart, idx) => {
+      !choosedChartIds.includes(chart.id) && newCharts.push(chart);
     });
+    this.updateStudioState({ charts: newCharts, choosedChartIds: [] });
   }
 
   componentDidMount() {

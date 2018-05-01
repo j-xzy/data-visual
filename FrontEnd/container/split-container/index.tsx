@@ -37,7 +37,8 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMousDown = this.handleMousDown.bind(this);
     this.appendChart = this.appendChart.bind(this);
-    this.handleChangeSize = this.handleChangeSize.bind(this);
+    this.recurseSplit = this.recurseSplit.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
 
     let size = { width: '100%', height: '100%' };
     props.mode === 'horizontal' ? size.height = '50%' : size.width = '50%';
@@ -103,27 +104,27 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     this.setState({ firstPanelSize, secondPanelSize });
 
     let newCharts: IChartConfig[] = [...this.props.charts];
-    this.handleChangeSize(newCharts); // recursion
+    this.recurseSplit(newCharts, this.getChartPositionAndScale); // recursion
   }
 
-  handleChangeSize(newCharts: IChartConfig[]) {
+  recurseSplit(newCharts: IChartConfig[], func: any) {
     const { charts, updateStudioState } = this.props;
 
     let firshtChartIdx = idMapIndex.get(this.firstPanelId);
     let secondChartIdx = idMapIndex.get(this.secondPanelId);
 
     if (typeof firshtChartIdx !== 'undefined') {
-      let chart = this.getChartPositionAndScale('first', charts[firshtChartIdx]);
+      let chart = func.apply(this, ['first', charts[firshtChartIdx]]);
       newCharts[firshtChartIdx] = chart;
     }
 
     if (typeof secondChartIdx !== 'undefined') {
-      let chart = this.getChartPositionAndScale('second', charts[secondChartIdx]);
+      let chart = func.apply(this, ['second', charts[secondChartIdx]]);
       newCharts[secondChartIdx] = chart;
     }
 
-    this.firstContainerRef.current && this.firstContainerRef.current.handleChangeSize(newCharts);
-    this.secondContainerRef.current && this.secondContainerRef.current.handleChangeSize(newCharts);
+    this.firstContainerRef.current && this.firstContainerRef.current.recurseSplit(newCharts, func);
+    this.secondContainerRef.current && this.secondContainerRef.current.recurseSplit(newCharts, func);
 
     if (!this.firstContainerRef.current && !this.secondContainerRef.current) {
       updateStudioState({ charts: newCharts });
@@ -157,8 +158,30 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     });
   }
 
+  getChartSize(firstOrSecond: 'first' | 'second', chart: IChartConfig) {
+    const size = {
+      width: chart.scale.x * chart.size.width,
+      height: chart.scale.y * chart.size.height
+    };
+    return update(chart, {
+      size: { $set: size },
+      position: { $set: { left: 0, top: 0 } },
+      scale: {
+        $set: { x: 1, y: 1 }
+      }
+    });
+  }
+
   handleMousDown() {
     this.isOnChangeSize = true;
+  }
+
+  handleMouseUp() {
+    if (this.isOnChangeSize) {
+      let newCharts: IChartConfig[] = [...this.props.charts];
+      this.recurseSplit(newCharts, this.getChartSize); // recursion
+    }
+    this.isOnChangeSize = false;
   }
 
   componentDidMount() {
@@ -210,7 +233,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     let secondChart = charts[idMapIndex.get(this.secondPanelId)];
 
     return (
-      <div className='split_container' onMouseMove={this.handleMouseMove} ref={this.elRef} style={{ flexDirection }} >
+      <div className='split_container' onMouseUp={this.handleMouseUp} onMouseMove={this.handleMouseMove} ref={this.elRef} style={{ flexDirection }} >
         <Panel size={firstPanelSize} borderType={mode === 'vertical' ? 'right' : 'bottom'}
           onDrop={this.handleFirstDrop} hoverChartId={hoverChartId} chart={firshtChart} id={this.firstPanelId}
           appendChart={this.appendChart}>
