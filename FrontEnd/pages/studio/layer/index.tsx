@@ -2,7 +2,7 @@ import * as React from 'react';
 import update from 'immutability-helper';
 import { Tooltip } from 'antd';
 import LayerItem from '@container/draggable-layer-item';
-import { Charts, IUpdateStudioState, NO_HOVER_CHART } from '@pages/studio';
+import { Charts, IUpdateStudioState, NO_HIGHLIGHT_CHART } from '@pages/studio';
 import { IChartConfig } from '@components/chart';
 import * as tools from '@lib/tools';
 
@@ -60,13 +60,13 @@ export default class Layer extends React.Component<IProps, IState> {
 
   handleMouseEnter(id: number) {
     this.props.updateStudioState({
-      hoverChartId: id
+      highlightChartId: id
     });
   }
 
   handleMouseLeave() {
     this.props.updateStudioState({
-      hoverChartId: NO_HOVER_CHART
+      highlightChartId: NO_HIGHLIGHT_CHART
     });
   }
 

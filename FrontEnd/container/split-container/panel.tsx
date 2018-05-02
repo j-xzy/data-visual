@@ -13,6 +13,7 @@ interface IProps extends ISplitProps {
 interface ISplitProps {
   borderType?: 'right' | 'bottom' | 'none';
   onDrop: (mode: string) => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   size: {
     height?: string;
     width?: string;
@@ -35,7 +36,7 @@ export class Panel extends React.Component<IProps, undefined> {
   }
 
   render() {
-    const { connectDropTarget, borderType, size, chart } = this.props;
+    const { connectDropTarget, borderType, size, chart, onClick } = this.props;
 
     let borderStyle = {
       borderRight: 'none',
@@ -51,7 +52,7 @@ export class Panel extends React.Component<IProps, undefined> {
     }
 
     return connectDropTarget(
-      <div style={{ ...borderStyle, ...size }}>
+      <div className='split_panel' style={{ ...borderStyle, ...size }} onClick={onClick}>
         {chart ? this.renderChart() : this.props.children}
       </div>
     );

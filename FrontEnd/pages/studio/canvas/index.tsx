@@ -6,7 +6,7 @@ import { IChartOption, Controls, ChartType, ISeriesItemTemplate } from '@charts'
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
-import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HOVER_CHART, idMapIndex } from '@pages/studio';
+import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HIGHLIGHT_CHART, idMapIndex } from '@pages/studio';
 import { IDraggableSplitResult } from '@container/draggable-split';
 import SplitContainer from '@container/split-container';
 
@@ -19,7 +19,7 @@ export interface ICanvasProps {
   colors: string[];
   updateStudioState: IUpdateStudioState;
   choosedChartIds: ReadonlyArray<number>;
-  hoverChartId: number;
+  highlightChartId: number;
 }
 
 type ITransformTools = {
@@ -322,11 +322,11 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   renderCharts() {
-    const { charts, hoverChartId } = this.props;
+    const { charts, highlightChartId } = this.props;
     return charts.map((chart, idx) => {
       const { id } = chart;  // key must be chartId
 
-      const isMask = hoverChartId !== NO_HOVER_CHART && hoverChartId === id;
+      const isMask = highlightChartId !== NO_HIGHLIGHT_CHART && highlightChartId === id;
 
       return (
         <Chart  {...chart} onChartClick={this.chartClick} id={id} key={id} isMask={isMask} index={idx} >
@@ -399,7 +399,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
 
   render() {
-    const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState, charts, hoverChartId } = this.props;
+    const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState, charts, highlightChartId } = this.props;
     const { splitContainer } = this.state;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
@@ -411,7 +411,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         <div className='canvas' ref={this.canvasRef}>
           {
             splitContainer !== 'none'
-            && <SplitContainer canvasScale={canvasScale} hoverChartId={hoverChartId} charts={charts}
+            && <SplitContainer canvasScale={canvasScale} hoverChartId={highlightChartId} charts={charts}
               updateStudioState={updateStudioState} mode={splitContainer} />
           }
           {

@@ -31,7 +31,7 @@ export interface IStudioState {
   charts: Charts;
   colors: string[];
   choosedChartIds: ReadonlyArray<number>;
-  hoverChartId: number;
+  highlightChartId: number;
 }
 
 export interface IUpdateStudioState {
@@ -53,7 +53,7 @@ const DEFAULT_CANVASSIZE: CanvasSizeType = {
 };
 
 const DEFAULT_CANVASSCALE = 1;
-export const NO_HOVER_CHART = -1;
+export const NO_HIGHLIGHT_CHART = -1;
 export const MIN_SCALE_VALUE = 0.01;
 export const MAX_SCALE_VALUE = 10;
 
@@ -83,7 +83,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       colors: defaultColor,
       charts: [],
       choosedChartIds: [],
-      hoverChartId: NO_HOVER_CHART
+      highlightChartId: NO_HIGHLIGHT_CHART
     };
   }
 
@@ -118,7 +118,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   handleContentClick() {
-    this.updateStudioState({ choosedChartIds: [] });
+    this.updateStudioState({ choosedChartIds: [], highlightChartId: NO_HIGHLIGHT_CHART });
   }
 
   handleSliderChange(value: number) {
@@ -219,7 +219,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, charts, choosedChartIds, hoverChartId, colors } = this.state;
+    const { canvasSize, canvasScale, charts, choosedChartIds, highlightChartId, colors } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
@@ -237,7 +237,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
           <div className='st_content' onClick={this.handleContentClick}>
             <div ref={this.contentRef} className='canvas_wrapper'>
               <Canvas
-                canvasScale={canvasScale} size={canvasSize} hoverChartId={hoverChartId}
+                canvasScale={canvasScale} size={canvasSize} highlightChartId={highlightChartId}
                 charts={charts} updateStudioState={this.updateStudioState}
                 choosedChartIds={choosedChartIds} colors={colors}>
               </Canvas>

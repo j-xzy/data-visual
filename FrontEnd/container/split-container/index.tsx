@@ -39,6 +39,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     this.appendChart = this.appendChart.bind(this);
     this.recurseSplit = this.recurseSplit.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handlePanelClick = this.handlePanelClick.bind(this);
 
     let size = { width: '100%', height: '100%' };
     props.mode === 'horizontal' ? size.height = '50%' : size.width = '50%';
@@ -205,6 +206,19 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     });
   }
 
+  handlePanelClick(e: React.MouseEvent<HTMLDivElement>, panel: 'first' | 'second') {
+    e.stopPropagation();
+    const chartId = panel === 'first' ? this.firstPanelId : this.secondPanelId;
+    if (!idMapIndex.has(chartId))
+      return;
+
+    const chartIdx = idMapIndex.get(chartId);
+    const { updateStudioState, charts } = this.props;
+    updateStudioState({
+      highlightChartId: chartId
+    });
+  }
+
   render(): JSX.Element {
     let { mode, updateStudioState, charts, hoverChartId } = this.props;
     const { firstPanelSize, secondPanelSize, firstPanelMode, secondtPanelMode, topDelta, leftDelta } = this.state;
@@ -234,7 +248,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
 
     return (
       <div className='split_container' onMouseUp={this.handleMouseUp} onMouseMove={this.handleMouseMove} ref={this.elRef} style={{ flexDirection }} >
-        <Panel size={firstPanelSize} borderType={mode === 'vertical' ? 'right' : 'bottom'}
+        <Panel onClick={(e) => this.handlePanelClick(e, 'first')} size={firstPanelSize} borderType={mode === 'vertical' ? 'right' : 'bottom'}
           onDrop={this.handleFirstDrop} hoverChartId={hoverChartId} chart={firshtChart} id={this.firstPanelId}
           appendChart={this.appendChart}>
           {
@@ -243,7 +257,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
           }
         </Panel>
         <MiddleLine style={middleStyle} onDown={this.handleMousDown} />
-        <Panel size={secondPanelSize} hoverChartId={hoverChartId} onDrop={this.handleSecondDrop} id={this.secondPanelId} chart={secondChart}
+        <Panel onClick={(e) => this.handlePanelClick(e, 'second')} size={secondPanelSize} hoverChartId={hoverChartId} onDrop={this.handleSecondDrop} id={this.secondPanelId} chart={secondChart}
           appendChart={this.appendChart}>
           {
             secondtPanelMode !== 'none'
