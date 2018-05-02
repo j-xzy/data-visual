@@ -19,8 +19,8 @@ interface ISplitProps {
     width?: string;
   };
   appendChart: (chart: IChartConfig) => void;
-  hoverChartId: number;
   chart: IChartConfig;
+  isMask: boolean;
   id: number;
 }
 
@@ -30,9 +30,9 @@ export class Panel extends React.Component<IProps, undefined> {
   }
 
   renderChart() {
-    const { chart, id, hoverChartId } = this.props;
-    const isMask = hoverChartId === id;
-    return <Chart {...chart} onChartClick={() => { }} id={id} key={id} isMask={isMask} index={1} />;
+    const { chart, id, isMask } = this.props;
+
+    return <Chart {...chart} id={id} key={id} isMask={isMask} index={1} />;
   }
 
   render() {

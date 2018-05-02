@@ -23,8 +23,10 @@ interface IState {
 
 interface IProps {
   mode: Mode | 'none';
+  choosedChartIds: ReadonlyArray<number>;
   updateStudioState: IUpdateStudioState;
   charts: ReadonlyArray<IChartConfig>;
+  unmount: () => void;
   hoverChartId: number;
   canvasScale: number;
 }
@@ -208,19 +210,36 @@ export default class SplitContainer extends React.Component<IProps, IState> {
 
   handlePanelClick(e: React.MouseEvent<HTMLDivElement>, panel: 'first' | 'second') {
     e.stopPropagation();
+    const { updateStudioState, choosedChartIds } = this.props;
     const chartId = panel === 'first' ? this.firstPanelId : this.secondPanelId;
-    if (!idMapIndex.has(chartId))
-      return;
 
-    const chartIdx = idMapIndex.get(chartId);
-    const { updateStudioState, charts } = this.props;
+    if (e.shiftKey) {
+      return;
+    }
+    if (!idMapIndex.has(chartId)) {
+      updateStudioState({
+        choosedChartIds: []
+      });
+      return;
+    }
+
+    let newChoosedChartIds = [chartId];
+    if (e.ctrlKey) {
+      newChoosedChartIds.push(...choosedChartIds);
+    }
     updateStudioState({
-      highlightChartId: chartId
+      choosedChartIds: newChoosedChartIds
     });
   }
 
+  handleChildUnmout(child: 'first' | 'second') {
+    child === 'first' ?
+      this.setState({ firstPanelMode: 'none' }) :
+      this.setState({ secondtPanelMode: 'none' });
+  }
+
   render(): JSX.Element {
-    let { mode, updateStudioState, charts, hoverChartId } = this.props;
+    let { mode, updateStudioState, charts, hoverChartId, choosedChartIds } = this.props;
     const { firstPanelSize, secondPanelSize, firstPanelMode, secondtPanelMode, topDelta, leftDelta } = this.state;
 
     let flexDirection: any = mode === 'horizontal' ? 'column' : 'row';
@@ -243,25 +262,30 @@ export default class SplitContainer extends React.Component<IProps, IState> {
       middleStyle.cursor = 'ew-resize';
     }
 
-    let firshtChart = charts[idMapIndex.get(this.firstPanelId)];
-    let secondChart = charts[idMapIndex.get(this.secondPanelId)];
+    const firstChart = charts[idMapIndex.get(this.firstPanelId)];
+    const firstChartchoosed = choosedChartIds.includes(this.firstPanelId);
+
+    const secondChart = charts[idMapIndex.get(this.secondPanelId)];
+    const secondChartchoosed = choosedChartIds.includes(this.secondPanelId);
 
     return (
       <div className='split_container' onMouseUp={this.handleMouseUp} onMouseMove={this.handleMouseMove} ref={this.elRef} style={{ flexDirection }} >
-        <Panel onClick={(e) => this.handlePanelClick(e, 'first')} size={firstPanelSize} borderType={mode === 'vertical' ? 'right' : 'bottom'}
-          onDrop={this.handleFirstDrop} hoverChartId={hoverChartId} chart={firshtChart} id={this.firstPanelId}
-          appendChart={this.appendChart}>
+        <Panel onClick={(e) => this.handlePanelClick(e, 'first')} size={firstPanelSize}
+          borderType={mode === 'vertical' ? 'right' : 'bottom'} onDrop={this.handleFirstDrop}
+          isMask={firstChartchoosed} chart={firstChart} id={this.firstPanelId} appendChart={this.appendChart}>
           {
             firstPanelMode !== 'none'
-            && <SplitContainer canvasScale={this.props.canvasScale} ref={this.firstContainerRef} charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={firstPanelMode} />
+            && <SplitContainer unmount={() => this.handleChildUnmout('first')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
+              ref={this.firstContainerRef} charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={firstPanelMode} />
           }
         </Panel>
-        <MiddleLine style={middleStyle} onDown={this.handleMousDown} />
-        <Panel onClick={(e) => this.handlePanelClick(e, 'second')} size={secondPanelSize} hoverChartId={hoverChartId} onDrop={this.handleSecondDrop} id={this.secondPanelId} chart={secondChart}
-          appendChart={this.appendChart}>
+        <MiddleLine style={middleStyle} onDown={this.handleMousDown} onClick={null} />
+        <Panel onClick={(e) => this.handlePanelClick(e, 'second')} size={secondPanelSize} onDrop={this.handleSecondDrop} id={this.secondPanelId} chart={secondChart}
+          appendChart={this.appendChart} isMask={secondChartchoosed}>
           {
             secondtPanelMode !== 'none'
-            && <SplitContainer canvasScale={this.props.canvasScale} ref={this.secondContainerRef} charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={secondtPanelMode} />
+            && <SplitContainer unmount={() => this.handleChildUnmout('second')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
+              ref={this.secondContainerRef} charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={secondtPanelMode} />
           }
         </Panel>
       </div>
@@ -272,10 +296,11 @@ export default class SplitContainer extends React.Component<IProps, IState> {
 interface IMiddleLineProps {
   onDown: () => void;
   style: React.CSSProperties;
+  onClick: () => void;
 }
 
 function MiddleLine(props: IMiddleLineProps) {
   return (
-    <div className='middleline' onMouseDownCapture={props.onDown} style={{ ...props.style, zIndex: 800 }}></div>
+    <div className='middleline' onClick={props.onClick} onMouseDownCapture={props.onDown} style={{ ...props.style, zIndex: 800 }}></div>
   );
 }

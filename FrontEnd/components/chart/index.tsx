@@ -35,7 +35,7 @@ export interface IChartProps extends IChartConfig {
   key: number;
   index: number;
   isMask: boolean;
-  onChartClick: (e: React.MouseEvent<HTMLElement>, id: number) => void;
+  onChartClick?: (e: React.MouseEvent<HTMLElement>, id: number) => void;
 }
 
 export class Chart extends React.Component<IChartProps, undefined> {
@@ -108,7 +108,7 @@ export class Chart extends React.Component<IChartProps, undefined> {
 
     return (
       <div
-        onClick={(e) => onChartClick(e, id)} className={cls}
+        onClick={onChartClick ? (e) => onChartClick(e, id) : null} className={cls}
         style={{ ...size, ...position, position: positionType, transform, zIndex: index }} ref={this.elRef}>
         <img src={loading} className='chart_loading' />
       </div >

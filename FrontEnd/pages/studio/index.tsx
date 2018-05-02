@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { DragDropContext } from 'react-dnd';
-import { Alert } from 'antd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import Slider from '@base/slider';

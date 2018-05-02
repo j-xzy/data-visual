@@ -76,6 +76,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     this.handleCanvasWheel = this.handleCanvasWheel.bind(this);
     this.getChartAfterMouseMove = this.getChartAfterMouseMove.bind(this);
     this.getChartConfigWhileMousemove = this.getChartConfigWhileMousemove.bind(this);
+    this.unmountSplitContainer = this.unmountSplitContainer.bind(this);
 
     this.state = {
       transformTools: {}, // depends on props.choosedChartIds
@@ -369,6 +370,12 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     });
   }
 
+  unmountSplitContainer() {
+    this.setState({
+      splitContainer: 'none'
+    });
+  }
+
   static getDerivedStateFromProps(nextProps: ICanvasProps) {
     const { charts, choosedChartIds } = nextProps;
     let newTransformTools: ITransformTools = {};
@@ -399,7 +406,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
 
   render() {
-    const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState, charts, highlightChartId } = this.props;
+    const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState, charts, highlightChartId, choosedChartIds } = this.props;
     const { splitContainer } = this.state;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
@@ -411,7 +418,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         <div className='canvas' ref={this.canvasRef}>
           {
             splitContainer !== 'none'
-            && <SplitContainer canvasScale={canvasScale} hoverChartId={highlightChartId} charts={charts}
+            && <SplitContainer unmount={this.unmountSplitContainer} choosedChartIds={choosedChartIds} canvasScale={canvasScale} hoverChartId={highlightChartId} charts={charts}
               updateStudioState={updateStudioState} mode={splitContainer} />
           }
           {
