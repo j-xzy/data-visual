@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { DropTarget, DropTargetConnector, DropTargetMonitor, ConnectDropTarget } from 'react-dnd';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { SPLIT, PREVIEW_CHART } from '@lib/dragtype';
-import { IDraggableSplitResult } from '@container/draggable-split';
+import { IDraggableSplitResult, Mode } from '@container/draggable-split';
 import { IChartConfig, Chart } from '@components/chart';
 
 interface IProps extends ISplitProps {
@@ -12,7 +12,7 @@ interface IProps extends ISplitProps {
 
 interface ISplitProps {
   borderType?: 'right' | 'bottom' | 'none';
-  onDrop: (mode: string) => void;
+  onDrop: (mode: Mode) => void;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   size: {
     height?: string;

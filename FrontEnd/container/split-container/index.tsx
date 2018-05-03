@@ -1,6 +1,7 @@
 import * as React from 'react';
 import update from 'immutability-helper';
 import Panel from './panel';
+import { tree, INodeData, TreeNode } from './tree';
 import { Mode } from '@container/draggable-split';
 import { IUpdateStudioState, idMapIndex } from '@pages/studio';
 import { IChartConfig } from '@components/chart';
@@ -27,6 +28,7 @@ interface IProps {
   updateStudioState: IUpdateStudioState;
   charts: ReadonlyArray<IChartConfig>;
   unmount: () => void;
+  containerId: number;
   hoverChartId: number;
   canvasScale: number;
 }
@@ -34,8 +36,7 @@ interface IProps {
 export default class SplitContainer extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.handleFirstDrop = this.handleFirstDrop.bind(this);
-    this.handleSecondDrop = this.handleSecondDrop.bind(this);
+    this.handleDrop = this.handleDrop.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMousDown = this.handleMousDown.bind(this);
     this.appendChart = this.appendChart.bind(this);
@@ -45,6 +46,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
 
     let size = { width: '100%', height: '100%' };
     props.mode === 'horizontal' ? size.height = '50%' : size.width = '50%';
+
     this.state = {
       firstPanelMode: 'none',
       secondtPanelMode: 'none',
@@ -56,6 +58,32 @@ export default class SplitContainer extends React.Component<IProps, IState> {
 
     this.firstPanelId = Date.now();
     this.secondPanelId = Date.now() + 1;
+
+    // build tree
+    const type = props.mode === 'horizontal' ? 'column' : 'row';
+
+    const firstChild: INodeData = {
+      id: this.firstPanelId, type: 'none',
+      width: '50%', height: '50%'
+    };
+    const secondChild: INodeData = {
+      id: this.secondPanelId, type: 'none',
+      width: '50%', height: '50%'
+    };
+    let node: TreeNode;
+    if (tree.root === null) {
+      const rootData: INodeData = {
+        id: this.firstPanelId, type,
+        width: '100%', height: '100%'
+      };
+      node = tree.insertAsRoot(rootData);
+    } else {
+      node = tree.getNodeById(tree.root, this.props.containerId);
+      node.updateData(update(node.getData(), { type }));
+    }
+
+    tree.insertAsFirstChild(node, firstChild);
+    tree.insertAsFirstChild(node, secondChild);
   }
 
   isOnChangeSize = false;
@@ -65,15 +93,10 @@ export default class SplitContainer extends React.Component<IProps, IState> {
   firstPanelId: number; // chart's id
   secondPanelId: number; // chart's id
 
-  handleFirstDrop(mode: Mode) {
+  handleDrop(panel: 'first' | 'second', mode: Mode) {
+    const panelType: any = panel === 'first' ? 'firstPanelMode' : 'secondPanelMode';
     this.setState({
-      firstPanelMode: mode
-    });
-  }
-
-  handleSecondDrop(mode: Mode) {
-    this.setState({
-      secondtPanelMode: mode
+      [panelType]: mode
     });
   }
 
@@ -242,7 +265,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     let { mode, updateStudioState, charts, hoverChartId, choosedChartIds } = this.props;
     const { firstPanelSize, secondPanelSize, firstPanelMode, secondtPanelMode, topDelta, leftDelta } = this.state;
 
-    let flexDirection: any = mode === 'horizontal' ? 'column' : 'row';
+    const flexDirection: any = mode === 'horizontal' ? 'column' : 'row';
 
     let middleStyle: React.CSSProperties = {};
     let topDeltaFoo = topDelta, leftDeltaFoo = leftDelta;
@@ -271,20 +294,20 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     return (
       <div className='split_container' onMouseUp={this.handleMouseUp} onMouseMove={this.handleMouseMove} ref={this.elRef} style={{ flexDirection }} >
         <Panel onClick={(e) => this.handlePanelClick(e, 'first')} size={firstPanelSize}
-          borderType={mode === 'vertical' ? 'right' : 'bottom'} onDrop={this.handleFirstDrop}
+          borderType={mode === 'vertical' ? 'right' : 'bottom'} onDrop={(mode) => this.handleDrop('first', mode)}
           isMask={firstChartchoosed} chart={firstChart} id={this.firstPanelId} appendChart={this.appendChart}>
           {
             firstPanelMode !== 'none'
-            && <SplitContainer unmount={() => this.handleChildUnmout('first')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
+            && <SplitContainer containerId={this.firstPanelId} unmount={() => this.handleChildUnmout('first')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
               ref={this.firstContainerRef} charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={firstPanelMode} />
           }
         </Panel>
         <MiddleLine style={middleStyle} onDown={this.handleMousDown} onClick={null} />
-        <Panel onClick={(e) => this.handlePanelClick(e, 'second')} size={secondPanelSize} onDrop={this.handleSecondDrop} id={this.secondPanelId} chart={secondChart}
+        <Panel onClick={(e) => this.handlePanelClick(e, 'second')} size={secondPanelSize} onDrop={(mode) => this.handleDrop('second', mode)} id={this.secondPanelId} chart={secondChart}
           appendChart={this.appendChart} isMask={secondChartchoosed}>
           {
             secondtPanelMode !== 'none'
-            && <SplitContainer unmount={() => this.handleChildUnmout('second')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
+            && <SplitContainer containerId={this.secondPanelId} unmount={() => this.handleChildUnmout('second')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
               ref={this.secondContainerRef} charts={charts} hoverChartId={hoverChartId} updateStudioState={updateStudioState} mode={secondtPanelMode} />
           }
         </Panel>
@@ -295,8 +318,8 @@ export default class SplitContainer extends React.Component<IProps, IState> {
 
 interface IMiddleLineProps {
   onDown: () => void;
-  style: React.CSSProperties;
   onClick: () => void;
+  style: React.CSSProperties;
 }
 
 function MiddleLine(props: IMiddleLineProps) {
