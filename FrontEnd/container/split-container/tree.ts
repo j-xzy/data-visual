@@ -50,22 +50,54 @@ class Tree {
     return node.insertAsSecondChild(data);
   }
 
+  deleteNode(node: TreeNode) {
+    if (node === this.root) {
+      this.root = null;
+      return;
+    }
+    if (node === node.parent.firstChild) {
+      node.parent.firstChild = null;
+    } else {
+      node.parent.secondChild = null;
+    }
+  }
+
   getNodeById(searchBeginNode: TreeNode, id: number) {
     function find(node: TreeNode): TreeNode {
-      if (node === null) return;
+      if (!node) return;
       if (node.data.id === id) {
         return node;
       } else {
         let resultNode = find(node.firstChild);
-        if (resultNode !== null)
+        if (resultNode)
           return resultNode;
 
         resultNode = find(node.secondChild);
-        if (resultNode !== null)
+        if (resultNode)
           return resultNode;
       }
     }
     return find(searchBeginNode);
+  }
+
+  getNodeChildIds(node: TreeNode) {
+    let ids: number[] = [];
+    this.traverseLevel(node, (child) => {
+      ids.push(child.data.id);
+    });
+    return ids;
+  }
+
+  traverseLevel(node: TreeNode, func: (node: TreeNode) => any) {
+    let queue: TreeNode[] = [];
+    queue.push(node);
+    while (queue.length > 0) {
+      const node = queue.shift();
+      func(node);
+
+      if (node.firstChild) queue.push(node.firstChild);
+      if (node.secondChild) queue.push(node.secondChild);
+    }
   }
 }
 

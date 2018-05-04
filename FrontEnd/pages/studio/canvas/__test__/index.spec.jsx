@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { Canvas, CHART_MINI_SIZE, OFFSET_POSITION } from '../index';
 import { Chart } from '@components/chart';
-import { idMapIndex } from '@pages/studio';
+import { idMapIndexChart } from '@pages/studio';
 import { TransformTool, SideType } from '@components/transform-tool';
 
 const chart1 = {
@@ -159,7 +159,7 @@ describe('<Canvas />', () => {
         height: chartStyle.height
       });
     }
-    idMapIndex.clear();
+    idMapIndexChart.clear();
   });
 
   canvasScales.forEach((canvasScale) => {
@@ -170,7 +170,7 @@ describe('<Canvas />', () => {
 
           root.setProps({ charts, canvasScale });
           for (let i = 0; i < count; i++) {
-            idMapIndex.set(charts[i].id, i);
+            idMapIndexChart.set(charts[i].id, i);
             await root.find(Chart).at(i).instance().componentDidMount();
           }
 
@@ -215,7 +215,7 @@ describe('<Canvas />', () => {
     root.setProps({ charts: charts, canvasScale: 1 });
     let renderSpys = [];
     for (let i = 0; i < 3; i++) {
-      idMapIndex.set(charts[i].id, i);
+      idMapIndexChart.set(charts[i].id, i);
       renderSpys[i] = jest.spyOn(root.find(Chart).at(i).instance(), 'render');
       await root.find(Chart).at(i).instance().componentDidMount();
     }

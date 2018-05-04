@@ -6,7 +6,7 @@ import { IChartOption, Controls, ChartType, ISeriesItemTemplate } from '@charts'
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
 import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
-import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HIGHLIGHT_CHART, idMapIndex } from '@pages/studio';
+import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HIGHLIGHT_CHART, idMapIndexChart } from '@pages/studio';
 import { IDraggableSplitResult } from '@container/draggable-split';
 import SplitContainer from '@container/split-container';
 
@@ -20,6 +20,7 @@ export interface ICanvasProps {
   updateStudioState: IUpdateStudioState;
   choosedChartIds: ReadonlyArray<number>;
   highlightChartId: number;
+  choosedSplitId: number;
 }
 
 type ITransformTools = {
@@ -152,7 +153,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   getChartAfterMouseMove(id: number) {
-    const index = idMapIndex.get(id);
+    const index = idMapIndexChart.get(id);
     const charts = this.props.charts;
     const transformTool = this.state.transformTools[id];
     const chart = charts[index];
@@ -218,7 +219,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
       y: (postion.y - this.lastMousePosition.y) / canvasScale
     };
 
-    const chartIndex = idMapIndex.get(chartId);
+    const chartIndex = idMapIndexChart.get(chartId);
     const chart = this.props.charts[chartIndex];
 
     let size = { ...transformTool.size };
@@ -287,7 +288,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   handleCopyClick(id: number) {
     const { charts } = this.props;
-    const index = idMapIndex.get(id);
+    const index = idMapIndexChart.get(id);
     const { option, position: { left, top }, size, imgSrc, controls, type, seriesItemTemplate } = charts[index];
     const position = {
       left: left + OFFSET_POSITION.left,
@@ -299,7 +300,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   handleTrashcanClick(id: number) {
     const { charts, updateStudioState } = this.props;
-    const index = idMapIndex.get(id);
+    const index = idMapIndexChart.get(id);
     updateStudioState({
       charts: update(charts, {
         $splice: [[index, 1]]
@@ -406,7 +407,9 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
 
   render() {
-    const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState, charts, highlightChartId, choosedChartIds } = this.props;
+    const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState,
+      charts, highlightChartId, choosedChartIds, choosedSplitId } = this.props;
+
     const { splitContainer } = this.state;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
@@ -418,7 +421,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         <div className='canvas' ref={this.canvasRef}>
           {
             splitContainer !== 'none'
-            && <SplitContainer containerId={0} unmount={this.unmountSplitContainer} choosedChartIds={choosedChartIds} canvasScale={canvasScale} hoverChartId={highlightChartId} charts={charts}
+            && <SplitContainer choosedSplitId={choosedSplitId} containerId={0} unmount={this.unmountSplitContainer} choosedChartIds={choosedChartIds} canvasScale={canvasScale} highlightChartId={highlightChartId} charts={charts}
               updateStudioState={updateStudioState} mode={splitContainer} />
           }
           {

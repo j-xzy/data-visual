@@ -30,6 +30,7 @@ export interface IStudioState {
   charts: Charts;
   colors: string[];
   choosedChartIds: ReadonlyArray<number>;
+  choosedSplitId: number;
   highlightChartId: number;
 }
 
@@ -53,13 +54,14 @@ const DEFAULT_CANVASSIZE: CanvasSizeType = {
 
 const DEFAULT_CANVASSCALE = 1;
 export const NO_HIGHLIGHT_CHART = -1;
+export const NO_CHOOSED_SPLITID = -1;
 export const MIN_SCALE_VALUE = 0.01;
 export const MAX_SCALE_VALUE = 10;
 
 export const Context: React.Context<IContextValue> = React.createContext();
 
 // chart'id map charts's index
-export const idMapIndex: Map<number, number> = new Map();
+export const idMapIndexChart: Map<number, number> = new Map();
 
 // important: must use updateStudioState method to change state !!!
 class RawStudio extends React.Component<undefined, IStudioState> {
@@ -82,7 +84,8 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       colors: defaultColor,
       charts: [],
       choosedChartIds: [],
-      highlightChartId: NO_HIGHLIGHT_CHART
+      highlightChartId: NO_HIGHLIGHT_CHART,
+      choosedSplitId: NO_CHOOSED_SPLITID
     };
   }
 
@@ -108,16 +111,20 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   updateStudioState: IUpdateStudioState = (state: IStudioState, callback?: () => void) => {
     // re-build map
     if (state.charts) {
-      idMapIndex.clear();
+      idMapIndexChart.clear();
       state.charts.forEach((chart, idx) => {
-        idMapIndex.set(chart.id, idx);
+        idMapIndexChart.set(chart.id, idx);
       });
     }
     this.setState({ ...state }, () => { typeof callback === 'function' && callback(); });
   }
 
   handleContentClick() {
-    this.updateStudioState({ choosedChartIds: [], highlightChartId: NO_HIGHLIGHT_CHART });
+    this.updateStudioState({
+      choosedChartIds: [],
+      choosedSplitId: NO_CHOOSED_SPLITID,
+      highlightChartId: NO_HIGHLIGHT_CHART
+    });
   }
 
   handleSliderChange(value: number) {
@@ -218,7 +225,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, charts, choosedChartIds, highlightChartId, colors } = this.state;
+    const { canvasSize, canvasScale, charts, choosedChartIds, highlightChartId, colors, choosedSplitId } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
@@ -237,7 +244,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
             <div ref={this.contentRef} className='canvas_wrapper'>
               <Canvas
                 canvasScale={canvasScale} size={canvasSize} highlightChartId={highlightChartId}
-                charts={charts} updateStudioState={this.updateStudioState}
+                charts={charts} updateStudioState={this.updateStudioState} choosedSplitId={choosedSplitId}
                 choosedChartIds={choosedChartIds} colors={colors}>
               </Canvas>
             </div>

@@ -13,30 +13,36 @@ interface IProps extends ISplitProps {
 interface ISplitProps {
   borderType?: 'right' | 'bottom' | 'none';
   onDrop: (mode: Mode) => void;
-  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onChartClick: (e: React.MouseEvent<HTMLDivElement>, id: number) => void;
+  onTrashcanClick: (id: number) => void;
   size: {
     height?: string;
     width?: string;
   };
   appendChart: (chart: IChartConfig) => void;
   chart: IChartConfig;
-  isMask: boolean;
+  choosed: boolean;
+  masked: boolean;
   id: number;
 }
 
 export class Panel extends React.Component<IProps, undefined> {
   constructor(props: IProps) {
     super(props);
+    this.handleChartClick = this.handleChartClick.bind(this);
+  }
+
+  handleChartClick(e: React.MouseEvent<HTMLElement>, id: number) {
+    e.stopPropagation();
   }
 
   renderChart() {
-    const { chart, id, isMask } = this.props;
-
-    return <Chart {...chart} id={id} key={id} isMask={isMask} index={1} />;
+    const { chart, id, masked, onChartClick } = this.props;
+    return <Chart  {...chart} onChartClick={onChartClick} id={id} key={id} isMask={masked} index={1} />;
   }
 
   render() {
-    const { connectDropTarget, borderType, size, chart, onClick } = this.props;
+    const { connectDropTarget, borderType, size, chart, choosed, onTrashcanClick, id } = this.props;
 
     let borderStyle = {
       borderRight: 'none',
@@ -52,8 +58,14 @@ export class Panel extends React.Component<IProps, undefined> {
     }
 
     return connectDropTarget(
-      <div className='split_panel' style={{ ...borderStyle, ...size }} onClick={onClick}>
+      <div className='split_panel' style={{ ...borderStyle, ...size }} >
         {chart ? this.renderChart() : this.props.children}
+        {
+          choosed &&
+          <div className='split_tool' onClick={(e) => e.stopPropagation()}>
+            <i className='icon-trashcan icon panel_icon' onClick={() => onTrashcanClick(id)}></i>
+          </div>
+        }
       </div>
     );
   }

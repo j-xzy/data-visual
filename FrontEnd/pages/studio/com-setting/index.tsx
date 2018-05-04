@@ -2,7 +2,7 @@ import * as  React from 'react';
 import { Collapse } from 'antd';
 import update from 'immutability-helper';
 import { Context as StudioContext } from '@pages/studio';
-import { idMapIndex } from '@pages/studio';
+import { idMapIndexChart } from '@pages/studio';
 import { IChartConfig } from '@components/chart';
 import { IUpdateChart } from '@controls/index';
 import Tab from '@base/tab';
@@ -59,7 +59,7 @@ export default class ComSetting extends React.Component<undefined, undefined> {
 
           if (choosedChartIds.length === 1) {
             const id = choosedChartIds[0];
-            const idx = idMapIndex.get(id);
+            const idx = idMapIndexChart.get(id);
             const chart = charts[idx];
 
             function updateChart(chartConfig: IChartConfig, callback?: () => void) {
