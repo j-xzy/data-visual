@@ -81,6 +81,8 @@ const PanelTarget = {
     }
 
     if (monitor.getItemType() === PREVIEW_CHART) {
+      if (props.chart) return;
+
       const item = monitor.getItem() as IDraggableChartPreivewResult;
       const style = window.getComputedStyle((findDOMNode(component) as Element), null);
       let width = parseFloat(style.width);
@@ -92,7 +94,7 @@ const PanelTarget = {
         scale: { x: 1, y: 1 },
         size: { width, height },
         position: { top: 0, left: 0 },
-        colorFromGlobal: false,
+        colorFromGlobal: true,
         id: props.id
       });
     }

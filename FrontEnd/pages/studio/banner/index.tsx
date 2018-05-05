@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Charts, CanvasSizeType } from '@pages/studio/index';
-
+import { tree } from '@container/split-container/tree';
 import './style.styl';
 
 interface IBannerProps {
@@ -24,7 +24,7 @@ export default class Banner extends React.Component<IBannerProps, undefined> {
     const { canvasSize, charts } = this.props;
     const previeWindow: any = window.open('preview/index.html');
     previeWindow.onload = () => {
-      previeWindow.init(charts, canvasSize);
+      previeWindow.init(charts, tree, canvasSize);
     };
   }
 

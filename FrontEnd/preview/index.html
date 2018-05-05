@@ -18,37 +18,81 @@
     position: fixed;
     background: #0c2a42;
   }
+
+  .row {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+  }
+
+  .column {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+  }
 </style>
 
 <body>
   <div id='root'></div>
 </body>
 <script>
-  let root = document.getElementById('root');
-  function init(charts, canvasSize) {
+  var root = document.getElementById('root');
+  function init(charts, tree, canvasSize) {
+    console.log(tree);
     // init canvas size
     root.style.width = canvasSize.width + 'px';
     root.style.height = canvasSize.height + 'px';
 
-    // init charts
+    if (tree.root === null || tree.root.firstChild === null || tree.root.secondChild === null) {
+      // init FreeCharts
+      setFreeCharts(charts);
+    } else {
+      // init responsive
+      setResponsiveCharts(charts, tree);
+    }
+  }
+
+  function setResponsiveCharts(charts, tree) {
+    root.innerHTML = traversePost(tree.root);
     charts.forEach((chart) => {
-      setChart(chart);
+      var id = chart.id;
+      var div = document.getElementById(id);
+      var myChart = echarts.init(div);
+      myChart.setOption(chart.option);
     });
   }
 
-  function setChart(chart) {
-    let div = document.createElement('div');
+  function layoutTemplate(data, firstChild, secondChild) {
+    return `<div id="${data.id}" style="width:${data.width};height:${data.height};"class="${data.type}">
+                ${firstChild}${secondChild}
+            </div>`;
+  }
 
-    div.style.position = 'absolute';
-    div.style.left = chart.position.left + 'px';
-    div.style.top = chart.position.top + 'px';
-    div.style.width = chart.size.width + 'px';
-    div.style.height = chart.size.height + 'px';
+  function traversePost(node) {
+    if (!node) return '';
+    var firstChild = '', secondChild = '';
 
-    let myChart = echarts.init(div);
-    myChart.setOption(chart.option);
+    firstChild = traversePost(node.firstChild);
+    secondChild = traversePost(node.secondChild);
 
-    root.appendChild(div);
+    return layoutTemplate(node.data, firstChild, secondChild);
+  }
+
+  function setFreeCharts(charts) {
+    charts.forEach((chart) => {
+      var div = document.createElement('div');
+
+      div.style.position = 'absolute';
+      div.style.left = chart.position.left + 'px';
+      div.style.top = chart.position.top + 'px';
+      div.style.width = chart.size.width + 'px';
+      div.style.height = chart.size.height + 'px';
+
+      var myChart = echarts.init(div);
+      myChart.setOption(chart.option);
+
+      root.appendChild(div);
+    });
   }
 </script>
 

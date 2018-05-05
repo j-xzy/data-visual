@@ -90,7 +90,6 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     this.secondPanelId = Date.now() + 1;
 
     buildTree(props.mode, props.containerId, this.firstPanelId, this.secondPanelId);
-    console.log(tree);
   }
 
   isOnChangeSize = false;
@@ -381,7 +380,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
         </Panel>
         {
           containerChoosed &&
-          <div className='split_tool'>
+          <div className='split_tool' onDrop={(e) => e.stopPropagation()} >
             <i className='icon-trashcan icon' style={trashcanStyle} onClick={this.handleTrashcanClick}></i>
           </div>
         }
