@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { Charts, CanvasSizeType } from '@pages/studio/index';
+import { Charts, CanvasSizeType, ZoomType } from '@pages/studio/index';
 import { tree } from '@container/split-container/tree';
 import './style.styl';
 
 interface IBannerProps {
   charts: Charts;
   canvasSize: CanvasSizeType;
+  zoomType: ZoomType;
+  isBorder: boolean;
 }
 
 interface IBannerItemProps {
@@ -21,10 +23,10 @@ export default class Banner extends React.Component<IBannerProps, undefined> {
   }
 
   handlePreviewClick() {
-    const { canvasSize, charts } = this.props;
+    const { canvasSize, charts, zoomType, isBorder } = this.props;
     const previeWindow: any = window.open('preview/index.html');
     previeWindow.onload = () => {
-      previeWindow.init(charts, tree, canvasSize);
+      previeWindow.init(charts, tree, canvasSize, zoomType, isBorder);
     };
   }
 

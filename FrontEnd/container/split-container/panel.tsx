@@ -6,12 +6,14 @@ import { SPLIT, PREVIEW_CHART } from '@lib/dragtype';
 import { IDraggableSplitResult, Mode } from '@container/draggable-split';
 import { IChartConfig, Chart } from '@components/chart';
 
+export type BorderType = 'right' | 'bottom' | 'none';
+
 interface IProps extends ISplitProps {
   connectDropTarget: ConnectDropTarget;
 }
 
 interface ISplitProps {
-  borderType?: 'right' | 'bottom' | 'none';
+  borderType: BorderType;
   onDrop: (mode: Mode) => void;
   onChartClick: (e: React.MouseEvent<HTMLDivElement>, id: number) => void;
   onTrashcanClick: (id: number) => void;
@@ -26,7 +28,7 @@ interface ISplitProps {
   id: number;
 }
 
-export class Panel extends React.Component<IProps, undefined> {
+export class RawPanel extends React.Component<IProps, undefined> {
   constructor(props: IProps) {
     super(props);
     this.handleChartClick = this.handleChartClick.bind(this);
@@ -72,7 +74,7 @@ export class Panel extends React.Component<IProps, undefined> {
 }
 
 const PanelTarget = {
-  drop(props: ISplitProps, monitor: DropTargetMonitor, component: Panel) {
+  drop(props: ISplitProps, monitor: DropTargetMonitor, component: RawPanel) {
     if (monitor.didDrop()) return;
 
     if (monitor.getItemType() === SPLIT) {
@@ -107,4 +109,4 @@ function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
   };
 }
 
-export default DropTarget<ISplitProps>([SPLIT, PREVIEW_CHART], PanelTarget, collect)(Panel);
+export const Panel = DropTarget<ISplitProps>([SPLIT, PREVIEW_CHART], PanelTarget, collect)(RawPanel);

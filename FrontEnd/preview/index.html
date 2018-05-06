@@ -12,11 +12,12 @@
   body {
     margin: 0;
     padding: 0;
+    transform-origin: left top 0px;
+    background: #0c2a42;
   }
 
-  #root {
-    position: fixed;
-    background: #0c2a42;
+  ::-webkit-scrollbar {
+    display: none
   }
 
   .row {
@@ -30,29 +31,69 @@
     position: relative;
     flex-direction: column;
   }
+
+  .border_right {
+    border-right: 1px solid rgb(255, 255, 255);
+    border-bottom: none;
+  }
+
+  .border_bottom {
+    border-right: none;
+    border-bottom: 1px solid rgb(255, 255, 255);
+  }
+
+  .border_none {
+    border-right: none;
+    border-bottom: none;
+  }
 </style>
 
 <body>
-  <div id='root'></div>
 </body>
 <script>
-  var root = document.getElementById('root');
-  function init(charts, tree, canvasSize) {
+  var charts, tree, canvasSize, zoomType, isBorder;
+
+  window.onresize = setBodyTransform;
+
+  function init(_charts, _tree, _canvasSize, _zoomType, _isBorder) {
+    charts = _charts, tree = _tree, canvasSize = _canvasSize,
+      zoomType = _zoomType, isBorder = _isBorder;
     // init canvas size
-    root.style.width = canvasSize.width + 'px';
-    root.style.height = canvasSize.height + 'px';
+    document.body.style.width = canvasSize.width + 'px';
+    document.body.style.height = canvasSize.height + 'px';
+
+    setBodyTransform();
 
     if (tree.root === null || tree.root.firstChild === null || tree.root.secondChild === null) {
       // init FreeCharts
-      setFreeCharts(charts);
+      setFreeCharts();
     } else {
       // init responsive
-      setResponsiveCharts(charts, tree);
+      setResponsiveCharts();
     }
   }
 
-  function setResponsiveCharts(charts, tree) {
-    root.innerHTML = traversePost(tree.root);
+  function setBodyTransform() {
+    var radio = [1, 1];
+    console.log(zoomType);
+    switch (zoomType) {
+      case 'width':
+        radio[0] = radio[1] = document.documentElement.clientWidth / canvasSize.width;
+        break;
+      case 'height':
+        radio[0] = radio[1] = document.documentElement.clientHeight / canvasSize.height;
+        break;
+      case 'full':
+        radio[0] = document.documentElement.clientWidth / canvasSize.width;
+        radio[1] = document.documentElement.clientHeight / canvasSize.height;
+        break;
+    }
+    console.log(radio);
+    document.body.style.transform = `scale(${radio[0]},${radio[1]})`;
+  }
+
+  function setResponsiveCharts() {
+    document.body.innerHTML = traversePost(tree.root, 'root');
     charts.forEach((chart) => {
       var id = chart.id;
       var div = document.getElementById(id);
@@ -61,23 +102,26 @@
     });
   }
 
-  function layoutTemplate(data, firstChild, secondChild) {
-    return `<div id="${data.id}" style="width:${data.width};height:${data.height};"class="${data.type}">
-                ${firstChild}${secondChild}
-            </div>`;
+  function layoutTemplate(node, firstChild, secondChild, type) {
+    var data = node.data;
+    var cls = 'border_none';
+    if (isBorder && type === 'firstChild') {
+      cls = node.parent.data.type === 'row' ? 'border_right' : 'border_bottom';
+    }
+    return `<div id="${data.id}" style="width:${data.width};height:${data.height};"class="${data.type} ${cls}">${firstChild}${secondChild}</div>`;
   }
 
-  function traversePost(node) {
+  function traversePost(node, type) {
     if (!node) return '';
     var firstChild = '', secondChild = '';
 
-    firstChild = traversePost(node.firstChild);
-    secondChild = traversePost(node.secondChild);
+    firstChild = traversePost(node.firstChild, 'firstChild');
+    secondChild = traversePost(node.secondChild, 'secondChild');
 
-    return layoutTemplate(node.data, firstChild, secondChild);
+    return layoutTemplate(node, firstChild, secondChild, type);
   }
 
-  function setFreeCharts(charts) {
+  function setFreeCharts() {
     charts.forEach((chart) => {
       var div = document.createElement('div');
 
@@ -90,7 +134,7 @@
       var myChart = echarts.init(div);
       myChart.setOption(chart.option);
 
-      root.appendChild(div);
+      document.body.appendChild(div);
     });
   }
 </script>

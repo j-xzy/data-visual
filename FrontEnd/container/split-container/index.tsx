@@ -1,6 +1,6 @@
 import * as React from 'react';
 import update from 'immutability-helper';
-import Panel from './panel';
+import { Panel, BorderType } from './panel';
 import { tree, INodeData, TreeNode } from './tree';
 import { Mode } from '@container/draggable-split';
 import { IUpdateStudioState, idMapIndexChart, NO_CHOOSED_SPLITID } from '@pages/studio';
@@ -27,6 +27,7 @@ interface IProps {
   choosedChartIds: ReadonlyArray<number>;
   updateStudioState: IUpdateStudioState;
   charts: ReadonlyArray<IChartConfig>;
+  isBorder: boolean;
   unmount: () => void;
   choosedSplitId: number;
   containerId: number;
@@ -302,7 +303,7 @@ export default class SplitContainer extends React.Component<IProps, IState> {
   }
 
   render(): JSX.Element {
-    let { mode, updateStudioState, charts, highlightChartId, choosedChartIds, choosedSplitId, containerId } = this.props;
+    let { mode, updateStudioState, charts, highlightChartId, choosedChartIds, choosedSplitId, containerId, isBorder } = this.props;
     const { firstPanelSize, secondPanelSize, firstPanelMode, secondPanelMode,
       topDelta, leftDelta } = this.state;
 
@@ -343,6 +344,12 @@ export default class SplitContainer extends React.Component<IProps, IState> {
       trashcanStyle.left = left * widthRatio - 5;
     }
 
+    // border-type
+    let borderType: BorderType = 'none';
+    if (isBorder) {
+      borderType = mode === 'vertical' ? 'right' : 'bottom';
+    }
+
     // update treenode data
     const node = tree.getNodeById(tree.root, containerId);
     node.firstChild.data.height = firstPanelSize.height;
@@ -360,21 +367,21 @@ export default class SplitContainer extends React.Component<IProps, IState> {
     return (
       <div onClick={this.handleContainerClick} className='split_container' onMouseUp={this.handleMouseUp} onMouseMove={this.handleMouseMove} ref={this.elRef} style={{ flexDirection }} >
         <Panel onTrashcanClick={this.handleChartTrashcanClick} choosed={choosedChartIds.includes(this.firstPanelId)} masked={highlightChartId === this.firstPanelId} onChartClick={this.handleChartClick} size={firstPanelSize}
-          borderType={mode === 'vertical' ? 'right' : 'bottom'} onDrop={(mode) => this.handleDrop('first', mode)}
+          borderType={borderType} onDrop={(mode) => this.handleDrop('first', mode)}
           chart={firstChart} id={this.firstPanelId} appendChart={this.appendChart} >
           {
             firstPanelMode !== 'none'
-            && <SplitContainer choosedSplitId={choosedSplitId} containerId={this.firstPanelId} unmount={() => this.handleChildUnmout('first')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
+            && <SplitContainer isBorder={isBorder} choosedSplitId={choosedSplitId} containerId={this.firstPanelId} unmount={() => this.handleChildUnmout('first')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
               ref={this.firstContainerRef} charts={charts} highlightChartId={highlightChartId} updateStudioState={updateStudioState} mode={firstPanelMode} />
           }
         </Panel>
         <MiddleLine style={middleStyle} onDown={this.handleMousDown} />
-        <Panel onTrashcanClick={this.handleChartTrashcanClick} choosed={choosedChartIds.includes(this.secondPanelId)} masked={highlightChartId === this.firstPanelId} onChartClick={this.handleChartClick} size={secondPanelSize}
+        <Panel borderType='none' onTrashcanClick={this.handleChartTrashcanClick} choosed={choosedChartIds.includes(this.secondPanelId)} masked={highlightChartId === this.firstPanelId} onChartClick={this.handleChartClick} size={secondPanelSize}
           onDrop={(mode) => this.handleDrop('second', mode)} id={this.secondPanelId} chart={secondChart}
           appendChart={this.appendChart}>
           {
             secondPanelMode !== 'none'
-            && <SplitContainer choosedSplitId={choosedSplitId} containerId={this.secondPanelId} unmount={() => this.handleChildUnmout('second')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
+            && <SplitContainer isBorder={isBorder} choosedSplitId={choosedSplitId} containerId={this.secondPanelId} unmount={() => this.handleChildUnmout('second')} choosedChartIds={choosedChartIds} canvasScale={this.props.canvasScale}
               ref={this.secondContainerRef} charts={charts} highlightChartId={highlightChartId} updateStudioState={updateStudioState} mode={secondPanelMode} />
           }
         </Panel>

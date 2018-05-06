@@ -24,11 +24,15 @@ export type CanvasSizeType = {
 
 export type Charts = ReadonlyArray<IChartConfig>;
 
+export type ZoomType = 'width' | 'height' | 'full';
+
 export interface IStudioState {
   canvasSize: CanvasSizeType;
   canvasScale: number;
   charts: Charts;
+  isBorder: boolean;
   colors: string[];
+  zoomType: ZoomType;
   choosedChartIds: ReadonlyArray<number>;
   choosedSplitId: number;
   highlightChartId: number;
@@ -42,6 +46,8 @@ export interface IContextValue {
   canvasSize: CanvasSizeType;
   charts: Charts;
   colors: string[];
+  isBorder: boolean;
+  zoomType: ZoomType;
   choosedChartIds: ReadonlyArray<number>;
   updateCanvasPos: () => void;
   updateStudioState: IUpdateStudioState;
@@ -83,6 +89,8 @@ class RawStudio extends React.Component<undefined, IStudioState> {
       canvasScale: DEFAULT_CANVASSCALE,
       colors: defaultColor,
       charts: [],
+      isBorder: true,
+      zoomType: 'width',
       choosedChartIds: [],
       highlightChartId: NO_HIGHLIGHT_CHART,
       choosedSplitId: NO_CHOOSED_SPLITID
@@ -225,7 +233,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, canvasScale, charts, choosedChartIds, highlightChartId, colors, choosedSplitId } = this.state;
+    const { canvasSize, zoomType, canvasScale, charts, choosedChartIds, highlightChartId, colors, choosedSplitId, isBorder } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
@@ -233,9 +241,11 @@ class RawStudio extends React.Component<undefined, IStudioState> {
         colors: this.state.colors,
         choosedChartIds: this.state.choosedChartIds,
         updateCanvasPos: this.updateCanvasPos.bind(this),
-        updateStudioState: this.updateStudioState.bind(this)
+        updateStudioState: this.updateStudioState.bind(this),
+        isBorder: this.state.isBorder,
+        zoomType: this.state.zoomType
       }}>
-        <Banner charts={charts} canvasSize={canvasSize} />
+        <Banner isBorder={isBorder} zoomType={zoomType} charts={charts} canvasSize={canvasSize} />
         <div className='studio'>
           <div className='leftbar_container'>
             <Leftbar />
@@ -245,7 +255,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
               <Canvas
                 canvasScale={canvasScale} size={canvasSize} highlightChartId={highlightChartId}
                 charts={charts} updateStudioState={this.updateStudioState} choosedSplitId={choosedSplitId}
-                choosedChartIds={choosedChartIds} colors={colors}>
+                choosedChartIds={choosedChartIds} colors={colors} isBorder={isBorder}>
               </Canvas>
             </div>
             <div className='scroll-wrapper' >

@@ -21,6 +21,7 @@ export interface ICanvasProps {
   choosedChartIds: ReadonlyArray<number>;
   highlightChartId: number;
   choosedSplitId: number;
+  isBorder: boolean;
 }
 
 type ITransformTools = {
@@ -408,7 +409,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   render() {
     const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState,
-      charts, highlightChartId, choosedChartIds, choosedSplitId } = this.props;
+      charts, highlightChartId, choosedChartIds, choosedSplitId, isBorder } = this.props;
 
     const { splitContainer } = this.state;
     return connectDropTarget(
@@ -421,7 +422,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
         <div className='canvas' ref={this.canvasRef}>
           {
             splitContainer !== 'none'
-            && <SplitContainer choosedSplitId={choosedSplitId} containerId={0} unmount={this.unmountSplitContainer} choosedChartIds={choosedChartIds} canvasScale={canvasScale} highlightChartId={highlightChartId} charts={charts}
+            && <SplitContainer isBorder={isBorder} choosedSplitId={choosedSplitId} containerId={0} unmount={this.unmountSplitContainer} choosedChartIds={choosedChartIds} canvasScale={canvasScale} highlightChartId={highlightChartId} charts={charts}
               updateStudioState={updateStudioState} mode={splitContainer} />
           }
           {
