@@ -403,6 +403,6 @@ interface IMiddleLineProps {
 
 function MiddleLine(props: IMiddleLineProps) {
   return (
-    <div className='middleline' onClick={(e) => e.stopPropagation()} onMouseDownCapture={props.onDown} style={{ ...props.style, zIndex: 800 }}></div>
+    <div className='middleline' onDrop={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} onMouseDownCapture={props.onDown} style={{ ...props.style, zIndex: 800 }}></div>
   );
 }
