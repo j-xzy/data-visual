@@ -2,9 +2,8 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import { shallowEqual } from '@lib/tools';
 import { Controls, IChartOption, ISeriesItemTemplate, ChartType } from '@charts';
+import { Spin } from 'antd';
 import './style.styl';
-
-const loading = require('../../assets/image/loading.gif');
 
 let echarts: any;
 
@@ -110,7 +109,7 @@ export class Chart extends React.Component<IChartProps, undefined> {
       <div
         onClick={onChartClick ? (e) => onChartClick(e, id) : null} className={cls}
         style={{ ...size, ...position, position: positionType, transform, zIndex: index }} ref={this.elRef}>
-        <img src={loading} className='chart_loading' />
+        <Spin className='chart_loading' />
       </div >
     );
   }

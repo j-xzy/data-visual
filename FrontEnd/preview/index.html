@@ -9,9 +9,16 @@
   <title>预览</title>
 </head>
 <style>
+  html {
+    overflow-x: hidden;
+    overflow-y: visible;
+    height: 100%;
+  }
+
   body {
     margin: 0;
     padding: 0;
+    overflow: hidden;
     transform-origin: left top 0px;
     background: #0c2a42;
   }
@@ -75,20 +82,19 @@
 
   function setBodyTransform() {
     var radio = [1, 1];
-    console.log(zoomType);
     switch (zoomType) {
       case 'width':
         radio[0] = radio[1] = document.documentElement.clientWidth / canvasSize.width;
         break;
       case 'height':
         radio[0] = radio[1] = document.documentElement.clientHeight / canvasSize.height;
+        document.body.style.marginLeft = (document.documentElement.clientWidth - canvasSize.width * radio[0]) / 2 + 'px';
         break;
       case 'full':
         radio[0] = document.documentElement.clientWidth / canvasSize.width;
         radio[1] = document.documentElement.clientHeight / canvasSize.height;
         break;
     }
-    console.log(radio);
     document.body.style.transform = `scale(${radio[0]},${radio[1]})`;
   }
 
