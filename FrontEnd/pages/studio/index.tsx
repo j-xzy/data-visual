@@ -33,6 +33,7 @@ export interface IStudioState {
   isBorder: boolean;
   colors: string[];
   zoomType: ZoomType;
+  splitContainer: 'none' | 'horizontal' | 'vertical';
   choosedChartIds: ReadonlyArray<number>;
   choosedSplitId: number;
   highlightChartId: number;
@@ -87,6 +88,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     this.state = {
       canvasSize: DEFAULT_CANVASSIZE,
       canvasScale: DEFAULT_CANVASSCALE,
+      splitContainer: 'none',
       colors: defaultColor,
       charts: [],
       isBorder: true,
@@ -157,11 +159,13 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     if (key === 'delete') {
       this.deleteChoosedChart();
     }
-    if (e.ctrlKey && key === 'c') {
-      this.toChartsClipboard();
-    }
-    if (e.ctrlKey && key === 'v') {
-      this.copyChoosedChart();
+    if (this.state.splitContainer === 'none') {
+      if (e.ctrlKey && key === 'c') {
+        this.toChartsClipboard();
+      }
+      if (e.ctrlKey && key === 'v') {
+        this.copyChoosedChart();
+      }
     }
   }
 
@@ -233,7 +237,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
   }
 
   render() {
-    const { canvasSize, zoomType, canvasScale, charts, choosedChartIds, highlightChartId, colors, choosedSplitId, isBorder } = this.state;
+    const { splitContainer, canvasSize, zoomType, canvasScale, charts, choosedChartIds, highlightChartId, colors, choosedSplitId, isBorder } = this.state;
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
@@ -255,7 +259,7 @@ class RawStudio extends React.Component<undefined, IStudioState> {
               <Canvas
                 canvasScale={canvasScale} size={canvasSize} highlightChartId={highlightChartId}
                 charts={charts} updateStudioState={this.updateStudioState} choosedSplitId={choosedSplitId}
-                choosedChartIds={choosedChartIds} colors={colors} isBorder={isBorder}>
+                choosedChartIds={choosedChartIds} colors={colors} isBorder={isBorder} splitContainer={splitContainer}>
               </Canvas>
             </div>
             <div className='scroll-wrapper' >

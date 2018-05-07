@@ -18,6 +18,7 @@ export interface ICanvasProps {
   charts: ReadonlyArray<IChartConfig>;
   colors: string[];
   updateStudioState: IUpdateStudioState;
+  splitContainer: 'none' | 'horizontal' | 'vertical';
   choosedChartIds: ReadonlyArray<number>;
   highlightChartId: number;
   choosedSplitId: number;
@@ -30,7 +31,6 @@ type ITransformTools = {
 
 interface ICanvasState {
   transformTools: ITransformTools;
-  splitContainer: 'none' | 'horizontal' | 'vertical';
 }
 
 interface IRawCanvasProps extends ICanvasProps {
@@ -81,8 +81,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     this.unmountSplitContainer = this.unmountSplitContainer.bind(this);
 
     this.state = {
-      transformTools: {}, // depends on props.choosedChartIds
-      splitContainer: 'none'
+      transformTools: {} // depends on props.choosedChartIds
     };
   }
 
@@ -373,9 +372,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   unmountSplitContainer() {
-    this.setState({
-      splitContainer: 'none'
-    });
+    this.props.updateStudioState({ splitContainer: 'none' });
   }
 
   static getDerivedStateFromProps(nextProps: ICanvasProps) {
@@ -409,9 +406,8 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 
   render() {
     const { size: { width, height }, canvasScale, connectDropTarget, updateStudioState,
-      charts, highlightChartId, choosedChartIds, choosedSplitId, isBorder } = this.props;
+      charts, highlightChartId, choosedChartIds, choosedSplitId, isBorder, splitContainer } = this.props;
 
-    const { splitContainer } = this.state;
     return connectDropTarget(
       <div className='canvas_container' style={{ width, height, transform: `scale(${canvasScale})` }}
         onMouseDown={(e) => this.handleCanvasMouseDown(e)}
@@ -442,7 +438,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
 const boxTarget = {
   drop(props: ICanvasProps, monitor: DropTargetMonitor, component: RawCanvas) {
     if (monitor.getItemType() === PREVIEW_CHART) {
-      if (component.state.splitContainer !== 'none') return;
+      if (props.splitContainer !== 'none') return;
 
       const item = monitor.getItem() as IDraggableChartPreivewResult;
 
@@ -468,7 +464,7 @@ const boxTarget = {
       }
 
       const item = monitor.getItem() as IDraggableSplitResult;
-      component.setState({
+      props.updateStudioState({
         splitContainer: item.mode
       });
       return;
