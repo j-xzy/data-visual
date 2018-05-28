@@ -77,6 +77,10 @@ const PanelTarget = {
   drop(props: ISplitProps, monitor: DropTargetMonitor, component: RawPanel) {
     if (monitor.didDrop()) return;
 
+    if (props.chart) {
+      return;
+    }
+
     if (monitor.getItemType() === SPLIT) {
       props.onDrop((monitor.getItem() as IDraggableSplitResult).mode);
       return;
