@@ -17,7 +17,7 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
     super(props);
     this.handleColorComplete = this.handleColorComplete.bind(this);
     this.handleColorChange = this.handleColorChange.bind(this);
-    this.state = { colors: [] };
+    this.state = { colors: this.props.colors };
   }
 
   static defaultProps = {
@@ -34,14 +34,6 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
         $splice: [[idx, 1, color]]
       })
     });
-  }
-
-  static getDerivedStateFromProps(nextProps: IProps, nextState: IState) {
-    if (nextState.colors.length === 0) {
-      // 只需在创建时coolrs来自父组件
-      return { colors: nextProps.colors };
-    }
-    return null;
   }
 
   render() {

@@ -101,10 +101,15 @@ export default class SplitContainer extends React.Component<IProps, IState> {
   secondPanelId: number; // chart's id
 
   handleDrop(panel: 'first' | 'second', mode: Mode) {
-    const panelType: any = panel === 'first' ? 'firstPanelMode' : 'secondPanelMode';
-    this.setState({
-      [panelType]: mode
-    });
+    if (panel === 'first') {
+      this.setState({
+        firstPanelMode: mode
+      });
+    } else {
+      this.setState({
+        secondPanelMode: mode
+      });
+    }
   }
 
   handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
