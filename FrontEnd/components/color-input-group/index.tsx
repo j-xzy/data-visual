@@ -36,8 +36,12 @@ export default class ColorInputGroup extends React.Component<IProps, IState> {
     });
   }
 
-  static getDerivedStateFromProps(nextProps: IProps) {
-    return { colors: nextProps.colors };
+  static getDerivedStateFromProps(nextProps: IProps, nextState: IState) {
+    if (nextState.colors.length === 0) {
+      // 只需在创建时coolrs来自父组件
+      return { colors: nextProps.colors };
+    }
+    return null;
   }
 
   render() {

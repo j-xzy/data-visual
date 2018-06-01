@@ -65,7 +65,7 @@ export const NO_CHOOSED_SPLITID = -1;
 export const MIN_SCALE_VALUE = 0.01;
 export const MAX_SCALE_VALUE = 10;
 
-export const Context: React.Context<IContextValue> = React.createContext();
+export const Context: React.Context<IContextValue> = React.createContext({} as any);
 
 // chart'id map charts's index
 export const idMapIndexChart: Map<number, number> = new Map();
