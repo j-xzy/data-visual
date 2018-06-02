@@ -9,7 +9,6 @@ import Setting from '@pages/studio/setting';
 import Banner from '@pages/studio/banner';
 import { IChartConfig } from '@components/chart';
 import { defaultColor } from '@charts';
-
 import './style.styl';
 
 export type CanvasPos = {
@@ -17,17 +16,13 @@ export type CanvasPos = {
   paddingTop: string
 };
 
-export type CanvasSizeType = {
-  width: number,
-  height: number
-};
 
 export type Charts = ReadonlyArray<IChartConfig>;
 
 export type ZoomType = 'width' | 'height' | 'full';
 
 export interface IStudioState {
-  canvasSize: CanvasSizeType;
+  canvasSize: Base.Size;
   canvasScale: number;
   charts: Charts;
   isBorder: boolean;
@@ -44,7 +39,7 @@ export interface IUpdateStudioState {
 }
 
 export interface IContextValue {
-  canvasSize: CanvasSizeType;
+  canvasSize: Base.Size;
   charts: Charts;
   colors: string[];
   isBorder: boolean;
@@ -54,7 +49,7 @@ export interface IContextValue {
   updateStudioState: IUpdateStudioState;
 }
 
-const DEFAULT_CANVASSIZE: CanvasSizeType = {
+const DEFAULT_CANVASSIZE: Base.Size = {
   width: 800,
   height: 600
 };
@@ -241,8 +236,8 @@ class RawStudio extends React.Component<undefined, IStudioState> {
     return (
       <Context.Provider value={{
         canvasSize: this.state.canvasSize,
-        charts: this.state.charts,
         colors: this.state.colors,
+        charts: this.state.charts,
         choosedChartIds: this.state.choosedChartIds,
         updateCanvasPos: this.updateCanvasPos.bind(this),
         updateStudioState: this.updateStudioState.bind(this),

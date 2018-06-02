@@ -16,6 +16,7 @@ live deom:  https://wu38607.github.io/data-visual/site/index.html
 - [x] 柱状图 
 - [x] 散点图 (待完善)
 - [ ] 地图
+- [ ] D3图标
 
 - [x] 预览
 - [ ] 发布

@@ -5,7 +5,7 @@ import { PREVIEW_CHART, SPLIT } from '@lib/dragtype';
 import { IChartOption, Controls, ChartType, ISeriesItemTemplate } from '@charts';
 import { IBeginDragResult as IDraggableChartPreivewResult } from '@container/draggable-chart-preview';
 import { IChartConfig, Chart } from '@components/chart';
-import { TransformTool, SideType, ITransformConfig } from '@components/transform-tool';
+import { TransformTool, SideType, ITransformConfig } from '@container/transform-tool';
 import { MIN_SCALE_VALUE, MAX_SCALE_VALUE, IUpdateStudioState, NO_HIGHLIGHT_CHART, idMapIndexChart } from '@pages/studio';
 import { IDraggableSplitResult } from '@container/draggable-split';
 import SplitContainer from '@container/split-container';
@@ -13,7 +13,7 @@ import SplitContainer from '@container/split-container';
 import './style.styl';
 
 export interface ICanvasProps {
-  size: Size;
+  size: Base.Size;
   canvasScale: number;
   charts: ReadonlyArray<IChartConfig>;
   colors: string[];
@@ -36,21 +36,6 @@ interface ICanvasState {
 interface IRawCanvasProps extends ICanvasProps {
   connectDropTarget: ConnectDropTarget;
 }
-
-type Coordinate = {
-  x: number;
-  y: number;
-};
-
-type Position = {
-  left: number;
-  top: number;
-};
-
-type Size = {
-  width: number;
-  height: number;
-};
 
 export const OFFSET_POSITION = {
   left: 10,
@@ -86,10 +71,10 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
   }
 
   canvasRef: React.RefObject<HTMLDivElement> = React.createRef();
-  lastMousePosition: Coordinate;
+  lastMousePosition: Base.Coordinate;
   sideType = SideType.None;
 
-  appendChart(option: IChartOption, config: { seriesItemTemplate: ISeriesItemTemplate, controls: Controls, position: Position, size: Size, imgSrc: string, type: ChartType }, callback?: () => void) {
+  appendChart(option: IChartOption, config: { seriesItemTemplate: ISeriesItemTemplate, controls: Controls, position: Base.Position, size: Base.Size, imgSrc: string, type: ChartType }, callback?: () => void) {
     const { position, size, imgSrc, controls, type, seriesItemTemplate } = config;
     const { updateStudioState, charts, colors } = this.props;
     const guid = Date.now();
@@ -209,7 +194,7 @@ export class RawCanvas extends React.Component<IRawCanvasProps, ICanvasState> {
     return newCharts;
   }
 
-  getChartConfigWhileMousemove(chartId: number, postion: Coordinate) {
+  getChartConfigWhileMousemove(chartId: number, postion: Base.Coordinate) {
     const { charts, canvasScale } = this.props;
     const { transformTools } = this.state;
     const transformTool = transformTools[chartId];

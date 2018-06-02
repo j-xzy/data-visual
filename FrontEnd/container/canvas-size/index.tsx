@@ -1,11 +1,11 @@
 import * as React from 'react';
 import DoubleInput from '@components/double-input';
-import { CanvasSizeType, IUpdateStudioState } from '@pages/studio';
+import { IUpdateStudioState } from '@pages/studio';
 
 const Input = DoubleInput.Input;
 
 interface IProps {
-  canvasSize: CanvasSizeType;
+  canvasSize: Base.Size;
   updateStudioState: IUpdateStudioState;
 }
 
@@ -45,7 +45,7 @@ export default class CanvasSize extends React.Component<IProps, undefined> {
     return (
       <DoubleInput>
         <Input name='宽度' value={width} onChange={this.handleWidthChange} />
-        <Input name='高度' value={height} onChange={ this.handleHeightChange} />
+        <Input name='高度' value={height} onChange={this.handleHeightChange} />
       </DoubleInput>
     );
   }

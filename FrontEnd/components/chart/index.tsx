@@ -16,14 +16,8 @@ export interface IChartConfig {
     x: number;
     y: number;
   };
-  size: {
-    width: number;
-    height: number;
-  };
-  position: {
-    left: number;
-    top: number;
-  };
+  size: Base.Size;
+  position: Base.Position;
   colorFromGlobal: boolean;
   imgSrc: string;
   controls: Controls;

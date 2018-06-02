@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Charts, CanvasSizeType, ZoomType } from '@pages/studio/index';
+import { Charts, ZoomType } from '@pages/studio/index';
 import { tree } from '@container/split-container/tree';
 import './style.styl';
 
 interface IBannerProps {
   charts: Charts;
-  canvasSize: CanvasSizeType;
+  canvasSize: Base.Size;
   zoomType: ZoomType;
   isBorder: boolean;
 }

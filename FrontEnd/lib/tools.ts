@@ -75,7 +75,7 @@ export function shallowEqual(objA: any, objB: any) {
 }
 
 export function debounce(fn: Function, delay: number) {
-  let timer: NodeJS.Timer = null;
+  let timer: any = null;
   return function () {
     let args = arguments;
     let context = this;

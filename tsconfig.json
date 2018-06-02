@@ -7,6 +7,10 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "target": "es6",
+    "typeRoots": [
+      "./FrontEnd/typings",
+      "./node_modules/@types"
+    ],
     "experimentalDecorators": true,
     "lib": [
       "dom",
