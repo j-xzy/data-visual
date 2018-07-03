@@ -16,7 +16,6 @@ export type CanvasPos = {
   paddingTop: string
 };
 
-
 export type Charts = ReadonlyArray<IChartConfig>;
 
 export type ZoomType = 'width' | 'height' | 'full';
